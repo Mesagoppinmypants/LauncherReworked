@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace PswgLauncher
 {
     partial class launcher2
     {
@@ -28,238 +28,310 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(launcher2));
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.PLAY = new System.Windows.Forms.Button();
-            this.scan = new System.Windows.Forms.Button();
-            this.options = new System.Windows.Forms.Button();
-            this.acct = new System.Windows.Forms.Button();
-            this.close = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.splitter1 = new System.Windows.Forms.Splitter();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
-            this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.button2 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.AllowNavigation = false;
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(478, 65);
-            this.webBrowser1.MaximumSize = new System.Drawing.Size(277, 367);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(277, 367);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(277, 367);
-            this.webBrowser1.TabIndex = 0;
-            this.webBrowser1.Url = new System.Uri("ftp://173.242.114.16/files/text.html", System.UriKind.Absolute);
-            this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
-            // 
-            // PLAY
-            // 
-            this.PLAY.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.PLAY.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PLAY.BackgroundImage")));
-            this.PLAY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.PLAY.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.PLAY.Image = ((System.Drawing.Image)(resources.GetObject("PLAY.Image")));
-            this.PLAY.Location = new System.Drawing.Point(626, 538);
-            this.PLAY.Name = "PLAY";
-            this.PLAY.Size = new System.Drawing.Size(162, 50);
-            this.PLAY.TabIndex = 1;
-            this.PLAY.UseVisualStyleBackColor = false;
-            this.PLAY.Click += new System.EventHandler(this.PLAY_Click_1);
-            // 
-            // scan
-            // 
-            this.scan.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.scan.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scan.BackgroundImage")));
-            this.scan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.scan.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.scan.Image = ((System.Drawing.Image)(resources.GetObject("scan.Image")));
-            this.scan.Location = new System.Drawing.Point(321, 491);
-            this.scan.Name = "scan";
-            this.scan.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.scan.Size = new System.Drawing.Size(160, 60);
-            this.scan.TabIndex = 2;
-            this.scan.UseVisualStyleBackColor = false;
-            this.scan.Click += new System.EventHandler(this.scan_Click);
-            // 
-            // options
-            // 
-            this.options.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.options.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("options.BackgroundImage")));
-            this.options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.options.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.options.Image = ((System.Drawing.Image)(resources.GetObject("options.Image")));
-            this.options.Location = new System.Drawing.Point(165, 491);
-            this.options.Name = "options";
-            this.options.Size = new System.Drawing.Size(160, 60);
-            this.options.TabIndex = 3;
-            this.options.UseVisualStyleBackColor = false;
-            this.options.SizeChanged += new System.EventHandler(this.options_SizeChanged);
-            this.options.Click += new System.EventHandler(this.options_Click_1);
-            // 
-            // acct
-            // 
-            this.acct.AutoEllipsis = true;
-            this.acct.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.acct.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("acct.BackgroundImage")));
-            this.acct.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.acct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.acct.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.acct.Image = ((System.Drawing.Image)(resources.GetObject("acct.Image")));
-            this.acct.Location = new System.Drawing.Point(25, 491);
-            this.acct.Name = "acct";
-            this.acct.Size = new System.Drawing.Size(144, 60);
-            this.acct.TabIndex = 4;
-            this.acct.UseVisualStyleBackColor = false;
-            this.acct.Click += new System.EventHandler(this.acct_Click_1);
-            // 
-            // close
-            // 
-            this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.close.Image = ((System.Drawing.Image)(resources.GetObject("close.Image")));
-            this.close.Location = new System.Drawing.Point(749, 12);
-            this.close.Name = "close";
-            this.close.Size = new System.Drawing.Size(26, 29);
-            this.close.TabIndex = 5;
-            this.close.UseVisualStyleBackColor = false;
-            this.close.Click += new System.EventHandler(this.close_Click_1);
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.Location = new System.Drawing.Point(707, 15);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(36, 23);
-            this.button1.TabIndex = 6;
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
-            // imageList1
-            // 
-            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // splitter1
-            // 
-            this.splitter1.Location = new System.Drawing.Point(0, 0);
-            this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 600);
-            this.splitter1.TabIndex = 7;
-            this.splitter1.TabStop = false;
-            // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // backgroundWorker2
-            // 
-            this.backgroundWorker2.WorkerSupportsCancellation = true;
-            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
-            this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
-            this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.ForeColor = System.Drawing.Color.Maroon;
-            this.label1.Location = new System.Drawing.Point(632, 498);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(156, 17);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Downloading Patches...";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(31, 555);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(589, 22);
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(694, 518);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(18, 22);
-            this.pictureBox2.TabIndex = 9;
-            this.pictureBox2.TabStop = false;
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
-            this.button2.Location = new System.Drawing.Point(478, 496);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(156, 55);
-            this.button2.TabIndex = 11;
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // launcher2
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(800, 600);
-            this.ControlBox = false;
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.close);
-            this.Controls.Add(this.acct);
-            this.Controls.Add(this.options);
-            this.Controls.Add(this.scan);
-            this.Controls.Add(this.PLAY);
-            this.Controls.Add(this.webBrowser1);
-            this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(800, 600);
-            this.MinimumSize = new System.Drawing.Size(800, 600);
-            this.Name = "launcher2";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Load += new System.EventHandler(this.launcher2_Load);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseClick);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseUp);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+        	this.components = new System.ComponentModel.Container();
+        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(launcher2));
+        	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+        	this.PLAY = new System.Windows.Forms.Button();
+        	this.scan = new System.Windows.Forms.Button();
+        	this.options = new System.Windows.Forms.Button();
+        	this.acct = new System.Windows.Forms.Button();
+        	this.close = new System.Windows.Forms.Button();
+        	this.button1 = new System.Windows.Forms.Button();
+        	this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+        	this.splitter1 = new System.Windows.Forms.Splitter();
+        	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+        	this.label1 = new System.Windows.Forms.Label();
+        	this.pictureBox2 = new System.Windows.Forms.PictureBox();
+        	this.button2 = new System.Windows.Forms.Button();
+        	this.labelFilename = new System.Windows.Forms.Label();
+        	this.progressBar1 = new System.Windows.Forms.ProgressBar();
+        	this.linkRetry = new System.Windows.Forms.LinkLabel();
+        	this.linkListMissing = new System.Windows.Forms.LinkLabel();
+        	this.linkRetryChecksums = new System.Windows.Forms.LinkLabel();
+        	this.linkLabelContinueChecksum = new System.Windows.Forms.LinkLabel();
+        	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+        	this.SuspendLayout();
+        	// 
+        	// webBrowser1
+        	// 
+        	this.webBrowser1.AllowNavigation = false;
+        	this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.webBrowser1.Location = new System.Drawing.Point(358, 53);
+        	this.webBrowser1.Margin = new System.Windows.Forms.Padding(2);
+        	this.webBrowser1.MaximumSize = new System.Drawing.Size(208, 298);
+        	this.webBrowser1.MinimumSize = new System.Drawing.Size(208, 298);
+        	this.webBrowser1.Name = "webBrowser1";
+        	this.webBrowser1.Size = new System.Drawing.Size(208, 298);
+        	this.webBrowser1.TabIndex = 0;
+        	this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/forums/update_notes.php", System.UriKind.Absolute);
+        	this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+        	// 
+        	// PLAY
+        	// 
+        	this.PLAY.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.PLAY.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PLAY.BackgroundImage")));
+        	this.PLAY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.PLAY.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.PLAY.Image = ((System.Drawing.Image)(resources.GetObject("PLAY.Image")));
+        	this.PLAY.Location = new System.Drawing.Point(484, 434);
+        	this.PLAY.Name = "PLAY";
+        	this.PLAY.Size = new System.Drawing.Size(98, 35);
+        	this.PLAY.TabIndex = 1;
+        	this.PLAY.UseVisualStyleBackColor = false;
+        	this.PLAY.Click += new System.EventHandler(this.PLAY_Click_1);
+        	// 
+        	// scan
+        	// 
+        	this.scan.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.scan.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scan.BackgroundImage")));
+        	this.scan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.scan.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.scan.Image = ((System.Drawing.Image)(resources.GetObject("scan.Image")));
+        	this.scan.Location = new System.Drawing.Point(251, 400);
+        	this.scan.Margin = new System.Windows.Forms.Padding(2);
+        	this.scan.Name = "scan";
+        	this.scan.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+        	this.scan.Size = new System.Drawing.Size(120, 49);
+        	this.scan.TabIndex = 2;
+        	this.scan.UseVisualStyleBackColor = false;
+        	this.scan.Click += new System.EventHandler(this.scan_Click);
+        	// 
+        	// options
+        	// 
+        	this.options.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.options.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("options.BackgroundImage")));
+        	this.options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.options.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.options.Image = ((System.Drawing.Image)(resources.GetObject("options.Image")));
+        	this.options.Location = new System.Drawing.Point(131, 400);
+        	this.options.Margin = new System.Windows.Forms.Padding(2);
+        	this.options.Name = "options";
+        	this.options.Size = new System.Drawing.Size(120, 49);
+        	this.options.TabIndex = 3;
+        	this.options.UseVisualStyleBackColor = false;
+        	this.options.SizeChanged += new System.EventHandler(this.options_SizeChanged);
+        	this.options.Click += new System.EventHandler(this.options_Click_1);
+        	// 
+        	// acct
+        	// 
+        	this.acct.AutoEllipsis = true;
+        	this.acct.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.acct.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("acct.BackgroundImage")));
+        	this.acct.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+        	this.acct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.acct.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.acct.Image = ((System.Drawing.Image)(resources.GetObject("acct.Image")));
+        	this.acct.Location = new System.Drawing.Point(23, 400);
+        	this.acct.Margin = new System.Windows.Forms.Padding(2);
+        	this.acct.Name = "acct";
+        	this.acct.Size = new System.Drawing.Size(108, 49);
+        	this.acct.TabIndex = 4;
+        	this.acct.UseVisualStyleBackColor = false;
+        	this.acct.Click += new System.EventHandler(this.acct_Click_1);
+        	// 
+        	// close
+        	// 
+        	this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.close.Image = ((System.Drawing.Image)(resources.GetObject("close.Image")));
+        	this.close.Location = new System.Drawing.Point(562, 10);
+        	this.close.Margin = new System.Windows.Forms.Padding(2);
+        	this.close.Name = "close";
+        	this.close.Size = new System.Drawing.Size(20, 24);
+        	this.close.TabIndex = 5;
+        	this.close.UseVisualStyleBackColor = false;
+        	this.close.Click += new System.EventHandler(this.close_Click_1);
+        	// 
+        	// button1
+        	// 
+        	this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+        	this.button1.Location = new System.Drawing.Point(530, 12);
+        	this.button1.Margin = new System.Windows.Forms.Padding(2);
+        	this.button1.Name = "button1";
+        	this.button1.Size = new System.Drawing.Size(27, 19);
+        	this.button1.TabIndex = 6;
+        	this.button1.UseVisualStyleBackColor = false;
+        	this.button1.Click += new System.EventHandler(this.button1_Click_1);
+        	// 
+        	// imageList1
+        	// 
+        	this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+        	this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+        	this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+        	// 
+        	// splitter1
+        	// 
+        	this.splitter1.Location = new System.Drawing.Point(0, 0);
+        	this.splitter1.Margin = new System.Windows.Forms.Padding(2);
+        	this.splitter1.Name = "splitter1";
+        	this.splitter1.Size = new System.Drawing.Size(2, 488);
+        	this.splitter1.TabIndex = 7;
+        	this.splitter1.TabStop = false;
+        	// 
+        	// backgroundWorker2
+        	// 
+        	this.backgroundWorker2.WorkerReportsProgress = true;
+        	this.backgroundWorker2.WorkerSupportsCancellation = true;
+        	this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
+        	this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
+        	this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
+        	// 
+        	// label1
+        	// 
+        	this.label1.AutoSize = true;
+        	this.label1.BackColor = System.Drawing.Color.Transparent;
+        	this.label1.ForeColor = System.Drawing.Color.Maroon;
+        	this.label1.Location = new System.Drawing.Point(23, 375);
+        	this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+        	this.label1.Name = "label1";
+        	this.label1.Size = new System.Drawing.Size(120, 13);
+        	this.label1.TabIndex = 10;
+        	this.label1.Text = "Downloading Patches...";
+        	// 
+        	// pictureBox2
+        	// 
+        	this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
+        	this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+        	this.pictureBox2.Location = new System.Drawing.Point(530, 415);
+        	this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
+        	this.pictureBox2.Name = "pictureBox2";
+        	this.pictureBox2.Size = new System.Drawing.Size(14, 18);
+        	this.pictureBox2.TabIndex = 9;
+        	this.pictureBox2.TabStop = false;
+        	// 
+        	// button2
+        	// 
+        	this.button2.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
+        	this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+        	this.button2.ForeColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
+        	this.button2.Location = new System.Drawing.Point(371, 407);
+        	this.button2.Margin = new System.Windows.Forms.Padding(2);
+        	this.button2.Name = "button2";
+        	this.button2.Size = new System.Drawing.Size(110, 38);
+        	this.button2.TabIndex = 11;
+        	this.button2.UseVisualStyleBackColor = false;
+        	this.button2.Click += new System.EventHandler(this.button2_Click);
+        	// 
+        	// labelFilename
+        	// 
+        	this.labelFilename.BackColor = System.Drawing.Color.Transparent;
+        	this.labelFilename.Location = new System.Drawing.Point(23, 388);
+        	this.labelFilename.Name = "labelFilename";
+        	this.labelFilename.Size = new System.Drawing.Size(444, 13);
+        	this.labelFilename.TabIndex = 12;
+        	// 
+        	// progressBar1
+        	// 
+        	this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        	this.progressBar1.Location = new System.Drawing.Point(23, 452);
+        	this.progressBar1.Name = "progressBar1";
+        	this.progressBar1.Size = new System.Drawing.Size(441, 17);
+        	this.progressBar1.TabIndex = 13;
+        	// 
+        	// linkRetry
+        	// 
+        	this.linkRetry.BackColor = System.Drawing.Color.Transparent;
+        	this.linkRetry.Location = new System.Drawing.Point(191, 375);
+        	this.linkRetry.Name = "linkRetry";
+        	this.linkRetry.Size = new System.Drawing.Size(28, 13);
+        	this.linkRetry.TabIndex = 14;
+        	this.linkRetry.TabStop = true;
+        	this.linkRetry.Text = "retry";
+        	this.linkRetry.Visible = false;
+        	this.linkRetry.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkRetryLinkClicked);
+        	// 
+        	// linkListMissing
+        	// 
+        	this.linkListMissing.BackColor = System.Drawing.Color.Transparent;
+        	this.linkListMissing.Location = new System.Drawing.Point(225, 375);
+        	this.linkListMissing.Name = "linkListMissing";
+        	this.linkListMissing.Size = new System.Drawing.Size(100, 13);
+        	this.linkListMissing.TabIndex = 15;
+        	this.linkListMissing.TabStop = true;
+        	this.linkListMissing.Text = "List missing Files";
+        	this.linkListMissing.Visible = false;
+        	this.linkListMissing.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkListMissingLinkClicked);
+        	// 
+        	// linkRetryChecksums
+        	// 
+        	this.linkRetryChecksums.BackColor = System.Drawing.Color.Transparent;
+        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 375);
+        	this.linkRetryChecksums.Name = "linkRetryChecksums";
+        	this.linkRetryChecksums.Size = new System.Drawing.Size(28, 13);
+        	this.linkRetryChecksums.TabIndex = 16;
+        	this.linkRetryChecksums.TabStop = true;
+        	this.linkRetryChecksums.Text = "retry";
+        	this.linkRetryChecksums.Visible = false;
+        	this.linkRetryChecksums.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkRetryChecksumsLinkClicked);
+        	// 
+        	// linkLabelContinueChecksum
+        	// 
+        	this.linkLabelContinueChecksum.BackColor = System.Drawing.Color.Transparent;
+        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 375);
+        	this.linkLabelContinueChecksum.Name = "linkLabelContinueChecksum";
+        	this.linkLabelContinueChecksum.Size = new System.Drawing.Size(189, 13);
+        	this.linkLabelContinueChecksum.TabIndex = 17;
+        	this.linkLabelContinueChecksum.TabStop = true;
+        	this.linkLabelContinueChecksum.Text = "Continue existing local checksums";
+        	this.linkLabelContinueChecksum.Visible = false;
+        	this.linkLabelContinueChecksum.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelContinueChecksumLinkClicked);
+        	// 
+        	// launcher2
+        	// 
+        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        	this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
+        	this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+        	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        	this.ClientSize = new System.Drawing.Size(600, 488);
+        	this.ControlBox = false;
+        	this.Controls.Add(this.linkLabelContinueChecksum);
+        	this.Controls.Add(this.linkRetryChecksums);
+        	this.Controls.Add(this.linkListMissing);
+        	this.Controls.Add(this.linkRetry);
+        	this.Controls.Add(this.acct);
+        	this.Controls.Add(this.options);
+        	this.Controls.Add(this.scan);
+        	this.Controls.Add(this.progressBar1);
+        	this.Controls.Add(this.labelFilename);
+        	this.Controls.Add(this.label1);
+        	this.Controls.Add(this.pictureBox2);
+        	this.Controls.Add(this.splitter1);
+        	this.Controls.Add(this.button1);
+        	this.Controls.Add(this.close);
+        	this.Controls.Add(this.PLAY);
+        	this.Controls.Add(this.webBrowser1);
+        	this.Controls.Add(this.button2);
+        	this.DoubleBuffered = true;
+        	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+        	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+        	this.Margin = new System.Windows.Forms.Padding(2);
+        	this.MaximumSize = new System.Drawing.Size(600, 488);
+        	this.MinimumSize = new System.Drawing.Size(600, 488);
+        	this.Name = "launcher2";
+        	this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+        	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+        	this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseClick);
+        	this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseDown);
+        	this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseMove);
+        	this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseUp);
+        	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+        	this.ResumeLayout(false);
+        	this.PerformLayout();
         }
+        private System.Windows.Forms.LinkLabel linkLabelContinueChecksum;
+        private System.Windows.Forms.LinkLabel linkRetryChecksums;
+        private System.Windows.Forms.LinkLabel linkListMissing;
+        private System.Windows.Forms.LinkLabel linkRetry;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label labelFilename;
 
         #endregion
 
@@ -272,10 +344,8 @@
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Button PLAY;
         private System.Windows.Forms.Splitter splitter1;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button button2;
 

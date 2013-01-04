@@ -8,7 +8,7 @@
     <ProjectGuid>{43B3C06F-BEC9-4251-B9B1-9023A16382A4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsFormsApplication1</RootNamespace>
+    <RootNamespace>PswgLauncher</RootNamespace>
     <AssemblyName>ProjectSWG Launcher</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -28,11 +28,20 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SourceAnalysisOverrideSettingsFile>F:\users\rdo\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
+    <ApplicationIcon>bin\Release\ProjectSWG Launcher.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
+    <DelaySign>False</DelaySign>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <NoStdLib>False</NoStdLib>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunSourceAnalysis>False</RunSourceAnalysis>
+    <RunCodeAnalysis>False</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>Full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -40,8 +49,6 @@
     <WarningLevel>0</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>default</LangVersion>
-    <NoWarn>
-    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -53,11 +60,20 @@
     <WarningLevel>0</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>default</LangVersion>
-    <NoWarn>
-    </NoWarn>
+    <NoWarn />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -69,7 +85,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\DebugWindow.cs" />
+    <Compile Include="src\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\DirSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\DirSearch.Designer.cs">
+      <DependentUpon>DirSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\Donate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,23 +107,11 @@
     <Compile Include="src\errordir.Designer.cs">
       <DependentUpon>errordir.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Form2.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\Form3.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\Form3.Designer.cs">
-      <DependentUpon>Form3.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Form4.cs">
       <SubType>Form</SubType>
@@ -106,12 +119,7 @@
     <Compile Include="src\Form4.Designer.cs">
       <DependentUpon>Form4.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Form5.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="src\Form5.Designer.cs">
-      <DependentUpon>Form5.cs</DependentUpon>
-    </Compile>
+    <Compile Include="src\GuiController.cs" />
     <Compile Include="src\launcher2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,11 +132,24 @@
     <Compile Include="src\LAUNCHOPTIONS.Designer.cs">
       <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\PatchChecker.cs" />
+    <Compile Include="src\PatchCheckerDialog.cs" />
+    <Compile Include="src\PatchCheckerDialog.Designer.cs">
+      <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\Program.cs" />
+    <Compile Include="src\SWGFileList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\DirSearch.resx">
+      <DependentUpon>DirSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Donate.resx">
       <DependentUpon>Donate.cs</DependentUpon>
@@ -136,27 +157,24 @@
     <EmbeddedResource Include="src\errordir.resx">
       <DependentUpon>errordir.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Form3.resx">
-      <DependentUpon>Form3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Form4.resx">
       <DependentUpon>Form4.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Form5.resx">
-      <DependentUpon>Form5.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>launcher2.Designer1.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="src\LAUNCHOPTIONS.resx">
       <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\PatchCheckerDialog.resx">
+      <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

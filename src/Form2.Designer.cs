@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace PswgLauncher
 {
     partial class Form2
     {

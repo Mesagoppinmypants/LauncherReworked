@@ -10,13 +10,20 @@ using System.Media;
 using System.IO;
 using System.Net;
 
-namespace WindowsFormsApplication1
+namespace PswgLauncher
 {
     public partial class LAUNCHOPTIONS : Form
     {
-        public LAUNCHOPTIONS()
+    	
+    	private GuiController Controller;
+    	
+        public LAUNCHOPTIONS(GuiController gc)
         {
+        	this.Controller = gc;
             InitializeComponent();
+            
+             soundControl.Checked = Controller.soundOption;
+             checksumControl.Checked = Controller.checksumOption;
         }
 
         private void LAUNCHOPTIONS_Load(object sender, EventArgs e)
@@ -60,7 +67,7 @@ namespace WindowsFormsApplication1
         private void Donate_Click(object sender, EventArgs e)
         {
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            player.Play();
+            if (Controller.soundOption) { player.Play(); }
             Donate donate = new Donate();
             donate.Show();
         }
@@ -68,7 +75,7 @@ namespace WindowsFormsApplication1
         private void Support_Click(object sender, EventArgs e)
         {
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            player.Play();
+            if (Controller.soundOption) { player.Play(); }
             Form4 form4 = new Form4();
             form4.Show();
         }
@@ -78,7 +85,7 @@ namespace WindowsFormsApplication1
             if (File.Exists(Application.StartupPath + "/TREFix.exe"))
             {
                 System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-                player.Play();
+                if (Controller.soundOption) { player.Play(); }
                 System.Diagnostics.Process.Start(Application.StartupPath + "/TREFix.exe");
             }
 
@@ -86,72 +93,30 @@ namespace WindowsFormsApplication1
             {
 
                 System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Error.wav");
-                player.Play();
+                if (Controller.soundOption) { player.Play(); }
             }
 
         }
+   
 
-        private void button3_Click(object sender, EventArgs e)
+        void ChecksumControlCheckedChanged(object sender, EventArgs e)
         {
-            label1.ForeColor = Color.Red;
-            label1.Text = "Checking Launcher Version...";
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            player.Play();
-            
-            backgroundWorker1.RunWorkerAsync();
+        	
+        	Controller.checksumOption = checksumControl.Checked;
+        	
         }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        
+        
+        void SoundControlCheckedChanged(object sender, EventArgs e)
         {
-               System.Threading.Thread.Sleep(15000);
-                string FTP = "ftp://173.242.114.16/files/";
-                string delsrvpatch = Application.StartupPath + "/lpatchsrv.cfg";
-            try
-            {
-             
-                File.Delete(delsrvpatch);
-            }
-             catch (FileNotFoundException) {
-            }
-                string lpatchusr = System.IO.File.ReadAllText(Application.StartupPath + "/lpatchusr.cfg");
-                WebClient wc = new WebClient();
-                wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-                wc.DownloadFile("ftp://173.242.114.16/files/lpatch.cfg", Application.StartupPath + "/lpatchsrv.cfg");
-            
-          
-        
-         
-                
-            
+        	
+        	Controller.soundOption = soundControl.Checked;
+        	
         }
-         
         
-
-         private void backgroundWorker1_RunWorkerCompleted_1(object sender, RunWorkerCompletedEventArgs e)
-         {
-             {
-                 string lpatchusr = System.IO.File.ReadAllText(Application.StartupPath + "/lpatchusr.cfg");
-                 string lpatchsrv = System.IO.File.ReadAllText(Application.StartupPath + "/lpatchsrv.cfg");
-
-
-                 if (lpatchsrv == lpatchusr)
-                 {
-
-                     label2.ForeColor = Color.Aqua;
-                     label2.Text = "GOOD!";
-
-
-                 }
-                 else
-                 {
-
-                     this.Hide();
-                     Form3 form3 = new Form3();
-                     form3.Show();
-                 }
-
-
-             }
-         }
+        void LinkDebugWindowLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+        	Controller.LaunchDebug();
+        }
     }
 }
