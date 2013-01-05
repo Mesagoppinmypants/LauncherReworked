@@ -309,9 +309,9 @@ namespace PswgLauncher
 
         private void acct_Click_1(object sender, EventArgs e)
         {
+        	
+        	Controller.PlaySound("Sound_Click");
 
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
             AccountWindow acct = new AccountWindow(Controller);
             acct.Show();
         }
@@ -320,15 +320,14 @@ namespace PswgLauncher
         {
             if (File.Exists(Application.StartupPath + "/SwgClientSetup_r.exe"))
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-                if (Controller.soundOption) { player.Play(); }
+            	Controller.PlaySound("Sound_Click");
                 System.Diagnostics.Process.Start(swgdirsave + "/SwgClientSetup_r.exe");
             }
             else
             {
             	Controller.AddDebugMessage("Cannot launch swgclientsetup_r.exe because it is missing.");
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Error.wav");
-                if (Controller.soundOption) { player.Play(); }
+            	
+            	Controller.PlaySound("Sound_Error");
             }
         }
 
@@ -649,18 +648,16 @@ namespace PswgLauncher
         private void PLAY_Click_1(object sender, EventArgs e)
         {
         	
-        	System.Media.SoundPlayer player;
+        	
         	if (status != (int) StatusCodes.PatchingComplete) {
         		
-        		player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Error.wav");
-                if (Controller.soundOption) { player.Play(); }
+        		Controller.PlaySound("Sound_Error");
 
         		return;
         	}
         	
               
-            player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Play.wav");
-            if (Controller.soundOption) { player.Play(); }
+        	Controller.PlaySound("Sound_Play");
             this.Hide();
             WebClient wc = new WebClient();
             wc.Credentials = new NetworkCredential("anonymous", "anonymous");
@@ -696,8 +693,7 @@ namespace PswgLauncher
             	return;
             }
             
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
+            Controller.PlaySound("Sound_Click");
 
 			// reset what good files we thought we had
 			Controller.SWGFiles.ResetGoodFiles();
@@ -717,9 +713,9 @@ namespace PswgLauncher
 
         private void button2_Click(object sender, EventArgs e)
         {
+        	
+        	Controller.PlaySound("Sound_Click");
 
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
             LAUNCHOPTIONS launchoptions = new LAUNCHOPTIONS(Controller);
             launchoptions.Show();
         }

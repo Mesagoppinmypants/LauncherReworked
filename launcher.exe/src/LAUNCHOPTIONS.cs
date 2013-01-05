@@ -91,16 +91,14 @@ namespace PswgLauncher
 
         private void Donate_Click(object sender, EventArgs e)
         {
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
+        	Controller.PlaySound("Sound_Click");
             Donate donate = new Donate(Controller);
             donate.Show();
         }
 
         private void Support_Click(object sender, EventArgs e)
         {
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
+        	Controller.PlaySound("Sound_Click");
             SupportWindow support = new SupportWindow(Controller);
             support.Show();
         }
@@ -109,16 +107,15 @@ namespace PswgLauncher
         {
             if (File.Exists(Application.StartupPath + "/TREFix.exe"))
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-                if (Controller.soundOption) { player.Play(); }
+            	Controller.PlaySound("Sound_Click");
                 System.Diagnostics.Process.Start(Application.StartupPath + "/TREFix.exe");
             }
 
             else
             {
+            	
+            	Controller.PlaySound("Sound_Error");
 
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Error.wav");
-                if (Controller.soundOption) { player.Play(); }
             }
 
         }

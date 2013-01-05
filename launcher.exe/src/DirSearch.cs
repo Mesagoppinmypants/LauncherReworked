@@ -88,8 +88,7 @@ namespace PswgLauncher
 
         private void BrowseButton_Click(object sender, EventArgs e)  //to browse for SWG install dir
         {
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-            if (Controller.soundOption) { player.Play(); }
+        	Controller.PlaySound("Sound_Click");
             
             folderBrowserDialog1.ShowDialog();  //opens the file browse window
             SwgDir = folderBrowserDialog1.SelectedPath; // gathers data and writes it to swggetdir
@@ -194,9 +193,7 @@ namespace PswgLauncher
             if (richTextBox1.Text ==  "SWG INSTALLATION FOUND")
             {
             	
-            	
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
-                if (Controller.soundOption) { player.Play(); }
+            	Controller.PlaySound("Sound_Click");
                 
                 
                 Controller.SwgDir = SwgDir;

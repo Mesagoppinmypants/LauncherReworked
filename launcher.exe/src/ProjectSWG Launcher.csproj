@@ -144,6 +144,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="launcher2.resx">
+      <DependentUpon>launcher2.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PswgRes.resx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>

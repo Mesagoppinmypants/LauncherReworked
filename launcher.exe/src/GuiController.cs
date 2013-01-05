@@ -75,7 +75,7 @@ namespace PswgLauncher
 		private DebugWindow _debug;
 		
 		
-		
+		private ResourceManager PswgResourcesManager;
 		
 		
 		public GuiController()
@@ -87,6 +87,7 @@ namespace PswgLauncher
 			_DebugMessages = new List<String>();
 			SWGFiles = new SWGFileList(this);
 			
+			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
 
 		}
 		
@@ -233,16 +234,30 @@ namespace PswgLauncher
 		
 		public System.Drawing.Image GetResourceImage(String filename) {
 
-		   	ResourceManager rm = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
-        	
-	        return ((System.Drawing.Image) rm.GetObject(filename));
+	        return ((System.Drawing.Image) PswgResourcesManager.GetObject(filename));
 		}
 		
 		public System.Drawing.Icon GetAppIcon() {
 
-		   	ResourceManager rm = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
         	
-	        return ((System.Drawing.Icon) rm.GetObject("ProjectSWG Launcher"));
+	        return ((System.Drawing.Icon) PswgResourcesManager.GetObject("ProjectSWG Launcher"));
+			
+		}
+		
+		public Stream GetSound(String filename) {
+			
+			byte[] x = ((byte[]) PswgResourcesManager.GetObject(filename));
+			
+			if (x == null) { return null; }
+			
+			return new MemoryStream(x);
+			
+		}
+		
+		public void PlaySound(String filename) {
+			
+			System.Media.SoundPlayer player = new System.Media.SoundPlayer(this.GetSound(filename));
+            if (this.soundOption) { player.Play(); }
 			
 		}
 		
