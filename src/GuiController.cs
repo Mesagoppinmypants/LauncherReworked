@@ -12,8 +12,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Windows.Forms;
-
+using System.Runtime.InteropServices;
 
 namespace PswgLauncher
 {
@@ -47,8 +49,8 @@ namespace PswgLauncher
 				setAppSetting("ChecksumEnable",((_checksumOption == true) ? "true" : "false" ));
 			}
 		}
-		
-		
+
+
 		private String _SwgDir;
 		
 		public String SwgDir {
@@ -75,6 +77,7 @@ namespace PswgLauncher
 		
 		
 		
+		
 		public GuiController()
 		{
 			_soundOption = false;
@@ -83,6 +86,7 @@ namespace PswgLauncher
 			
 			_DebugMessages = new List<String>();
 			SWGFiles = new SWGFileList(this);
+			
 
 		}
 		
@@ -110,7 +114,6 @@ namespace PswgLauncher
 				AddDebugMessage("No " + FileList + " present, needs downloading.");
 			}
 
-			
 		}
 		
 		public string getAppSetting(string key)
@@ -218,5 +221,47 @@ namespace PswgLauncher
 		
 
 		
+		
+		
+		
+		public String GetProgramVersion() {
+		
+			return Application.ProductVersion.ToString().Trim();
+		
+		}
+		
+		
+		public System.Drawing.Image GetResourceImage(String filename) {
+
+		   	ResourceManager rm = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
+        	
+	        return ((System.Drawing.Image) rm.GetObject(filename));
+		}
+		
+		public System.Drawing.Icon GetAppIcon() {
+
+		   	ResourceManager rm = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
+        	
+	        return ((System.Drawing.Icon) rm.GetObject("ProjectSWG Launcher"));
+			
+		}
+		
+		[DllImport("Gdi32.dll", EntryPoint="CreateRoundRectRgn")]
+		public static extern IntPtr CreateRoundRectRgn
+		(
+			int nLeftRect, // x-coordinate of upper-left corner
+			int nTopRect, // y-coordinate of upper-left corner
+			int nRightRect, // x-coordinate of lower-right corner
+			int nBottomRect, // y-coordinate of lower-right corner
+			int nWidthEllipse, // height of ellipse
+			int nHeightEllipse // width of ellipse
+		);
+
+		
 	}
+	
+	
+	
+	
+	
 }

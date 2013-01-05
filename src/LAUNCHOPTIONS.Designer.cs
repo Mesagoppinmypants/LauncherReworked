@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LAUNCHOPTIONS));
         	this.button1 = new System.Windows.Forms.Button();
         	this.close = new System.Windows.Forms.Button();
         	this.Support = new System.Windows.Forms.Button();
@@ -44,13 +43,13 @@
         	// button1
         	// 
         	this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button1.FlatAppearance.BorderSize = 0;
         	this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
         	this.button1.Location = new System.Drawing.Point(502, 15);
         	this.button1.Margin = new System.Windows.Forms.Padding(2);
         	this.button1.Name = "button1";
-        	this.button1.Size = new System.Drawing.Size(27, 19);
+        	this.button1.Size = new System.Drawing.Size(20, 19);
         	this.button1.TabIndex = 8;
         	this.button1.UseVisualStyleBackColor = false;
         	this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -58,12 +57,13 @@
         	// close
         	// 
         	this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.close.FlatAppearance.BorderSize = 0;
         	this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.Image = ((System.Drawing.Image)(resources.GetObject("close.Image")));
         	this.close.Location = new System.Drawing.Point(526, 12);
         	this.close.Margin = new System.Windows.Forms.Padding(2);
         	this.close.Name = "close";
+        	this.close.RightToLeft = System.Windows.Forms.RightToLeft.No;
         	this.close.Size = new System.Drawing.Size(20, 24);
         	this.close.TabIndex = 7;
         	this.close.UseVisualStyleBackColor = false;
@@ -71,12 +71,13 @@
         	// 
         	// Support
         	// 
-        	this.Support.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Support.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Support.BackgroundImage")));
+        	this.Support.BackColor = System.Drawing.Color.Transparent;
+        	this.Support.FlatAppearance.BorderSize = 0;
+        	this.Support.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.Support.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.Support.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.Support.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Support.Image = ((System.Drawing.Image)(resources.GetObject("Support.Image")));
-        	this.Support.Location = new System.Drawing.Point(126, 128);
+        	this.Support.Location = new System.Drawing.Point(126, 75);
         	this.Support.Margin = new System.Windows.Forms.Padding(2);
         	this.Support.Name = "Support";
         	this.Support.Size = new System.Drawing.Size(123, 61);
@@ -86,12 +87,13 @@
         	// 
         	// Donate
         	// 
-        	this.Donate.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Donate.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Donate.BackgroundImage")));
+        	this.Donate.BackColor = System.Drawing.Color.Transparent;
+        	this.Donate.FlatAppearance.BorderSize = 0;
+        	this.Donate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.Donate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.Donate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.Donate.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Donate.Image = ((System.Drawing.Image)(resources.GetObject("Donate.Image")));
-        	this.Donate.Location = new System.Drawing.Point(126, 219);
+        	this.Donate.Location = new System.Drawing.Point(126, 180);
         	this.Donate.Margin = new System.Windows.Forms.Padding(2);
         	this.Donate.Name = "Donate";
         	this.Donate.Size = new System.Drawing.Size(123, 62);
@@ -101,12 +103,13 @@
         	// 
         	// button2
         	// 
-        	this.button2.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
+        	this.button2.BackColor = System.Drawing.Color.Transparent;
+        	this.button2.FlatAppearance.BorderSize = 0;
+        	this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.button2.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
-        	this.button2.Location = new System.Drawing.Point(308, 127);
+        	this.button2.Location = new System.Drawing.Point(308, 75);
         	this.button2.Margin = new System.Windows.Forms.Padding(2);
         	this.button2.Name = "button2";
         	this.button2.Size = new System.Drawing.Size(123, 62);
@@ -140,7 +143,7 @@
         	// 
         	this.soundControl.BackColor = System.Drawing.Color.Transparent;
         	this.soundControl.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.soundControl.Location = new System.Drawing.Point(126, 286);
+        	this.soundControl.Location = new System.Drawing.Point(126, 260);
         	this.soundControl.Name = "soundControl";
         	this.soundControl.Size = new System.Drawing.Size(104, 24);
         	this.soundControl.TabIndex = 18;
@@ -151,7 +154,7 @@
         	// checksumControl
         	// 
         	this.checksumControl.BackColor = System.Drawing.Color.Transparent;
-        	this.checksumControl.Location = new System.Drawing.Point(126, 317);
+        	this.checksumControl.Location = new System.Drawing.Point(126, 282);
         	this.checksumControl.Name = "checksumControl";
         	this.checksumControl.Size = new System.Drawing.Size(212, 24);
         	this.checksumControl.TabIndex = 19;
@@ -175,7 +178,6 @@
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(562, 409);
         	this.Controls.Add(this.linkDebugWindow);
@@ -190,11 +192,10 @@
         	this.Controls.Add(this.close);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         	this.Margin = new System.Windows.Forms.Padding(2);
         	this.Name = "LAUNCHOPTIONS";
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-        	this.Text = "Form4";
+        	this.Text = "Launcher Options";
         	this.Load += new System.EventHandler(this.LAUNCHOPTIONS_Load);
         	this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseClick);
         	this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseDown);

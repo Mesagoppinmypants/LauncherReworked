@@ -36,6 +36,7 @@ namespace PswgLauncher
             
             GuiController gc = new GuiController();
             
+            
             if (!gc.runPatchChecker()) {
             	Application.Exit();
             	return;
@@ -43,6 +44,7 @@ namespace PswgLauncher
             
             gc.readConfig();
             
+           
             if (!gc.runDirSearch()) {
             	Application.Exit();
             	return;

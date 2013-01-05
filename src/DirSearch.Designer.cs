@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirSearch));
         	this.BrowseButton = new System.Windows.Forms.Button();
         	this.textBox1 = new System.Windows.Forms.TextBox();
         	this.NextButton1 = new System.Windows.Forms.Button();
@@ -42,10 +41,9 @@
         	// BrowseButton
         	// 
         	this.BrowseButton.BackColor = System.Drawing.Color.DimGray;
-        	this.BrowseButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("BrowseButton.BackgroundImage")));
+        	this.BrowseButton.FlatAppearance.BorderSize = 0;
         	this.BrowseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.BrowseButton.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.BrowseButton.Image = ((System.Drawing.Image)(resources.GetObject("BrowseButton.Image")));
         	this.BrowseButton.Location = new System.Drawing.Point(104, 309);
         	this.BrowseButton.Margin = new System.Windows.Forms.Padding(2);
         	this.BrowseButton.Name = "BrowseButton";
@@ -67,10 +65,9 @@
         	// NextButton1
         	// 
         	this.NextButton1.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.NextButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("NextButton1.BackgroundImage")));
+        	this.NextButton1.FlatAppearance.BorderSize = 0;
         	this.NextButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.NextButton1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.NextButton1.Image = ((System.Drawing.Image)(resources.GetObject("NextButton1.Image")));
         	this.NextButton1.Location = new System.Drawing.Point(282, 361);
         	this.NextButton1.Margin = new System.Windows.Forms.Padding(2);
         	this.NextButton1.Name = "NextButton1";
@@ -99,9 +96,9 @@
         	// buttonClose
         	// 
         	this.buttonClose.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.buttonClose.FlatAppearance.BorderSize = 0;
         	this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonClose.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonClose.Image = ((System.Drawing.Image)(resources.GetObject("buttonClose.Image")));
         	this.buttonClose.Location = new System.Drawing.Point(335, 10);
         	this.buttonClose.Margin = new System.Windows.Forms.Padding(2);
         	this.buttonClose.Name = "buttonClose";
@@ -113,9 +110,9 @@
         	// buttonMinimize
         	// 
         	this.buttonMinimize.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.buttonMinimize.FlatAppearance.BorderSize = 0;
         	this.buttonMinimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.buttonMinimize.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonMinimize.Image = ((System.Drawing.Image)(resources.GetObject("buttonMinimize.Image")));
         	this.buttonMinimize.Location = new System.Drawing.Point(316, 11);
         	this.buttonMinimize.Margin = new System.Windows.Forms.Padding(2);
         	this.buttonMinimize.Name = "buttonMinimize";
@@ -138,7 +135,7 @@
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-        	this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+        	this.BackColor = System.Drawing.SystemColors.Control;
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(375, 406);
         	this.Controls.Add(this.textBox2);
@@ -150,15 +147,17 @@
         	this.Controls.Add(this.BrowseButton);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         	this.Margin = new System.Windows.Forms.Padding(2);
         	this.MaximumSize = new System.Drawing.Size(375, 406);
         	this.MinimumSize = new System.Drawing.Size(375, 406);
         	this.Name = "DirSearch";
-        	this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
         	this.Text = "Please select your Star Wars Galxies folder";
         	this.Load += new System.EventHandler(this.Form1_Load);
+        	this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseClick);
+        	this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseDown);
+        	this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseMove);
+        	this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LAUNCHOPTIONS_MouseUp);
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }

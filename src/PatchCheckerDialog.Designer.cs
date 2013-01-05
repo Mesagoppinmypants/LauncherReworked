@@ -113,7 +113,7 @@ namespace PswgLauncher
 			this.Controls.Add(this.buttonRetry);
 			this.Controls.Add(this.buttonUpdate);
 			this.Controls.Add(this.buttonRun);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			
 			this.Name = "PatchCheckerDialog";
 			this.ResumeLayout(false);
 		}

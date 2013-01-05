@@ -9,12 +9,12 @@ using System.Windows.Forms;
 
 namespace PswgLauncher
 {
-    public partial class Donate : Form
+    public partial class AccountWindow : Form
     {
     	
     	private GuiController Controller;
     	
-        public Donate(GuiController gc)
+        public AccountWindow(GuiController gc)
         {
         	this.Controller = gc;
             InitializeComponent();

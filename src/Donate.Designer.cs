@@ -28,31 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Donate));
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.SuspendLayout();
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(1006, 723);
-            this.webBrowser1.TabIndex = 0;
-            this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/donate.html", System.UriKind.Absolute);
-            // 
-            // Donate
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1006, 723);
-            this.Controls.Add(this.webBrowser1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Donate";
-            this.Text = "Donate";
-            this.ResumeLayout(false);
-
+        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Donate));
+        	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+        	this.SuspendLayout();
+        	// 
+        	// webBrowser1
+        	// 
+        	this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+        	this.webBrowser1.Location = new System.Drawing.Point(0, 0);
+        	this.webBrowser1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+        	this.webBrowser1.MinimumSize = new System.Drawing.Size(15, 16);
+        	this.webBrowser1.Name = "webBrowser1";
+        	this.webBrowser1.Size = new System.Drawing.Size(754, 587);
+        	this.webBrowser1.TabIndex = 0;
+        	this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/donate.html", System.UriKind.Absolute);
+        	// 
+        	// Donate
+        	// 
+        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        	this.ClientSize = new System.Drawing.Size(754, 587);
+        	this.Controls.Add(this.webBrowser1);
+        	
+        	this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+        	this.Name = "Donate";
+        	this.Text = "Donate";
+        	this.ResumeLayout(false);
         }
 
         #endregion

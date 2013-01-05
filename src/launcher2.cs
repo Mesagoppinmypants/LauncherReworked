@@ -53,6 +53,7 @@ namespace PswgLauncher
         	
         	this.Controller = gc;
         	InitializeComponent();
+        	InitializeComponent2();
         	this.Show();
         	
         	swgdirsave = Application.StartupPath;  //loads the swg install directory from the patch file
@@ -64,13 +65,34 @@ namespace PswgLauncher
             Point mouseDownPoint = Point.Empty;
             
             
-            
-            
             this.Process();
 
             
             
            
+        }
+        
+        public void InitializeComponent2() {
+
+        	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
+        	this.Icon= Controller.GetAppIcon();
+        	this.BackgroundImage = Controller.GetResourceImage("Background_Launcher");
+        	
+        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
+        	this.close.Image = Controller.GetResourceImage("WButton_close");
+        	this.acct.Image = Controller.GetResourceImage("Button_MyAccount");
+        	this.options.Image = Controller.GetResourceImage("Button_GameOptions");
+        	this.scan.Image = Controller.GetResourceImage("Button_ScanFiles");
+        	this.button2.Image = Controller.GetResourceImage("Button_LauncherOptions");
+        	this.PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        	
+			this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
+        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.acct.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.options.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.scan.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.PLAY.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         }
         
 
@@ -129,7 +151,7 @@ namespace PswgLauncher
         		
         			status = 0;
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-                	PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+                	PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
@@ -146,9 +168,9 @@ namespace PswgLauncher
         			
         			status = newstatus;
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-                	PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/small-loading.gif");
+                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
                 	labelFilename.Text = "";
                 	linkRetry.Visible = false;
@@ -167,7 +189,7 @@ namespace PswgLauncher
         			
         			status = newstatus;
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-        		    PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
@@ -191,7 +213,7 @@ namespace PswgLauncher
         		
         			status = newstatus;
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-        		    PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Green;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
@@ -209,9 +231,9 @@ namespace PswgLauncher
         			status = newstatus;
         			
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-        		    PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/small-loading.gif");
+                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
@@ -226,7 +248,7 @@ namespace PswgLauncher
         			status = newstatus;
         			
         			this.progressBar1.ForeColor = System.Drawing.Color.Red;
-        		    PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playbad.png");
+        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
@@ -245,7 +267,7 @@ namespace PswgLauncher
             		label1.ForeColor = Color.Aqua;
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
-            		PLAY.Image = Image.FromFile(Application.StartupPath + "/resources/images/progressbar/playgood.png");
+            		PLAY.Image = Controller.GetResourceImage("Button_playgood");
             		linkRetry.Visible = false;
             		linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
@@ -290,8 +312,8 @@ namespace PswgLauncher
 
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
             if (Controller.soundOption) { player.Play(); }
-            Form2 form2 = new Form2();
-            form2.Show();
+            AccountWindow acct = new AccountWindow(Controller);
+            acct.Show();
         }
         
         private void options_Click_1(object sender, EventArgs e)

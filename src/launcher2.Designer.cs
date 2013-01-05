@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
         	this.components = new System.ComponentModel.Container();
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(launcher2));
         	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
         	this.PLAY = new System.Windows.Forms.Button();
         	this.scan = new System.Windows.Forms.Button();
@@ -69,11 +68,12 @@
         	// 
         	// PLAY
         	// 
-        	this.PLAY.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.PLAY.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("PLAY.BackgroundImage")));
+        	this.PLAY.BackColor = System.Drawing.Color.Transparent;
+        	this.PLAY.FlatAppearance.BorderSize = 0;
+        	this.PLAY.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.PLAY.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.PLAY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.PLAY.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.PLAY.Image = ((System.Drawing.Image)(resources.GetObject("PLAY.Image")));
         	this.PLAY.Location = new System.Drawing.Point(484, 434);
         	this.PLAY.Name = "PLAY";
         	this.PLAY.Size = new System.Drawing.Size(98, 35);
@@ -83,11 +83,12 @@
         	// 
         	// scan
         	// 
-        	this.scan.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.scan.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scan.BackgroundImage")));
+        	this.scan.BackColor = System.Drawing.Color.Transparent;
+        	this.scan.FlatAppearance.BorderSize = 0;
+        	this.scan.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.scan.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.scan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.scan.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.scan.Image = ((System.Drawing.Image)(resources.GetObject("scan.Image")));
         	this.scan.Location = new System.Drawing.Point(251, 400);
         	this.scan.Margin = new System.Windows.Forms.Padding(2);
         	this.scan.Name = "scan";
@@ -99,11 +100,12 @@
         	// 
         	// options
         	// 
-        	this.options.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.options.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("options.BackgroundImage")));
+        	this.options.BackColor = System.Drawing.Color.Transparent;
+        	this.options.FlatAppearance.BorderSize = 0;
+        	this.options.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.options.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.options.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.options.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.options.Image = ((System.Drawing.Image)(resources.GetObject("options.Image")));
         	this.options.Location = new System.Drawing.Point(131, 400);
         	this.options.Margin = new System.Windows.Forms.Padding(2);
         	this.options.Name = "options";
@@ -116,12 +118,13 @@
         	// acct
         	// 
         	this.acct.AutoEllipsis = true;
-        	this.acct.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.acct.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("acct.BackgroundImage")));
+        	this.acct.BackColor = System.Drawing.Color.Transparent;
         	this.acct.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+        	this.acct.FlatAppearance.BorderSize = 0;
+        	this.acct.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.acct.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.acct.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.acct.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.acct.Image = ((System.Drawing.Image)(resources.GetObject("acct.Image")));
         	this.acct.Location = new System.Drawing.Point(23, 400);
         	this.acct.Margin = new System.Windows.Forms.Padding(2);
         	this.acct.Name = "acct";
@@ -133,9 +136,9 @@
         	// close
         	// 
         	this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.close.FlatAppearance.BorderSize = 0;
         	this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.Image = ((System.Drawing.Image)(resources.GetObject("close.Image")));
         	this.close.Location = new System.Drawing.Point(562, 10);
         	this.close.Margin = new System.Windows.Forms.Padding(2);
         	this.close.Name = "close";
@@ -147,13 +150,13 @@
         	// button1
         	// 
         	this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
+        	this.button1.FlatAppearance.BorderSize = 0;
         	this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-        	this.button1.Location = new System.Drawing.Point(530, 12);
+        	this.button1.Location = new System.Drawing.Point(535, 12);
         	this.button1.Margin = new System.Windows.Forms.Padding(2);
         	this.button1.Name = "button1";
-        	this.button1.Size = new System.Drawing.Size(27, 19);
+        	this.button1.Size = new System.Drawing.Size(20, 19);
         	this.button1.TabIndex = 6;
         	this.button1.UseVisualStyleBackColor = false;
         	this.button1.Click += new System.EventHandler(this.button1_Click_1);
@@ -186,7 +189,7 @@
         	this.label1.AutoSize = true;
         	this.label1.BackColor = System.Drawing.Color.Transparent;
         	this.label1.ForeColor = System.Drawing.Color.Maroon;
-        	this.label1.Location = new System.Drawing.Point(23, 375);
+        	this.label1.Location = new System.Drawing.Point(23, 366);
         	this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         	this.label1.Name = "label1";
         	this.label1.Size = new System.Drawing.Size(120, 13);
@@ -196,7 +199,6 @@
         	// pictureBox2
         	// 
         	this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-        	this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
         	this.pictureBox2.Location = new System.Drawing.Point(530, 415);
         	this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
         	this.pictureBox2.Name = "pictureBox2";
@@ -206,11 +208,12 @@
         	// 
         	// button2
         	// 
-        	this.button2.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button2.BackgroundImage")));
+        	this.button2.BackColor = System.Drawing.Color.Transparent;
+        	this.button2.FlatAppearance.BorderSize = 0;
+        	this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+        	this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
         	this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
         	this.button2.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
         	this.button2.Location = new System.Drawing.Point(371, 407);
         	this.button2.Margin = new System.Windows.Forms.Padding(2);
         	this.button2.Name = "button2";
@@ -222,7 +225,7 @@
         	// labelFilename
         	// 
         	this.labelFilename.BackColor = System.Drawing.Color.Transparent;
-        	this.labelFilename.Location = new System.Drawing.Point(23, 388);
+        	this.labelFilename.Location = new System.Drawing.Point(23, 383);
         	this.labelFilename.Name = "labelFilename";
         	this.labelFilename.Size = new System.Drawing.Size(444, 13);
         	this.labelFilename.TabIndex = 12;
@@ -238,7 +241,7 @@
         	// linkRetry
         	// 
         	this.linkRetry.BackColor = System.Drawing.Color.Transparent;
-        	this.linkRetry.Location = new System.Drawing.Point(191, 375);
+        	this.linkRetry.Location = new System.Drawing.Point(191, 366);
         	this.linkRetry.Name = "linkRetry";
         	this.linkRetry.Size = new System.Drawing.Size(28, 13);
         	this.linkRetry.TabIndex = 14;
@@ -250,7 +253,7 @@
         	// linkListMissing
         	// 
         	this.linkListMissing.BackColor = System.Drawing.Color.Transparent;
-        	this.linkListMissing.Location = new System.Drawing.Point(225, 375);
+        	this.linkListMissing.Location = new System.Drawing.Point(225, 366);
         	this.linkListMissing.Name = "linkListMissing";
         	this.linkListMissing.Size = new System.Drawing.Size(100, 13);
         	this.linkListMissing.TabIndex = 15;
@@ -262,7 +265,7 @@
         	// linkRetryChecksums
         	// 
         	this.linkRetryChecksums.BackColor = System.Drawing.Color.Transparent;
-        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 375);
+        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 366);
         	this.linkRetryChecksums.Name = "linkRetryChecksums";
         	this.linkRetryChecksums.Size = new System.Drawing.Size(28, 13);
         	this.linkRetryChecksums.TabIndex = 16;
@@ -274,7 +277,7 @@
         	// linkLabelContinueChecksum
         	// 
         	this.linkLabelContinueChecksum.BackColor = System.Drawing.Color.Transparent;
-        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 375);
+        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 366);
         	this.linkLabelContinueChecksum.Name = "linkLabelContinueChecksum";
         	this.linkLabelContinueChecksum.Size = new System.Drawing.Size(189, 13);
         	this.linkLabelContinueChecksum.TabIndex = 17;
@@ -288,7 +291,6 @@
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-        	this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(600, 488);
         	this.ControlBox = false;
@@ -311,13 +313,13 @@
         	this.Controls.Add(this.button2);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-        	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         	this.Margin = new System.Windows.Forms.Padding(2);
         	this.MaximumSize = new System.Drawing.Size(600, 488);
         	this.MinimumSize = new System.Drawing.Size(600, 488);
         	this.Name = "launcher2";
         	this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+        	this.Text = "ProjectSWG Launcher";
         	this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseClick);
         	this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseDown);
         	this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseMove);

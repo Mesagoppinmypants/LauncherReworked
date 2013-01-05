@@ -16,15 +16,40 @@ namespace PswgLauncher
     {
     	
     	private GuiController Controller;
+    	Point mouseDownPoint = Point.Empty;
     	
         public LAUNCHOPTIONS(GuiController gc)
         {
         	this.Controller = gc;
             InitializeComponent();
+            InitializeComponent2();
             
-             soundControl.Checked = Controller.soundOption;
-             checksumControl.Checked = Controller.checksumOption;
+            soundControl.Checked = Controller.soundOption;
+            checksumControl.Checked = Controller.checksumOption;
+             
         }
+        
+        private void InitializeComponent2() {
+        	
+        	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
+        	this.Icon= Controller.GetAppIcon();
+        	this.BackgroundImage = Controller.GetResourceImage("Background_Options");
+        	
+        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
+        	this.close.Image = Controller.GetResourceImage("WButton_close");
+        	this.Donate.Image = Controller.GetResourceImage("Button_Donate");
+        	this.Support.Image = Controller.GetResourceImage("Button_Support");
+        	this.button2.Image = Controller.GetResourceImage("Button_TreCheck");
+        	
+        	this.Donate.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.Support.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	
+        	
+        }
+        
 
         private void LAUNCHOPTIONS_Load(object sender, EventArgs e)
         {
@@ -40,7 +65,7 @@ namespace PswgLauncher
         {
             this.WindowState = FormWindowState.Minimized;
         }
-        Point mouseDownPoint = Point.Empty;
+        
         private void LAUNCHOPTIONS_MouseDown(object sender, MouseEventArgs e)
         {
             mouseDownPoint = new Point(e.X, e.Y);
@@ -68,7 +93,7 @@ namespace PswgLauncher
         {
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
             if (Controller.soundOption) { player.Play(); }
-            Donate donate = new Donate();
+            Donate donate = new Donate(Controller);
             donate.Show();
         }
 
@@ -76,8 +101,8 @@ namespace PswgLauncher
         {
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(Application.StartupPath + "/resources/sounds/Click.wav");
             if (Controller.soundOption) { player.Play(); }
-            Form4 form4 = new Form4();
-            form4.Show();
+            SupportWindow support = new SupportWindow(Controller);
+            support.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -106,6 +131,7 @@ namespace PswgLauncher
         	
         }
         
+
         
         void SoundControlCheckedChanged(object sender, EventArgs e)
         {
@@ -118,5 +144,7 @@ namespace PswgLauncher
         {
         	Controller.LaunchDebug();
         }
+        
+
     }
 }

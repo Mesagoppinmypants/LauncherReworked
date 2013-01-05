@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
+using PswgLauncher;
+
 namespace PswgLauncher
 {
 	/// <summary>
@@ -21,6 +23,7 @@ namespace PswgLauncher
 		
 		private GuiController Controller;
 		private Timer timer;
+
 		bool update = false;
 		
 		public PatchCheckerDialog(GuiController gc)
@@ -32,6 +35,7 @@ namespace PswgLauncher
 			this.Controller = gc;
 
 			InitializeComponent();
+			this.Icon= Controller.GetAppIcon();
 			this.setTimer();
 		
 		}

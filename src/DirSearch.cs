@@ -19,14 +19,33 @@ namespace PswgLauncher
     {
     	private GuiController Controller;
     	private String SwgDir;
-    	
+    	Point mouseDownPoint = Point.Empty;
     	
         public DirSearch(GuiController gc)
         {
         	this.Controller = gc;
             InitializeComponent();
+            InitializeComponent2();
         }
       
+        
+        private void InitializeComponent2() {
+        	
+        	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
+        	this.Icon= Controller.GetAppIcon();
+        	this.BackgroundImage = Controller.GetResourceImage("Background_DirSearch");
+        	this.BrowseButton.Image = Controller.GetResourceImage("Button_Browse");
+        	this.NextButton1.Image = Controller.GetResourceImage("Button_Next");
+        	this.buttonClose.Image = Controller.GetResourceImage("WButton_close");
+        	this.buttonMinimize.Image = Controller.GetResourceImage("WButton_minimize");
+			this.BrowseButton.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
+			this.NextButton1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.buttonClose.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.buttonMinimize.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        }
+        
+        
+
 
      
 
@@ -43,6 +62,29 @@ namespace PswgLauncher
         }
 
 
+        private void LAUNCHOPTIONS_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDownPoint = new Point(e.X, e.Y);
+        }
+
+        private void LAUNCHOPTIONS_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDownPoint = Point.Empty;
+        }
+
+        private void LAUNCHOPTIONS_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void LAUNCHOPTIONS_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDownPoint.IsEmpty)
+                return;
+            Form f = sender as Form;
+            f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
+        }        
+        
 
         private void BrowseButton_Click(object sender, EventArgs e)  //to browse for SWG install dir
         {
@@ -165,7 +207,7 @@ namespace PswgLauncher
             }
             else  //this prevents non valid directories from working
             {
-                errordir errordir = new errordir(); //brings up invalid directory error window
+                errordir errordir = new errordir(Controller); //brings up invalid directory error window
                 errordir.Show();
                 
             }

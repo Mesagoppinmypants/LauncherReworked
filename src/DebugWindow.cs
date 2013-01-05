@@ -28,7 +28,7 @@ namespace PswgLauncher
 			Controller = gc;
 
 			InitializeComponent();
-
+			this.Icon= Controller.GetAppIcon();
 			
 			
 		}

@@ -53,12 +53,11 @@ namespace PswgLauncher
 				string FTP = "ftp://173.242.114.16/files/";
 				WebClient wc = new WebClient();
 	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTP + "lpatch.cfg"));
+	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTP + "lpatch.dat"));
 	            
 	            lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
-	            Controller.AddDebugMessage("test" + lpatchsrv);
+	            Controller.AddDebugMessage("Server Version" + lpatchsrv);
 	            
-            
             
 			} catch (WebException e) {
 				
@@ -69,25 +68,13 @@ namespace PswgLauncher
 				
 			} 
 			
+			lpatchsrv = lpatchsrv.Trim();
 			
-			try {
-			    
-	            if (File.Exists(Application.StartupPath + "/lpatchusr.cfg")) {
-	            	
-	            		
-	            	  lpatchusr = System.IO.File.ReadAllText(Application.StartupPath + "/lpatchusr.cfg");
-	            	  
-			    }
-			    
-	            	
-			} catch (Exception e) {
-				localError = true;
-				return;
-			}
-		            
+	        Controller.AddDebugMessage("Server Launcher Version" + lpatchsrv);
+	        Controller.AddDebugMessage("Local Launcher Version" + Controller.GetProgramVersion());
 			
 			
-             if (lpatchsrv != lpatchusr) {
+			if (lpatchsrv != Controller.GetProgramVersion()) {
             	
             	UpdateNeeded = true;
             	

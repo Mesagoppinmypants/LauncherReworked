@@ -11,9 +11,14 @@ namespace PswgLauncher
 {
     public partial class errordir : Form
     {
-        public errordir()
+    	
+    	private GuiController Controller;
+    	
+        public errordir(GuiController gc)
         {
+        	this.Controller = gc;
             InitializeComponent();
+            this.Icon= Controller.GetAppIcon();
         }
 
         private void button1_Click(object sender, EventArgs e)
