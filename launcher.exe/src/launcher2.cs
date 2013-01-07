@@ -44,7 +44,7 @@ namespace PswgLauncher
         }
         
         
-
+		private LAUNCHOPTIONS OptionWindow;
         
         private GuiController Controller;
         
@@ -715,9 +715,16 @@ namespace PswgLauncher
         {
         	
         	Controller.PlaySound("Sound_Click");
-
+			
+        	if (OptionWindow != null) {
+        		OptionWindow.Show();
+        		OptionWindow.BringToFront();
+        		return;
+        	}
+        	
             LAUNCHOPTIONS launchoptions = new LAUNCHOPTIONS(Controller);
             launchoptions.Show();
+            OptionWindow = launchoptions;
         }
 
 

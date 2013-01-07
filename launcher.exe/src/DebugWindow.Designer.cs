@@ -36,7 +36,6 @@ namespace PswgLauncher
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugWindow));
 			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.SuspendLayout();
@@ -66,9 +65,10 @@ namespace PswgLauncher
 			this.ClientSize = new System.Drawing.Size(478, 484);
 			this.Controls.Add(this.buttonClose);
 			this.Controls.Add(this.richTextBox1);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DebugWindow";
 			this.Text = "DebugWindow";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DebugWindowFormClosing);
+			this.Load += new System.EventHandler(this.DebugWindowLoad);
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.Button buttonClose;

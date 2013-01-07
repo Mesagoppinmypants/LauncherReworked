@@ -42,5 +42,16 @@ namespace PswgLauncher
 			richTextBox1.AppendText(message + Environment.NewLine);
 		}
 		
+		
+		void DebugWindowLoad(object sender, EventArgs e)
+		{
+			
+		}
+		
+		void DebugWindowFormClosing(object sender, FormClosingEventArgs e)
+		{
+			this.Visible = false;
+			return;
+		}
 	}
 }

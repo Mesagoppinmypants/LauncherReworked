@@ -92,6 +92,7 @@ namespace PswgLauncher
 		}
 		
 		
+		
 		public void readConfig() {
 			
 			AddDebugMessage("Using " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
@@ -214,9 +215,11 @@ namespace PswgLauncher
 		public void AddDebugMessage(String msg) {
 			_DebugMessages.Add(msg);
 			
-			if (_debug != null) {
-				_debug.AddText(msg);
+			if (_debug == null || _debug.IsDisposed) {
+				return;
 			}
+			
+			_debug.AddText(msg);
 			
 		}
 		
@@ -236,6 +239,7 @@ namespace PswgLauncher
 
 	        return ((System.Drawing.Image) PswgResourcesManager.GetObject(filename));
 		}
+
 		
 		public System.Drawing.Icon GetAppIcon() {
 
@@ -243,6 +247,7 @@ namespace PswgLauncher
 	        return ((System.Drawing.Icon) PswgResourcesManager.GetObject("ProjectSWG Launcher"));
 			
 		}
+
 		
 		public Stream GetSound(String filename) {
 			

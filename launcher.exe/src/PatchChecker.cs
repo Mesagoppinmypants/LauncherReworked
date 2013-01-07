@@ -45,7 +45,7 @@ namespace PswgLauncher
 			string lpatchsrv = "";
 			string lpatchusr = "";
 			
-			Controller.AddDebugMessage("checking for updates...");
+						Controller.AddDebugMessage("checking for updates...");
 			
 			try {
 				
@@ -53,11 +53,10 @@ namespace PswgLauncher
 				string FTP = "ftp://173.242.114.16/files/";
 				WebClient wc = new WebClient();
 	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTP + "lpatch.dat"));
+	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTP + "lpatch.cfg"));
 	            
 	            lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
-	            Controller.AddDebugMessage("Server Version" + lpatchsrv);
-	            
+
             
 			} catch (WebException e) {
 				
@@ -66,15 +65,30 @@ namespace PswgLauncher
 				remoteError = true;
 				return;
 				
-			} 
+			}
 			
 			lpatchsrv = lpatchsrv.Trim();
+
+
+			ProgramVersion ThisVersion = new ProgramVersion(Controller.GetProgramVersion());
+			ProgramVersion ServerVersion = new ProgramVersion(lpatchsrv);
 			
-	        Controller.AddDebugMessage("Server Launcher Version" + lpatchsrv);
-	        Controller.AddDebugMessage("Local Launcher Version" + Controller.GetProgramVersion());
+			Controller.AddDebugMessage("Server Launcher Version" + Controller.GetProgramVersion() + "|" + ThisVersion.ToCompactString() + " |" + ThisVersion.ToString());
+			Controller.AddDebugMessage("Local Launcher Version" + lpatchsrv + "|" + ServerVersion.ToCompactString() + " |" + ServerVersion.ToString());
+	        
+	        //backward compatibility for launcher patcher for the time being.
+	        try {
+	        	System.IO.StreamWriter file = new System.IO.StreamWriter(Application.StartupPath + @"\lpatchusr.cfg");
+	        	file.WriteLine(Controller.GetProgramVersion());
+	        	file.Close();
+	        		
+	        } catch (Exception e) {
+	        	localError = true;
+	        	return;
+	        }
 			
 			
-			if (lpatchsrv != Controller.GetProgramVersion()) {
+	        if (!ThisVersion.IsNewerThan(ServerVersion)) {
             	
             	UpdateNeeded = true;
             	
