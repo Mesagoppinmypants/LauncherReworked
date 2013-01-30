@@ -77,6 +77,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -117,6 +118,8 @@
     <Compile Include="AccountWindow.Designer.cs">
       <DependentUpon>AccountWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="LauncherButton.cs" />
+    <Compile Include="LauncherProgressBar.cs" />
     <Compile Include="ProgramVersion.cs" />
     <Compile Include="SupportWindow.cs">
       <SubType>Form</SubType>
@@ -145,6 +148,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="launcher2.resx">
+      <DependentUpon>launcher2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PSWGButtons.resx" />
     <EmbeddedResource Include="PswgRes.resx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>

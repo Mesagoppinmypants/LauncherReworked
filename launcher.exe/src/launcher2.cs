@@ -48,6 +48,13 @@ namespace PswgLauncher
         
         private GuiController Controller;
         
+        private LauncherButton AcctButton;
+        private LauncherButton OptButton;
+        private LauncherButton ScanButton;
+        private LauncherButton LOptButton;
+        
+        
+        
         public launcher2(GuiController gc)
         {
         	
@@ -73,6 +80,8 @@ namespace PswgLauncher
         }
         
         public void InitializeComponent2() {
+        	
+        	// modify existing components from designer
 
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();
@@ -80,19 +89,41 @@ namespace PswgLauncher
         	
         	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
         	this.close.Image = Controller.GetResourceImage("WButton_close");
-        	this.acct.Image = Controller.GetResourceImage("Button_MyAccount");
-        	this.options.Image = Controller.GetResourceImage("Button_GameOptions");
-        	this.scan.Image = Controller.GetResourceImage("Button_ScanFiles");
-        	this.button2.Image = Controller.GetResourceImage("Button_LauncherOptions");
         	this.PLAY.Image = Controller.GetResourceImage("Button_playbad");
         	
 			this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
         	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.acct.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+/*        	this.acct.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.options.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.scan.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); */
         	this.PLAY.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	
+        	
+        	
+
+        	
+        	//add new components
+        	
+        	AcctButton = Controller.SpawnStandardButton("My Account", new Point(16, 400));
+        	OptButton = Controller.SpawnStandardButton("Game Options", new Point(134, 400));
+        	ScanButton = Controller.SpawnStandardButton("Scan", new Point(252, 400));
+        	LOptButton = Controller.SpawnStandardButton("Launcher Options", new Point(370, 400));
+
+        	AcctButton.Click += acct_Click_1;
+        	OptButton.Click += options_Click_1;
+        	ScanButton.Click += scan_Click;
+        	LOptButton.Click += button2_Click;
+        	
+        	this.Controls.Add(AcctButton);
+        	this.Controls.Add(OptButton);
+        	this.Controls.Add(ScanButton);
+        	this.Controls.Add(LOptButton);
+        	
+        	//this.TestButton = new LauncherButton();
+        	
+        	//this.Controls.Add(this.TestButton);
+        	
         }
         
 
@@ -128,8 +159,8 @@ namespace PswgLauncher
             	return;
             }
         	
-        	progressBar1.Step = 100 / Controller.SWGFiles.SwgFileTable.Count;
-        	progressBar1.Value = 0;
+        	launcherProgressBar1.Step = 100 / Controller.SWGFiles.SwgFileTable.Count;
+        	launcherProgressBar1.Value = 0;
         	UpdateStatus((int)StatusCodes.Patching);
         	
         	backgroundWorker2.RunWorkerAsync();
@@ -137,9 +168,22 @@ namespace PswgLauncher
         }
         
 
+        private void CheckGameOptions() {
+        	
+        	
+        	if (File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe")) {
+        		OptButton.Disable = false;
+        	} else {
+        		OptButton.Disable = true;
+        	}
+        	
+        }
+        
         private void UpdateStatus(int newstatus) {
         	
         	Controller.AddDebugMessage("New Status: " + newstatus);
+        	
+        	CheckGameOptions();
         	
         	switch (newstatus) {
         		//checksums need downloading	
@@ -150,16 +194,17 @@ namespace PswgLauncher
         			if (status != null) { return; }
         		
         			status = 0;
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
                 	PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
-                	labelFilename.Text = "";
+                	launcherProgressBar1.Text = "";
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
+                	ScanButton.Disable = true;
         			break;
         		case (int) StatusCodes.UpdatingChecksum:
         			// only 0 to 1 is possible.
@@ -167,16 +212,17 @@ namespace PswgLauncher
         			if (status != (int) StatusCodes.NoChecksum && status != (int) StatusCodes.ChecksumFailed) { return; }
         			
         			status = newstatus;
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
-                	labelFilename.Text = "";
+                	launcherProgressBar1.Text = "";
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
+					ScanButton.Disable = true;
         			break;
 
 
@@ -188,12 +234,12 @@ namespace PswgLauncher
         			if (status != (int) StatusCodes.UpdatingChecksum) { return; }
         			
         			status = newstatus;
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
-                	labelFilename.Text = "";
+                	launcherProgressBar1.Text = "";
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = true;
                 	linkListMissing.Visible = false;
@@ -202,6 +248,7 @@ namespace PswgLauncher
                 	} else {
                 		linkLabelContinueChecksum.Visible = false;
                 	}
+                	ScanButton.Disable = true;
         			break;
         			
         		//checksums present and working
@@ -212,16 +259,17 @@ namespace PswgLauncher
         			{ return; }
         		
         			status = newstatus;
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Green;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
-                	labelFilename.Text = "";
+                	launcherProgressBar1.Text = "";
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
+                	ScanButton.Disable = false;
         			break;
         			
         		case (int) StatusCodes.Patching:
@@ -230,7 +278,7 @@ namespace PswgLauncher
         		
         			status = newstatus;
         			
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
@@ -238,7 +286,8 @@ namespace PswgLauncher
                 	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
-					linkLabelContinueChecksum.Visible = false;                	
+					linkLabelContinueChecksum.Visible = false;
+					ScanButton.Disable = true;
         			break;
         		
         		case (int) StatusCodes.PatchingFailed:
@@ -247,7 +296,7 @@ namespace PswgLauncher
         		
         			status = newstatus;
         			
-        			this.progressBar1.ForeColor = System.Drawing.Color.Red;
+        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
@@ -256,6 +305,7 @@ namespace PswgLauncher
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = true;
                 	linkLabelContinueChecksum.Visible = false;
+                	ScanButton.Disable = false;
         			break;
         		
         		case (int) StatusCodes.PatchingComplete:
@@ -263,7 +313,7 @@ namespace PswgLauncher
         			if (status != (int) StatusCodes.Patching) { return; }
         			
         			status = newstatus;
-					this.progressBar1.ForeColor = System.Drawing.Color.Green;
+					this.launcherProgressBar1.ForeColor = System.Drawing.Color.Green;
             		label1.ForeColor = Color.Aqua;
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
@@ -272,6 +322,7 @@ namespace PswgLauncher
             		linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
+					ScanButton.Disable = false;
         			break;
         	}
         	
@@ -311,7 +362,6 @@ namespace PswgLauncher
         {
         	
         	Controller.PlaySound("Sound_Click");
-
             AccountWindow acct = new AccountWindow(Controller);
             acct.Show();
         }
@@ -326,7 +376,6 @@ namespace PswgLauncher
             else
             {
             	Controller.AddDebugMessage("Cannot launch swgclientsetup_r.exe because it is missing.");
-            	
             	Controller.PlaySound("Sound_Error");
             }
         }
@@ -402,14 +451,18 @@ namespace PswgLauncher
         	//Controller.AsyncSync();
         	
         	if (e.UserState != null) {
-	        	this.labelFilename.Text = e.UserState as String;
+	        	
+        		String s = e.UserState as String;
 	        	
 	        	//FIXME: this is a hack. got a better idea?
-	        	String[] msg = (e.UserState as String).Split(null,2);
+	        	String[] msg = s.Split(null,2);
 	        	
 	        	if (msg[0] == "Debug") {
 	        		Controller.AddDebugMessage(msg[1]);
+	        		return;
 	        	}
+	        	
+	        	this.launcherProgressBar1.Text = s;
 	        	
 	        	if (msg[0] == "Patched" || msg[0] == "Read" || msg[0] == "OK") {
 	        		
@@ -424,7 +477,8 @@ namespace PswgLauncher
         	
         	
         	
-        	progressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
+        	launcherProgressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
+        	CheckGameOptions();
 
         }
 
@@ -439,7 +493,7 @@ namespace PswgLauncher
 	       	if (e.Cancelled || e.Error != null) {
         		
         		Debug.WriteLine("DL cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
-        		this.labelFilename.Text ="";
+        		this.launcherProgressBar1.Text = "";
         		UpdateStatus((int) StatusCodes.PatchingFailed);
         	} else {
         		
@@ -638,7 +692,7 @@ namespace PswgLauncher
         //FIXME: this should be in a different class.
         private void Download(WebClient wc, String Filename) {
         	
-        	this.labelFilename.Text = Filename;
+        	//this.launcherProgressBar1.Text = Filename;
         	wc.DownloadFile(FTP + "/" + Filename, swgdirsave + "/" + Filename);
         	
         }
@@ -656,7 +710,7 @@ namespace PswgLauncher
         		return;
         	}
         	
-              
+            //FIXME: prevent exception
         	Controller.PlaySound("Sound_Play");
             this.Hide();
             WebClient wc = new WebClient();
@@ -810,6 +864,11 @@ namespace PswgLauncher
         	
         	
         }
+        
+        void LauncherButton1Click(object sender, EventArgs e)
+        {
+        	
+        }
     }
 }
        
@@ -823,4 +882,5 @@ namespace PswgLauncher
 
         
     
+
 

@@ -11,11 +11,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace PswgLauncher
 {
@@ -76,7 +77,7 @@ namespace PswgLauncher
 		
 		
 		private ResourceManager PswgResourcesManager;
-		
+		private ResourceManager PswgResources2Manager;		
 		
 		public GuiController()
 		{
@@ -88,7 +89,7 @@ namespace PswgLauncher
 			SWGFiles = new SWGFileList(this);
 			
 			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
-
+			PswgResources2Manager = new ResourceManager("PswgLauncher.PSWGButtons", Assembly.GetExecutingAssembly());
 		}
 		
 		
@@ -240,6 +241,12 @@ namespace PswgLauncher
 	        return ((System.Drawing.Image) PswgResourcesManager.GetObject(filename));
 		}
 
+		public System.Drawing.Image GetResource2Image(String filename) {
+
+	        return ((System.Drawing.Image) PswgResources2Manager.GetObject(filename));
+		}
+
+		
 		
 		public System.Drawing.Icon GetAppIcon() {
 
@@ -264,6 +271,35 @@ namespace PswgLauncher
 			System.Media.SoundPlayer player = new System.Media.SoundPlayer(this.GetSound(filename));
             if (this.soundOption) { player.Play(); }
 			
+		}
+		
+		
+		
+		public LauncherButton SpawnStandardButton(String text, Point p) {
+			
+			LauncherButton lb = new LauncherButton();
+			
+			if (text != null) { lb.Text = text; }
+			if (p != null) { lb.Location = p; }
+			
+			lb.ImageClick = GetResource2Image("ButtonClick");
+        	lb.ImageHover = GetResource2Image("ButtonHover");
+        	lb.ImageNormal = GetResource2Image("ButtonNormal");
+        	lb.ImageDisable = GetResource2Image("ButtonDisabled");
+			
+        	lb.Width = 118;
+        	lb.Height = 38;
+        	
+        	lb.BackColor = System.Drawing.Color.Transparent;
+        	//lb.BackColor = Color.FromArgb(0, 255, 255, 255);
+        	
+        	lb.TextColorNormal = System.Drawing.ColorTranslator.FromHtml("#ffa838");
+        	lb.TextColorClick = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
+        	lb.TextColorHover = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
+        	lb.TextColorDisable = System.Drawing.ColorTranslator.FromHtml("#72502e");
+			
+        	return lb;
+        	
 		}
 		
 		[DllImport("Gdi32.dll", EntryPoint="CreateRoundRectRgn")]

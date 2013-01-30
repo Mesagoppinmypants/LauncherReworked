@@ -18,6 +18,10 @@ namespace PswgLauncher
     	private GuiController Controller;
     	Point mouseDownPoint = Point.Empty;
     	
+    	private LauncherButton DonateButton;
+    	private LauncherButton SupportButton;
+    	private LauncherButton TrefixButton;
+    	
         public LAUNCHOPTIONS(GuiController gc)
         {
         	this.Controller = gc;
@@ -35,15 +39,22 @@ namespace PswgLauncher
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_Options");
         	
-        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
-        	this.close.Image = Controller.GetResourceImage("WButton_close");
-        	this.Donate.Image = Controller.GetResourceImage("Button_Donate");
-        	this.Support.Image = Controller.GetResourceImage("Button_Support");
-        	this.button2.Image = Controller.GetResourceImage("Button_TreCheck");
+
+        	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 75));
+        	SupportButton.Click += Support_Click;
+        	this.Controls.Add(SupportButton);
+
+        	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 75));
+        	TrefixButton.Click += button2_Click;
+        	this.Controls.Add(TrefixButton);	
         	
-        	this.Donate.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.Support.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+        	DonateButton = Controller.SpawnStandardButton("Donate", new Point(125, 180));
+        	DonateButton.Click += Donate_Click;
+        	this.Controls.Add(DonateButton);
+        	
+        	
+        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
+        	this.close.Image = Controller.GetResourceImage("WButton_close");     	
         	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	

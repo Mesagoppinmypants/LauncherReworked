@@ -30,9 +30,6 @@
         {
         	this.button1 = new System.Windows.Forms.Button();
         	this.close = new System.Windows.Forms.Button();
-        	this.Support = new System.Windows.Forms.Button();
-        	this.Donate = new System.Windows.Forms.Button();
-        	this.button2 = new System.Windows.Forms.Button();
         	this.label1 = new System.Windows.Forms.Label();
         	this.label2 = new System.Windows.Forms.Label();
         	this.soundControl = new System.Windows.Forms.CheckBox();
@@ -68,54 +65,6 @@
         	this.close.TabIndex = 7;
         	this.close.UseVisualStyleBackColor = false;
         	this.close.Click += new System.EventHandler(this.close_Click);
-        	// 
-        	// Support
-        	// 
-        	this.Support.BackColor = System.Drawing.Color.Transparent;
-        	this.Support.FlatAppearance.BorderSize = 0;
-        	this.Support.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.Support.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	this.Support.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.Support.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Support.Location = new System.Drawing.Point(126, 75);
-        	this.Support.Margin = new System.Windows.Forms.Padding(2);
-        	this.Support.Name = "Support";
-        	this.Support.Size = new System.Drawing.Size(123, 61);
-        	this.Support.TabIndex = 12;
-        	this.Support.UseVisualStyleBackColor = false;
-        	this.Support.Click += new System.EventHandler(this.Support_Click);
-        	// 
-        	// Donate
-        	// 
-        	this.Donate.BackColor = System.Drawing.Color.Transparent;
-        	this.Donate.FlatAppearance.BorderSize = 0;
-        	this.Donate.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.Donate.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	this.Donate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.Donate.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.Donate.Location = new System.Drawing.Point(126, 180);
-        	this.Donate.Margin = new System.Windows.Forms.Padding(2);
-        	this.Donate.Name = "Donate";
-        	this.Donate.Size = new System.Drawing.Size(123, 62);
-        	this.Donate.TabIndex = 13;
-        	this.Donate.UseVisualStyleBackColor = false;
-        	this.Donate.Click += new System.EventHandler(this.Donate_Click);
-        	// 
-        	// button2
-        	// 
-        	this.button2.BackColor = System.Drawing.Color.Transparent;
-        	this.button2.FlatAppearance.BorderSize = 0;
-        	this.button2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.button2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.button2.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button2.Location = new System.Drawing.Point(308, 75);
-        	this.button2.Margin = new System.Windows.Forms.Padding(2);
-        	this.button2.Name = "button2";
-        	this.button2.Size = new System.Drawing.Size(123, 62);
-        	this.button2.TabIndex = 14;
-        	this.button2.UseVisualStyleBackColor = false;
-        	this.button2.Click += new System.EventHandler(this.button2_Click);
         	// 
         	// label1
         	// 
@@ -185,9 +134,6 @@
         	this.Controls.Add(this.soundControl);
         	this.Controls.Add(this.label2);
         	this.Controls.Add(this.label1);
-        	this.Controls.Add(this.button2);
-        	this.Controls.Add(this.Donate);
-        	this.Controls.Add(this.Support);
         	this.Controls.Add(this.button1);
         	this.Controls.Add(this.close);
         	this.DoubleBuffered = true;
@@ -212,9 +158,6 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button close;
-        private System.Windows.Forms.Button Support;
-        private System.Windows.Forms.Button Donate;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }
