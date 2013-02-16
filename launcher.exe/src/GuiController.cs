@@ -25,6 +25,9 @@ namespace PswgLauncher
 	/// </summary>
 	public class GuiController
 	{
+		
+		public static string FTPURL = "ftp://patch1.projectswg.com/files/";
+		
 	
 		private bool _soundOption;
 		

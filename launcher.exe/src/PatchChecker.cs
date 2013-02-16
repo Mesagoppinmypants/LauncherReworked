@@ -50,10 +50,10 @@ namespace PswgLauncher
 			try {
 				
 				//TODO this should be stored centrally somewhere.
-				string FTP = "ftp://173.242.114.16/files/";
+				
 				WebClient wc = new WebClient();
 	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTP + "lpatch.cfg"));
+	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.FTPURL + "lpatch.cfg"));
 	            
 	            lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
 

@@ -26,7 +26,6 @@ namespace PswgLauncher
     	int errorcounter = 0;
     	
     	
-        string FTP = "ftp://173.242.114.16/files";
         string swgdirsave;
         string[] userdir;
         string checks;
@@ -610,7 +609,7 @@ namespace PswgLauncher
 	        	}
         	}
 
-        	remotesrc = FTP + "/" + file;
+        	remotesrc = GuiController.FTPURL + "/" + file;
         	
         	try {
         	
@@ -707,7 +706,7 @@ namespace PswgLauncher
         	
         	try {
         		
-        		StreamReader sr = new StreamReader(wc.OpenRead(FTP + "/launcher.dl.dat"));
+        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.FTPURL + "/launcher.dl.dat"));
 				
         		Controller.SWGFiles.CreateFileList(sr,true);
 
@@ -740,7 +739,7 @@ namespace PswgLauncher
         private void Download(WebClient wc, String Filename) {
         	
         	//this.launcherProgressBar1.Text = Filename;
-        	wc.DownloadFile(FTP + "/" + Filename, swgdirsave + "/" + Filename);
+        	wc.DownloadFile(GuiController.FTPURL + "/" + Filename, swgdirsave + "/" + Filename);
         	
         }
 
@@ -762,7 +761,7 @@ namespace PswgLauncher
             this.Hide();
             WebClient wc = new WebClient();
             wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-            wc.DownloadFile(FTP + "/login.cfg", swgdirsave + "/login.cfg");
+            wc.DownloadFile(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
             Directory.SetCurrentDirectory(swgdirsave);
             System.Threading.Thread.Sleep(200);
             System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
