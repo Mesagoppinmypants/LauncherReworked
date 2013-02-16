@@ -770,9 +770,36 @@ namespace PswgLauncher
 
         	Controller.PlaySound("Sound_Play");
         	
-        	bool gotfile;
+        	bool gotfile = false;
         	
-        	gotfile = GetLoginCfg(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
+        	if (Controller.LocalhostOption) {
+        	
+        		try {
+        			
+        			StreamWriter sw = new StreamWriter(swgdirsave + "/login.cfg");
+        			
+        			sw.WriteLine("[ClientGame]");
+        			sw.WriteLine("loginServerPort0=44453");
+        			sw.WriteLine("loginServerAddress0=127.0.0.1");
+        			sw.WriteLine("[Station]");
+        			sw.WriteLine("subscriptionFeatures=1");
+        			sw.WriteLine("gameFeatures=65535");
+        			sw.Close();
+        			gotfile = true;
+        			
+        			
+        		} catch {
+        		
+					DialogResult dr = MessageBox.Show("Couldn't pass login server while using localhost option.","Write error",MessageBoxButtons.OK);
+					return;        			
+        		}
+        		
+        	}
+        	
+        	
+        	if (!gotfile) {
+        		gotfile = GetLoginCfg(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
+        	}
         	
         	if (!gotfile) {
         		gotfile = GetLoginCfg(GuiController.ALTURL + "/login.cfg", swgdirsave + "/login.cfg");

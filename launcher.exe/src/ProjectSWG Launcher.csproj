@@ -151,6 +151,9 @@
     <EmbeddedResource Include="launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LAUNCHOPTIONS.resx">
+      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PSWGButtons.resx" />
     <EmbeddedResource Include="PswgRes.resx" />
     <None Include="Properties\app.manifest" />

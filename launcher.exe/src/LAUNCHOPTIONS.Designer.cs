@@ -35,6 +35,7 @@
         	this.soundControl = new System.Windows.Forms.CheckBox();
         	this.checksumControl = new System.Windows.Forms.CheckBox();
         	this.linkDebugWindow = new System.Windows.Forms.LinkLabel();
+        	this.checkBoxLocalhost = new System.Windows.Forms.CheckBox();
         	this.SuspendLayout();
         	// 
         	// button1
@@ -92,7 +93,7 @@
         	// 
         	this.soundControl.BackColor = System.Drawing.Color.Transparent;
         	this.soundControl.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.soundControl.Location = new System.Drawing.Point(126, 260);
+        	this.soundControl.Location = new System.Drawing.Point(126, 261);
         	this.soundControl.Name = "soundControl";
         	this.soundControl.Size = new System.Drawing.Size(104, 24);
         	this.soundControl.TabIndex = 18;
@@ -123,12 +124,25 @@
         	this.linkDebugWindow.Text = "Open Debug Window";
         	this.linkDebugWindow.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkDebugWindowLinkClicked);
         	// 
+        	// checkBoxLocalhost
+        	// 
+        	this.checkBoxLocalhost.BackColor = System.Drawing.Color.Transparent;
+        	this.checkBoxLocalhost.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+        	this.checkBoxLocalhost.Location = new System.Drawing.Point(126, 302);
+        	this.checkBoxLocalhost.Name = "checkBoxLocalhost";
+        	this.checkBoxLocalhost.Size = new System.Drawing.Size(123, 24);
+        	this.checkBoxLocalhost.TabIndex = 21;
+        	this.checkBoxLocalhost.Text = "Connect Localhost";
+        	this.checkBoxLocalhost.UseVisualStyleBackColor = false;
+        	this.checkBoxLocalhost.CheckedChanged += new System.EventHandler(this.CheckBoxLocalhostCheckedChanged);
+        	// 
         	// LAUNCHOPTIONS
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(562, 409);
+        	this.Controls.Add(this.checkBoxLocalhost);
         	this.Controls.Add(this.linkDebugWindow);
         	this.Controls.Add(this.checksumControl);
         	this.Controls.Add(this.soundControl);
@@ -150,6 +164,7 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.CheckBox checkBoxLocalhost;
         private System.Windows.Forms.LinkLabel linkDebugWindow;
         private System.Windows.Forms.CheckBox checksumControl;
         private System.Windows.Forms.CheckBox soundControl;

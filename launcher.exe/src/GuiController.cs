@@ -54,6 +54,19 @@ namespace PswgLauncher
 				setAppSetting("ChecksumEnable",((_checksumOption == true) ? "true" : "false" ));
 			}
 		}
+		
+		private bool _localhostOption;
+
+		public bool LocalhostOption	{
+			get {
+				return _localhostOption;
+			}
+			set {
+				_localhostOption = value;
+				setAppSetting("LocalhostEnable",((_localhostOption == true) ? "true" : "false" ));
+			}
+			
+		}
 
 
 		private String _SwgDir;
@@ -88,6 +101,7 @@ namespace PswgLauncher
 			_soundOption = false;
 			_SwgDir = "";
 			_checksumOption = true;
+			_localhostOption = false;
 			
 			_DebugMessages = new List<String>();
 			SWGFiles = new SWGFileList(this);
@@ -104,7 +118,8 @@ namespace PswgLauncher
 
 			_soundOption = ( ( getAppSetting("SoundEnable")  == "true") ? true : false);
 			_checksumOption = ( ( getAppSetting("ChecksumEnable")  == "false") ? false : true);
-					
+			_localhostOption = ( ( getAppSetting("LocalhostEnable")  == "true") ? true : false);
+			
 			_SwgDir = getAppSetting("SwgDir");
 			
 			String FileList = Application.StartupPath + "\\launcher.dl.dat";

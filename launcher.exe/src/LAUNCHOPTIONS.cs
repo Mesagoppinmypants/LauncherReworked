@@ -30,6 +30,7 @@ namespace PswgLauncher
             
             soundControl.Checked = Controller.soundOption;
             checksumControl.Checked = Controller.checksumOption;
+            checkBoxLocalhost.Checked = Controller.LocalhostOption;
              
         }
         
@@ -154,5 +155,10 @@ namespace PswgLauncher
         }
         
 
+        
+        void CheckBoxLocalhostCheckedChanged(object sender, EventArgs e)
+        {
+        	Controller.LocalhostOption = checkBoxLocalhost.Checked;
+        }
     }
 }
