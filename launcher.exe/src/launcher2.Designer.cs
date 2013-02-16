@@ -48,6 +48,7 @@
         	this.linkListMissing = new System.Windows.Forms.LinkLabel();
         	this.linkRetryChecksums = new System.Windows.Forms.LinkLabel();
         	this.linkLabelContinueChecksum = new System.Windows.Forms.LinkLabel();
+        	this.labelError = new System.Windows.Forms.Label();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
         	this.SuspendLayout();
         	// 
@@ -286,6 +287,14 @@
         	this.linkLabelContinueChecksum.Visible = false;
         	this.linkLabelContinueChecksum.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelContinueChecksumLinkClicked);
         	// 
+        	// labelError
+        	// 
+        	this.labelError.BackColor = System.Drawing.Color.Transparent;
+        	this.labelError.Location = new System.Drawing.Point(358, 366);
+        	this.labelError.Name = "labelError";
+        	this.labelError.Size = new System.Drawing.Size(143, 13);
+        	this.labelError.TabIndex = 18;
+        	// 
         	// launcher2
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -294,6 +303,7 @@
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(600, 488);
         	this.ControlBox = false;
+        	this.Controls.Add(this.labelError);
         	this.Controls.Add(this.linkLabelContinueChecksum);
         	this.Controls.Add(this.linkRetryChecksums);
         	this.Controls.Add(this.linkListMissing);
@@ -328,6 +338,7 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.Label labelError;
         private System.Windows.Forms.LinkLabel linkLabelContinueChecksum;
         private System.Windows.Forms.LinkLabel linkRetryChecksums;
         private System.Windows.Forms.LinkLabel linkListMissing;

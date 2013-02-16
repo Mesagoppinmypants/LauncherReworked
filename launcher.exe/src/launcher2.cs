@@ -23,6 +23,9 @@ namespace PswgLauncher
     {
 
 
+    	int errorcounter = 0;
+    	
+    	
         string FTP = "ftp://173.242.114.16/files";
         string swgdirsave;
         string[] userdir;
@@ -59,15 +62,11 @@ namespace PswgLauncher
         	swgdirsave = Application.StartupPath;  //loads the swg install directory from the patch file
         	Controller.AddDebugMessage(Controller.SwgDir);
         	userdir = Directory.GetFiles(Controller.SwgDir);  //gets a list of all files in the SWG directory 
-        	
-            
             
             Point mouseDownPoint = Point.Empty;
             
             
             this.Process();
-
-            
             
            
         }
@@ -108,7 +107,18 @@ namespace PswgLauncher
 	            wc.Credentials = new NetworkCredential("anonymous","anonymous");
 
             	Controller.AddDebugMessage("Processing Checksums.");
-            	this.ProcessChecksums(wc);
+            	
+            	bool rv = false;
+            	
+            	for (int c = 0; c < 20 && rv == false; c++) {
+            		
+            		if (c>0) {
+            			errorcounter++;
+            			UpdateErrors();
+            		}
+            		rv = this.ProcessChecksums(wc);
+            		
+            	}
             }
             Controller.AddDebugMessage("Status is right now:" + status);
             if (status == (int) StatusCodes.ChecksumOk || status == (int) StatusCodes.PatchingFailed) {
@@ -119,10 +129,21 @@ namespace PswgLauncher
             
 
         }
+        
+        
+        private void UpdateErrors() {
+        	if (errorcounter > 0) {
+        		labelError.Text = "Download Errors: " + errorcounter;
+        	} else {
+        		labelError.Text = "";
+        	}
+        }
 
 
         
         private void DispatchWorker() {
+        	
+        	UpdateErrors();
         	
         	if (status != (int)StatusCodes.ChecksumOk && status != (int) StatusCodes.PatchingFailed ) {
             	return;
@@ -277,6 +298,20 @@ namespace PswgLauncher
         	
         }
         
+        
+        private void AskRetry() {
+        	
+        	DialogResult res = MessageBox.Show("Some Files could not be downloaded. This may be due to unreliable patch server connection. Would you like us to retry?", "Retry downloading?",MessageBoxButtons.YesNo);
+        		
+        	if (res == DialogResult.No) {
+        		return;
+        	}
+        		
+        	DispatchWorker();
+        	
+        }
+        
+        
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e) //displays current project status
         {
             
@@ -370,13 +405,17 @@ namespace PswgLauncher
 		            	
 		        	int progress = Convert.ToInt32(i * step);
 		        	//backgroundWorker.ReportProgress( progress, "Debug " + files.Count + " " +progress + " " + i + " "+ step);
-		        	bool dlstatus;
+		        	bool dlstatus = false;
 		        	String theKey = file.Key;
 		        	backgroundWorker.ReportProgress( progress, "Debug " + file.Key);
 		            backgroundWorker.ReportProgress( progress, file.Key);
 		            	
-
-		            dlstatus = DownloadFile(file.Key, file.Value, wc,backgroundWorker, progress);
+					
+					
+					for (int j = 0; j < 4 && dlstatus == false; i++) {
+		                dlstatus = DownloadFile(file.Key, file.Value, wc,backgroundWorker, progress, j);
+		                
+					}
 		            	
 		            
 		            if(backgroundWorker.CancellationPending) {
@@ -411,6 +450,12 @@ namespace PswgLauncher
 	        		Controller.AddDebugMessage(msg[1]);
 	        	}
 	        	
+
+	        	if (msg[0] == "Error") {
+	        		errorcounter++;
+	        		UpdateErrors();
+	        	}
+	        	
 	        	if (msg[0] == "Patched" || msg[0] == "Read" || msg[0] == "OK") {
 	        		
 	        		if (Controller.SWGFiles.SwgFileTable.ContainsKey(msg[1])) {
@@ -422,7 +467,7 @@ namespace PswgLauncher
 	        	}
         	}
         	
-        	
+
         	
         	progressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
 
@@ -499,7 +544,7 @@ namespace PswgLauncher
         }
         
         
-        private bool DownloadFile(String file, String checksum, WebClient webclient, BackgroundWorker backgroundWorker, int progress) {
+        private bool DownloadFile(String file, String checksum, WebClient webclient, BackgroundWorker backgroundWorker, int progress, int count) {
         	
         	String path = swgdirsave + "\\" + file;
         	String localsrc = Controller.SwgDir + "\\" + file;
@@ -547,7 +592,6 @@ namespace PswgLauncher
 						File.Copy(@localsrc, @path, true);
 	        			
 	        			backgroundWorker.ReportProgress( progress, "Debug " + "Reading " + file);
-	        			
 	        			backgroundWorker.ReportProgress(progress, "Reading " + file);
 	        			
 	        			if (compareCheckSum(path,checksum) ) {
@@ -560,21 +604,25 @@ namespace PswgLauncher
 	        		}
 	        	}
 	        	
-	        	backgroundWorker.ReportProgress( progress, "Debug " + "Patching " + remotesrc);
+	        	backgroundWorker.ReportProgress(progress, "Debug " + "Patching " + file);
 				backgroundWorker.ReportProgress(progress, "Patching " + file);
 	        	
 				
 	        	webclient.DownloadFile(remotesrc,path);
 	        		
 	        	if (compareCheckSum(path,checksum) ) {
+	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
 	        		backgroundWorker.ReportProgress(progress, "Patched " + file);
 	        		return true;
 	        	}
         			
         	} catch(Exception e) {
-        		backgroundWorker.ReportProgress(progress, "Error patching " + file);
+        		
         	}
         	
+        	
+        	backgroundWorker.ReportProgress(progress, "Debug " + "Error patching " + file);
+        	backgroundWorker.ReportProgress(progress, "Error patching " + file);
         	
         	return false;
         }
@@ -600,7 +648,7 @@ namespace PswgLauncher
         
         
         //FIXME: this might as well go in the Controller.
-        private int ProcessChecksums(WebClient wc) {
+        private bool ProcessChecksums(WebClient wc) {
 
         	UpdateStatus((int) StatusCodes.UpdatingChecksum);
         	
@@ -613,10 +661,10 @@ namespace PswgLauncher
         		
         	} catch (Exception ex) {
         		
-        		Controller.AddDebugMessage("chksum exception/download" + ex.ToString());
+        		Controller.AddDebugMessage("chksum exception/download");
         		
         		UpdateStatus((int) StatusCodes.ChecksumFailed);
-        		return -1;
+        		return false;
 
         	}
         	
@@ -625,13 +673,13 @@ namespace PswgLauncher
         		Controller.AddDebugMessage("chksum exception/incomplete");
         		
         		UpdateStatus((int) StatusCodes.ChecksumFailed);
-        		return -1;
+        		return false;
         	}
         	
         	Controller.SWGFiles.WriteConfig(swgdirsave + @"\launcher.dl.dat");
         	
         	UpdateStatus((int) StatusCodes.ChecksumOk);
-        	return 0;
+        	return true;
         	
         }
         
