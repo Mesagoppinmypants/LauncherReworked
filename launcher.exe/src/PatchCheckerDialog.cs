@@ -33,7 +33,8 @@ namespace PswgLauncher
 			//
 			
 			this.Controller = gc;
-
+			
+			
 			InitializeComponent();
 			this.Icon= Controller.GetAppIcon();
 			this.setTimer();

@@ -27,6 +27,7 @@ namespace PswgLauncher
 	{
 		
 		public static string FTPURL = "ftp://patch1.projectswg.com/files/";
+		public static string ALTURL = "http://projectswg.com/download/";
 		
 	
 		private bool _soundOption;

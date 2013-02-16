@@ -190,7 +190,6 @@ namespace PswgLauncher
 
         private void CheckGameOptions() {
         	
-        	
         	if (File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe")) {
         		OptButton.Disable = false;
         	} else {
@@ -429,9 +428,6 @@ namespace PswgLauncher
   			{
 	    		backgroundWorker.ReportProgress(0);
 	    		
-	    		
-		
-		            
 		        WebClient wc = new WebClient();
 		        wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 		
@@ -440,8 +436,6 @@ namespace PswgLauncher
 		            
 		        float step = (float) 100 / (float) files.Count;
 		        int i = 0;
-		            
-		            
 		            
 		        foreach (KeyValuePair<String,String> file in files) {
 		        	i++;
@@ -743,6 +737,22 @@ namespace PswgLauncher
         	
         }
 
+        
+        private bool GetLoginCfg(String filename, String savename) {
+
+        	try {
+
+	            WebClient wc = new WebClient();
+	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
+	            wc.DownloadFile(filename, savename);
+        		
+        	} catch {
+        		return false;
+        	}
+
+        	return true;
+        	
+        }
 
 
         private void PLAY_Click_1(object sender, EventArgs e)
@@ -755,19 +765,34 @@ namespace PswgLauncher
 
         		return;
         	}
-        	
-            //FIXME: prevent exception
+
         	Controller.PlaySound("Sound_Play");
-            this.Hide();
-            WebClient wc = new WebClient();
-            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-            wc.DownloadFile(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
-            Directory.SetCurrentDirectory(swgdirsave);
-            System.Threading.Thread.Sleep(200);
-            System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
-            System.Threading.Thread.Sleep(50000);
-            File.Delete(swgdirsave + "/login.cfg");
-            Application.Exit();
+        	
+        	bool gotfile;
+        	
+        	gotfile = GetLoginCfg(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
+        	
+        	if (!gotfile) {
+        		gotfile = GetLoginCfg(GuiController.ALTURL + "/login.cfg", swgdirsave + "/login.cfg");
+        	}
+        	
+
+        	if (gotfile) {
+        	
+            	this.Hide();
+            	Directory.SetCurrentDirectory(swgdirsave);
+            	System.Threading.Thread.Sleep(200);
+            	System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
+            	System.Threading.Thread.Sleep(35000);
+            	File.Delete(swgdirsave + "/login.cfg");
+            	Application.Exit();
+            	return;
+            	
+        	} else {
+        		
+        		DialogResult dr = MessageBox.Show("Couldn't read login server information from remote servers.","Network error",MessageBoxButtons.OK);
+        		
+        	}
                    
 
         }
