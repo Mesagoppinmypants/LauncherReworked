@@ -38,7 +38,6 @@
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
         	this.label1 = new System.Windows.Forms.Label();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
-        	this.linkRetry = new System.Windows.Forms.LinkLabel();
         	this.linkListMissing = new System.Windows.Forms.LinkLabel();
         	this.linkRetryChecksums = new System.Windows.Forms.LinkLabel();
         	this.linkLabelContinueChecksum = new System.Windows.Forms.LinkLabel();
@@ -150,18 +149,6 @@
         	this.pictureBox2.TabIndex = 9;
         	this.pictureBox2.TabStop = false;
         	// 
-        	// linkRetry
-        	// 
-        	this.linkRetry.BackColor = System.Drawing.Color.Transparent;
-        	this.linkRetry.Location = new System.Drawing.Point(191, 366);
-        	this.linkRetry.Name = "linkRetry";
-        	this.linkRetry.Size = new System.Drawing.Size(28, 13);
-        	this.linkRetry.TabIndex = 14;
-        	this.linkRetry.TabStop = true;
-        	this.linkRetry.Text = "retry";
-        	this.linkRetry.Visible = false;
-        	this.linkRetry.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkRetryLinkClicked);
-        	// 
         	// linkListMissing
         	// 
         	this.linkListMissing.BackColor = System.Drawing.Color.Transparent;
@@ -206,6 +193,7 @@
         	this.launcherProgressBar1.Size = new System.Drawing.Size(441, 17);
         	this.launcherProgressBar1.TabIndex = 18;
         	this.launcherProgressBar1.TextColor = System.Drawing.Color.Gray;
+        	// 
         	// labelError
         	// 
         	this.labelError.BackColor = System.Drawing.Color.Transparent;
@@ -227,7 +215,6 @@
         	this.Controls.Add(this.linkLabelContinueChecksum);
         	this.Controls.Add(this.linkRetryChecksums);
         	this.Controls.Add(this.linkListMissing);
-        	this.Controls.Add(this.linkRetry);
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
         	this.Controls.Add(this.splitter1);
@@ -257,7 +244,6 @@
         private System.Windows.Forms.LinkLabel linkLabelContinueChecksum;
         private System.Windows.Forms.LinkLabel linkRetryChecksums;
         private System.Windows.Forms.LinkLabel linkListMissing;
-        private System.Windows.Forms.LinkLabel linkRetry;
 
         #endregion
 

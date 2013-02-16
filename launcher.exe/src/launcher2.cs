@@ -55,6 +55,7 @@ namespace PswgLauncher
         private LauncherButton ScanButton;
         private LauncherButton LOptButton;
         
+        private System.Windows.Forms.Timer timer;
         
         
         public launcher2(GuiController gc)
@@ -129,10 +130,17 @@ namespace PswgLauncher
         	
         	
 			
-            if (status == null) { UpdateStatus((int)StatusCodes.NoChecksum); }
+            if (status == null) {
+        		
+        		UpdateStatus((int)StatusCodes.NoChecksum);
+        		
+        	}
             
             if (status == (int) StatusCodes.NoChecksum || status == (int) StatusCodes.ChecksumFailed) {
             	
+        		UpdateStatus((int) StatusCodes.UpdatingChecksum);
+        		
+        		
             	WebClient wc = new WebClient();
 	            wc.Credentials = new NetworkCredential("anonymous","anonymous");
 
@@ -149,7 +157,12 @@ namespace PswgLauncher
             		rv = this.ProcessChecksums(wc);
             		
             	}
+            	
+            	if (rv) { UpdateStatus((int) StatusCodes.ChecksumOk); }
+            	else { UpdateStatus((int) StatusCodes.ChecksumFailed); }
+            	
             }
+        	
             Controller.AddDebugMessage("Status is right now:" + status);
             if (status == (int) StatusCodes.ChecksumOk || status == (int) StatusCodes.PatchingFailed) {
             	
@@ -210,7 +223,7 @@ namespace PswgLauncher
         		
         			// only null to 0 is possible.
         		
-        			if (status != null) { return; }
+        			if (status != null ) { return; }
         		
         			status = 0;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
@@ -219,17 +232,15 @@ namespace PswgLauncher
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = true;
         			break;
         		case (int) StatusCodes.UpdatingChecksum:
-        			// only 0 to 1 is possible.
+        			// only 0or2 to 1 is possible.
         		
         			if (status != (int) StatusCodes.NoChecksum && status != (int) StatusCodes.ChecksumFailed) { return; }
-        			
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PLAY.Image = Controller.GetResourceImage("Button_playbad");
@@ -237,7 +248,6 @@ namespace PswgLauncher
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
@@ -246,8 +256,6 @@ namespace PswgLauncher
 
 
         		case (int) StatusCodes.ChecksumFailed:
-        			
-        			//FIXME: add retry button
         			
         			// only from downloading to failed or OK
         			if (status != (int) StatusCodes.UpdatingChecksum) { return; }
@@ -259,7 +267,6 @@ namespace PswgLauncher
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = true;
                 	linkListMissing.Visible = false;
                 	if (Controller.SWGFiles.HasFileList) {
@@ -284,7 +291,6 @@ namespace PswgLauncher
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
@@ -302,7 +308,6 @@ namespace PswgLauncher
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
-                	linkRetry.Visible = false;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
@@ -320,7 +325,6 @@ namespace PswgLauncher
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
-                	linkRetry.Visible = true;
                 	linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = true;
                 	linkLabelContinueChecksum.Visible = false;
@@ -337,13 +341,14 @@ namespace PswgLauncher
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
             		PLAY.Image = Controller.GetResourceImage("Button_playgood");
-            		linkRetry.Visible = false;
             		linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = false;
         			break;
         	}
+        	
+        	this.Refresh();
         	
         }
         
@@ -696,7 +701,7 @@ namespace PswgLauncher
         //FIXME: this might as well go in the Controller.
         private bool ProcessChecksums(WebClient wc) {
 
-        	UpdateStatus((int) StatusCodes.UpdatingChecksum);
+        	
         	
         	try {
         		
@@ -709,7 +714,6 @@ namespace PswgLauncher
         		
         		Controller.AddDebugMessage("chksum exception/download");
         		
-        		UpdateStatus((int) StatusCodes.ChecksumFailed);
         		return false;
 
         	}
@@ -718,13 +722,11 @@ namespace PswgLauncher
         	if (!Controller.SWGFiles.HasFileList) {
         		Controller.AddDebugMessage("chksum exception/incomplete");
         		
-        		UpdateStatus((int) StatusCodes.ChecksumFailed);
         		return false;
         	}
         	
         	Controller.SWGFiles.WriteConfig(swgdirsave + @"\launcher.dl.dat");
         	
-        	UpdateStatus((int) StatusCodes.ChecksumOk);
         	return true;
         	
         }
@@ -880,20 +882,15 @@ namespace PswgLauncher
             f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
         }
 
-        
-        
-        void LinkRetryLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkRetryChecksumsTimerTicked(object sender, EventArgs e)
         {
-        	
-        	
-        	if (status != (int) StatusCodes.PatchingFailed) {
-        		Controller.AddDebugMessage("Wrong Status");
-        		return;
-        	}
+        	timer.Stop();
+        	timer.Dispose();
         	
         	Process();
-        	
         }
+        
+        
         
         void LinkRetryChecksumsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -901,7 +898,11 @@ namespace PswgLauncher
         		return;
         	}
         	
-        	Process();
+        	                        
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 100;
+            timer.Tick += LinkRetryChecksumsTimerTicked;
+            timer.Start();
         	
         }
         
