@@ -114,7 +114,7 @@ namespace PswgLauncher
 				buttonRun.Enabled = true;
 				buttonRetry.Enabled = true;
 			} else if (patch.localError) {
-				label2.Text = "Local error while checking for updates, lpatchsrv.cfg unreadable?";
+				label2.Text = "Local error while checking for updates, lpatchusr.cfg write problems?";
 				buttonRun.Enabled = true;
 				buttonRetry.Enabled = true;
 			} else {

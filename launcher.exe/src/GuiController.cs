@@ -307,7 +307,7 @@ namespace PswgLauncher
         	lb.ImageDisable = GetResource2Image("ButtonDisabled");
 			
         	lb.Width = 118;
-        	lb.Height = 38;
+        	lb.Height = 45;
         	
         	lb.BackColor = System.Drawing.Color.Transparent;
         	//lb.BackColor = Color.FromArgb(0, 255, 255, 255);

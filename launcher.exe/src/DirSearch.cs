@@ -19,6 +19,11 @@ namespace PswgLauncher
     {
     	private GuiController Controller;
     	private String SwgDir;
+    	private bool GotValidDir;
+    	
+    	private LauncherButton DirButton;
+    	private LauncherButton NextButton;
+    	
     	Point mouseDownPoint = Point.Empty;
     	
         public DirSearch(GuiController gc)
@@ -34,33 +39,23 @@ namespace PswgLauncher
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_DirSearch");
-        	this.BrowseButton.Image = Controller.GetResourceImage("Button_Browse");
-        	this.NextButton1.Image = Controller.GetResourceImage("Button_Next");
         	this.buttonClose.Image = Controller.GetResourceImage("WButton_close");
         	this.buttonMinimize.Image = Controller.GetResourceImage("WButton_minimize");
-			this.BrowseButton.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
-			this.NextButton1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.buttonClose.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.buttonMinimize.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        }
-        
-        
+        	
+        	DirButton = Controller.SpawnStandardButton("Browse", new Point(128, 305	));
+        	NextButton = Controller.SpawnStandardButton("Next", new Point(251, 355 ));
+        	NextButton.Enabled = false;
 
-
-     
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
+        	DirButton.Click += BrowseButton_Click;
+        	NextButton.Click += NextButton1_Click;
+        	
+        	this.Controls.Add(DirButton);
+        	this.Controls.Add(NextButton);
         	
         }
         
-       
-
-        private void textBox1_TextChanged(object sender, EventArgs e)  //used to display dir path
-        {
-
-        }
-
 
         private void LAUNCHOPTIONS_MouseDown(object sender, MouseEventArgs e)
         {
@@ -79,8 +74,9 @@ namespace PswgLauncher
 
         private void LAUNCHOPTIONS_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDownPoint.IsEmpty)
+        	if (mouseDownPoint.IsEmpty) {
                 return;
+        	}
             Form f = sender as Form;
             f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
         }        
@@ -130,10 +126,11 @@ namespace PswgLauncher
             };
             
             
-            try
-            {
+            bool isvaliddirectory = false;
+            
+            try {
                     	
-            	bool isvaliddirectory = false;
+            	
                     	
                 foreach (String f in validfilenames) {
                 	string[] files = Directory.GetFiles(SwgDir, f, SearchOption.AllDirectories);
@@ -143,69 +140,34 @@ namespace PswgLauncher
                     	isvaliddirectory = true;
                     	break;
                     }
-                    		
                 }
-                    	
                            
-                if (isvaliddirectory)
-                //this if is for valid install dir
-                {
-                                
-                    	richTextBox1.ForeColor = Color.Green;
-                        richTextBox1.Text = "SWG INSTALLATION FOUND";
-
-
-                }
-                else  //all else statements result in invalid directory error (also intended to prevent out of range, etc)
-                {
-                    	richTextBox1.ForeColor = Color.Red;
-                        richTextBox1.Text = "   INVALID STAR WARS GALAXIES DIRECTORY";
-
-                }
-                            
-                           
-                }
-            
-            catch (Exception ex) {
-            	
-            	if (ex is UnauthorizedAccessException || ex is IndexOutOfRangeException) {
-	            	richTextBox1.ForeColor = Color.Red;
-	                richTextBox1.Text = "   INVALID STAR WARS GALAXIES DIRECTORY";
-            	}
-                
+            } catch {
+				isvaliddirectory = false;            	
             } 
+            
+            
+            textBox1.ForeColor = ((isvaliddirectory) ? Color.Green : Color.Red );
+            textBox1.Text = ((isvaliddirectory) ? "SWG INSTALLATION FOUND" : "INVALID STAR WARS GALAXIES DIRECTORY" );
+            GotValidDir = isvaliddirectory;
+            NextButton.Enabled = isvaliddirectory;
           
         }
-        
 
 
-        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)//used when searching directory
-        {
-
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)//used to display directory data to the user
-        {
-
-        }
         private void NextButton1_Click(object sender, EventArgs e)  //used to get to launcher if directory is valid
         {
-            if (richTextBox1.Text ==  "SWG INSTALLATION FOUND")
-            {
+            if (GotValidDir) {
             	
             	Controller.PlaySound("Sound_Click");
-                
-                
                 Controller.SwgDir = SwgDir;
-                
                 this.DialogResult = DialogResult.OK;
-                           
 
             }
             else  //this prevents non valid directories from working
             {
-                errordir errordir = new errordir(Controller); //brings up invalid directory error window
-                errordir.Show();
+                
+            	DialogResult dr = MessageBox.Show("You haven't selected a valid SWG installation location.","No valid SWG Dir selected",MessageBoxButtons.OK);
                 
             }
 
@@ -221,8 +183,6 @@ namespace PswgLauncher
         	this.WindowState = FormWindowState.Minimized;
              
         }
-
-       
        
     }
 }

@@ -41,17 +41,13 @@ namespace PswgLauncher
         	this.BackgroundImage = Controller.GetResourceImage("Background_Options");
         	
 
-        	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 75));
+        	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 68));
         	SupportButton.Click += Support_Click;
         	this.Controls.Add(SupportButton);
 
-        	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 75));
+        	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 68));
         	TrefixButton.Click += button2_Click;
         	this.Controls.Add(TrefixButton);	
-        	
-        	DonateButton = Controller.SpawnStandardButton("Donate", new Point(125, 180));
-        	DonateButton.Click += Donate_Click;
-        	this.Controls.Add(DonateButton);
         	
         	
         	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
@@ -101,12 +97,7 @@ namespace PswgLauncher
             f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
         }
 
-        private void Donate_Click(object sender, EventArgs e)
-        {
-        	Controller.PlaySound("Sound_Click");
-            Donate donate = new Donate(Controller);
-            donate.Show();
-        }
+
 
         private void Support_Click(object sender, EventArgs e)
         {

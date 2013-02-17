@@ -106,12 +106,6 @@
     <Compile Include="Donate.Designer.cs">
       <DependentUpon>Donate.cs</DependentUpon>
     </Compile>
-    <Compile Include="errordir.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="errordir.Designer.cs">
-      <DependentUpon>errordir.cs</DependentUpon>
-    </Compile>
     <Compile Include="AccountWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,11 +142,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DirSearch.resx">
+      <DependentUpon>DirSearch.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LAUNCHOPTIONS.resx">
-      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSWGButtons.resx" />
     <EmbeddedResource Include="PswgRes.resx" />

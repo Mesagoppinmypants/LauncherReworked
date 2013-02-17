@@ -132,7 +132,7 @@
         	this.label1.AutoSize = true;
         	this.label1.BackColor = System.Drawing.Color.Transparent;
         	this.label1.ForeColor = System.Drawing.Color.Maroon;
-        	this.label1.Location = new System.Drawing.Point(23, 366);
+        	this.label1.Location = new System.Drawing.Point(23, 421);
         	this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
         	this.label1.Name = "label1";
         	this.label1.Size = new System.Drawing.Size(120, 13);
@@ -152,7 +152,7 @@
         	// linkListMissing
         	// 
         	this.linkListMissing.BackColor = System.Drawing.Color.Transparent;
-        	this.linkListMissing.Location = new System.Drawing.Point(225, 366);
+        	this.linkListMissing.Location = new System.Drawing.Point(223, 421);
         	this.linkListMissing.Name = "linkListMissing";
         	this.linkListMissing.Size = new System.Drawing.Size(100, 13);
         	this.linkListMissing.TabIndex = 15;
@@ -164,7 +164,7 @@
         	// linkRetryChecksums
         	// 
         	this.linkRetryChecksums.BackColor = System.Drawing.Color.Transparent;
-        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 366);
+        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 421);
         	this.linkRetryChecksums.Name = "linkRetryChecksums";
         	this.linkRetryChecksums.Size = new System.Drawing.Size(28, 13);
         	this.linkRetryChecksums.TabIndex = 16;
@@ -176,7 +176,7 @@
         	// linkLabelContinueChecksum
         	// 
         	this.linkLabelContinueChecksum.BackColor = System.Drawing.Color.Transparent;
-        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 366);
+        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 421);
         	this.linkLabelContinueChecksum.Name = "linkLabelContinueChecksum";
         	this.linkLabelContinueChecksum.Size = new System.Drawing.Size(189, 13);
         	this.linkLabelContinueChecksum.TabIndex = 17;
@@ -197,7 +197,7 @@
         	// labelError
         	// 
         	this.labelError.BackColor = System.Drawing.Color.Transparent;
-        	this.labelError.Location = new System.Drawing.Point(358, 366);
+        	this.labelError.Location = new System.Drawing.Point(23, 434);
         	this.labelError.Name = "labelError";
         	this.labelError.Size = new System.Drawing.Size(143, 13);
         	this.labelError.TabIndex = 18;

@@ -54,6 +54,7 @@ namespace PswgLauncher
         private LauncherButton OptButton;
         private LauncherButton ScanButton;
         private LauncherButton LOptButton;
+        private LauncherButton DonateButton;
         
         private System.Windows.Forms.Timer timer;
         
@@ -98,26 +99,25 @@ namespace PswgLauncher
         	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); */
         	this.PLAY.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	
-        	
-        	
-
-        	
         	//add new components
         	
-        	AcctButton = Controller.SpawnStandardButton("My Account", new Point(16, 400));
-        	OptButton = Controller.SpawnStandardButton("Game Options", new Point(134, 400));
-        	ScanButton = Controller.SpawnStandardButton("Scan", new Point(252, 400));
-        	LOptButton = Controller.SpawnStandardButton("Launcher Options", new Point(370, 400));
+        	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
+        	OptButton = Controller.SpawnStandardButton("Game Options", new Point(126, 365 ));
+        	ScanButton = Controller.SpawnStandardButton("Scan", new Point(242, 365 ));
+        	LOptButton = Controller.SpawnStandardButton("Launcher Options", new Point(358, 365));
+        	DonateButton = Controller.SpawnStandardButton("Donate", new Point(474, 365));
 
         	AcctButton.Click += acct_Click_1;
         	OptButton.Click += options_Click_1;
         	ScanButton.Click += scan_Click;
         	LOptButton.Click += button2_Click;
+        	DonateButton.Click += Donate_Click;
         	
         	this.Controls.Add(AcctButton);
         	this.Controls.Add(OptButton);
         	this.Controls.Add(ScanButton);
         	this.Controls.Add(LOptButton);
+        	this.Controls.Add(DonateButton);
         	
         	//this.TestButton = new LauncherButton();
         	
@@ -968,6 +968,16 @@ namespace PswgLauncher
         {
         	
         }
+        
+        
+        private void Donate_Click(object sender, EventArgs e)
+        {
+        	Controller.PlaySound("Sound_Click");
+            Donate donate = new Donate(Controller);
+            donate.Show();
+        }
+        
+
     }
 }
        
