@@ -7,9 +7,10 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace PswgLauncher
 {
@@ -213,17 +214,34 @@ namespace PswgLauncher
 				return;
 			}
 			
-			SolidBrush Brush = new SolidBrush(base.ForeColor);
-			SizeF StringSize = pe.Graphics.MeasureString(base.Text, base.Font);
-			PointF DrawPoint;
 			
-			if (base.Image != null) {
-				DrawPoint = new PointF(base.Image.Width /2 - StringSize.Width /2, base.Image.Height /2 - StringSize.Height /2);
+
+			PointF DrawPoint = new PointF(base.Image.Width /2,base.Image.Height /2);
+			
+			pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			pe.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			
+			SolidBrush Brush = new SolidBrush(base.ForeColor);
+			FontFamily fontFamily = base.Font.FontFamily;
+			StringFormat strf = new StringFormat();
+			strf.Alignment = StringAlignment.Center;
+			strf.LineAlignment = StringAlignment.Center;
+			GraphicsPath path = new GraphicsPath();
+			
+			if (Text.Length > 14) {
+				path.AddString(Text, fontFamily, (int) FontStyle.Bold, 10.0f, DrawPoint, strf);
 			} else {
-				DrawPoint = new PointF(base.Width /2 - StringSize.Width /2, base.Height/2 - StringSize.Height /2);
+				path.AddString(Text, fontFamily, (int) FontStyle.Bold, 12.0f, DrawPoint, strf);
 			}
 			
-			pe.Graphics.DrawString(base.Text, base.Font, Brush, DrawPoint);
+			
+			Pen pen = new Pen(Color.FromArgb(90, 90, 90), 2);
+			pe.Graphics.DrawPath(pen,path);
+			pe.Graphics.FillPath(Brush,path);
+
+
+			
+			//pe.Graphics.DrawString(base.Text, base.Font, Brush, DrawPoint);
 			
 			
 		}
