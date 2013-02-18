@@ -52,6 +52,7 @@ namespace PswgLauncher
 				//TODO this should be stored centrally somewhere.
 				
 				WebClient wc = new WebClient();
+				wc.Encoding = System.Text.Encoding.UTF8;
 	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.FTPURL + "lpatch.cfg"));
 	            

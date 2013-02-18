@@ -143,6 +143,7 @@ namespace PswgLauncher
         		
         		
             	WebClient wc = new WebClient();
+            	wc.Encoding = System.Text.Encoding.UTF8;
 	            wc.Credentials = new NetworkCredential("anonymous","anonymous");
 
             	Controller.AddDebugMessage("Processing Checksums.");
@@ -428,6 +429,7 @@ namespace PswgLauncher
 	    		backgroundWorker.ReportProgress(0);
 	    		
 		        WebClient wc = new WebClient();
+		        wc.Encoding = System.Text.Encoding.UTF8;
 		        wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 		
 		            
@@ -490,6 +492,7 @@ namespace PswgLauncher
 	        	}
 	        	
 	        	this.launcherProgressBar1.Text = s;
+	        	this.launcherProgressBar1.Refresh();
 
 	        	if (msg[0] == "Error") {
 	        		errorcounter++;
@@ -733,6 +736,7 @@ namespace PswgLauncher
         	try {
 
 	            WebClient wc = new WebClient();
+	            wc.Encoding = System.Text.Encoding.UTF8;
 	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 	            wc.DownloadFile(filename, savename);
         		

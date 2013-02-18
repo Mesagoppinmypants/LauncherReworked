@@ -48,6 +48,11 @@ namespace LauncherPatcher
 			buttonRetry.Enabled = false;
 			buttonForceDL.Enabled = false;
 			
+			String LauncherFile = Application.StartupPath + @"\ProjectSWG Launcher.exe";
+			String TmpFile = LauncherFile + ".part";
+			
+			
+			
         	Process[] LauncherProcesses;
         	
         	
@@ -70,6 +75,7 @@ namespace LauncherPatcher
 
 
 			WebClient wc = new WebClient();
+			wc.Encoding = System.Text.Encoding.UTF8;
 		    wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 
         	
@@ -79,6 +85,7 @@ namespace LauncherPatcher
 		    if (!force) {
 		    
 	        	if (LauncherSize == 0 || LauncherChecksum == null) {
+		    		
 	        		StatusLabel.Text = "Downloading Launcher info.";
 	        		this.Refresh();
 	        		
@@ -124,11 +131,11 @@ namespace LauncherPatcher
 		    }
 		    
 		    
-		    if (File.Exists(Application.StartupPath + "ProjectSWG Launcher.exe.part")) {
+		    if (File.Exists(TmpFile)) {
 		    	try { 
-		    		StatusLabel.Text = "Delete existing Launcher.";
+		    		StatusLabel.Text = "Delete existing Launcher download.";
 		    		this.Refresh();
-		    		File.Delete(Application.StartupPath + "ProjectSWG Launcher.exe.part");
+		    		File.Delete(TmpFile);
 		    	} catch {
 		    		StatusLabel.Text = "Deleting existing file ProjectSWG Launcher.exe.part failed.";
 					buttonRetry.Enabled = true;
@@ -140,7 +147,7 @@ namespace LauncherPatcher
 		    try {
 		    	StatusLabel.Text = "Downloading new Launcher.";
 		    	this.Refresh();
-		    	wc.DownloadFile(FTPURL + "ProjectSWG Launcher.exe", Application.StartupPath + "ProjectSWG Launcher.exe.part");
+		    	wc.DownloadFile(FTPURL + "ProjectSWG Launcher.exe", TmpFile);
 		    } catch {
 		    	StatusLabel.Text = "Downloading ProjectSWG Launcher.exe failed.";
 				buttonRetry.Enabled = true;
@@ -154,7 +161,7 @@ namespace LauncherPatcher
 		    	StatusLabel.Text = "Verifying downloaded Launcher.";
 		    	this.Refresh();
 		    	
-		    	if (!LauncherPatcher.compareCheckSum(Application.StartupPath + "ProjectSWG Launcher.exe.part", LauncherChecksum) )  {
+		    	if (!LauncherPatcher.compareCheckSum(TmpFile, LauncherChecksum) )  {
 		    	
 			    	StatusLabel.Text = "Verification of ProjectSWG Launcher.exe failed.";
 					buttonRetry.Enabled = true;
@@ -169,10 +176,13 @@ namespace LauncherPatcher
 		    try {
 		    	StatusLabel.Text = "Installing new Launcher.";
 		    	this.Refresh();
-		    	File.Move(Application.StartupPath + "ProjectSWG Launcher.exe.part", Application.StartupPath + "ProjectSWG Launcher.exe");
-		    } catch {
+		    	if (File.Exists(LauncherFile)) {
+		    		File.Delete(LauncherFile);
+		    	}
+		    	File.Move(TmpFile, LauncherFile);
+		    } catch (Exception e) {
 		    	
-		    	StatusLabel.Text = "Copying ProjectSWG Launcher.exe failed.";
+		    	StatusLabel.Text = "Copying ProjectSWG Launcher.exe failed." + e.ToString();
 				buttonRetry.Enabled = true;
 	        	this.Refresh();
 		    	return;
@@ -181,7 +191,7 @@ namespace LauncherPatcher
 		    }
 		    
 		    StatusLabel.Text = "Running new Launcher.";
-		    System.Diagnostics.Process.Start(Application.StartupPath + "/ProjectSWG Launcher.exe");
+		    System.Diagnostics.Process.Start(LauncherFile);
 		    Application.Exit();
 			
 		}
