@@ -192,5 +192,3 @@ namespace PswgLauncher
        
     }
 }
-
-// int filecheck1; filecheck1 = swgclient_r.exe; if filecheck1 = swggetdir/SwgClient_r.exe

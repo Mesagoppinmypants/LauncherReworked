@@ -156,10 +156,34 @@ namespace PswgLauncher
         }
         
 
-        
         void CheckBoxLocalhostCheckedChanged(object sender, EventArgs e)
         {
         	Controller.LocalhostOption = checkBoxLocalhost.Checked;
         }
+        
+        
+        void LinkMissingFilesClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+        	String missing = "Missing Files " + Environment.NewLine;
+        	
+        	
+        	foreach (KeyValuePair<String,String> file in Controller.SWGFiles.SwgFileTable) {
+        		
+        		if (Controller.SWGFiles.isGood(file.Key)) {
+		           	continue;
+		        }
+
+        		missing += file.Key + Environment.NewLine;
+        		
+        	}
+        	
+        	
+        	MessageBox.Show(missing, "Missing Files", MessageBoxButtons.OK);
+
+        	
+        	
+        }
+        
+        
     }
 }

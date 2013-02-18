@@ -34,6 +34,7 @@
         	this.checksumControl = new System.Windows.Forms.CheckBox();
         	this.linkDebugWindow = new System.Windows.Forms.LinkLabel();
         	this.checkBoxLocalhost = new System.Windows.Forms.CheckBox();
+        	this.linkMissingFiles = new System.Windows.Forms.LinkLabel();
         	this.SuspendLayout();
         	// 
         	// label1
@@ -105,12 +106,24 @@
         	this.checkBoxLocalhost.UseVisualStyleBackColor = false;
         	this.checkBoxLocalhost.CheckedChanged += new System.EventHandler(this.CheckBoxLocalhostCheckedChanged);
         	// 
+        	// linkMissingFiles
+        	// 
+        	this.linkMissingFiles.BackColor = System.Drawing.Color.Transparent;
+        	this.linkMissingFiles.Location = new System.Drawing.Point(126, 366);
+        	this.linkMissingFiles.Name = "linkMissingFiles";
+        	this.linkMissingFiles.Size = new System.Drawing.Size(123, 18);
+        	this.linkMissingFiles.TabIndex = 22;
+        	this.linkMissingFiles.TabStop = true;
+        	this.linkMissingFiles.Text = "List Missing Files";
+        	this.linkMissingFiles.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkMissingFilesClicked);
+        	// 
         	// LAUNCHOPTIONS
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(562, 409);
+        	this.Controls.Add(this.linkMissingFiles);
         	this.Controls.Add(this.checkBoxLocalhost);
         	this.Controls.Add(this.linkDebugWindow);
         	this.Controls.Add(this.checksumControl);
@@ -131,6 +144,7 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.LinkLabel linkMissingFiles;
         private System.Windows.Forms.CheckBox checkBoxLocalhost;
         private System.Windows.Forms.LinkLabel linkDebugWindow;
         private System.Windows.Forms.CheckBox checksumControl;

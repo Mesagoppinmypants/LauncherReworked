@@ -35,7 +35,6 @@
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
         	this.label1 = new System.Windows.Forms.Label();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
-        	this.linkListMissing = new System.Windows.Forms.LinkLabel();
         	this.linkRetryChecksums = new System.Windows.Forms.LinkLabel();
         	this.linkLabelContinueChecksum = new System.Windows.Forms.LinkLabel();
         	this.launcherProgressBar1 = new PswgLauncher.LauncherProgressBar();
@@ -103,18 +102,6 @@
         	this.pictureBox2.TabIndex = 9;
         	this.pictureBox2.TabStop = false;
         	// 
-        	// linkListMissing
-        	// 
-        	this.linkListMissing.BackColor = System.Drawing.Color.Transparent;
-        	this.linkListMissing.Location = new System.Drawing.Point(223, 421);
-        	this.linkListMissing.Name = "linkListMissing";
-        	this.linkListMissing.Size = new System.Drawing.Size(100, 13);
-        	this.linkListMissing.TabIndex = 15;
-        	this.linkListMissing.TabStop = true;
-        	this.linkListMissing.Text = "List missing Files";
-        	this.linkListMissing.Visible = false;
-        	this.linkListMissing.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkListMissingLinkClicked);
-        	// 
         	// linkRetryChecksums
         	// 
         	this.linkRetryChecksums.BackColor = System.Drawing.Color.Transparent;
@@ -168,7 +155,6 @@
         	this.Controls.Add(this.labelError);
         	this.Controls.Add(this.linkLabelContinueChecksum);
         	this.Controls.Add(this.linkRetryChecksums);
-        	this.Controls.Add(this.linkListMissing);
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
         	this.Controls.Add(this.splitter1);
@@ -194,7 +180,6 @@
         private System.Windows.Forms.Label labelError;
         private System.Windows.Forms.LinkLabel linkLabelContinueChecksum;
         private System.Windows.Forms.LinkLabel linkRetryChecksums;
-        private System.Windows.Forms.LinkLabel linkListMissing;
 
         #endregion
 

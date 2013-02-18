@@ -99,14 +99,6 @@ namespace PswgLauncher
         	this.Controls.Add(MinimizeButton);
         	this.Controls.Add(CloseButton);
         	
-        	
-        	/*
-        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
-        	this.close.Image = Controller.GetResourceImage("WButton_close");
-        	
-			this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
-        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); */
-
         	//add new components
         	
         	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
@@ -242,7 +234,6 @@ namespace PswgLauncher
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = true;
         			break;
@@ -258,7 +249,6 @@ namespace PswgLauncher
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = true;
         			break;
@@ -277,7 +267,6 @@ namespace PswgLauncher
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	linkRetryChecksums.Visible = true;
-                	linkListMissing.Visible = false;
                 	if (Controller.SWGFiles.HasFileList) {
 						linkLabelContinueChecksum.Visible = true;
                 	} else {
@@ -301,7 +290,6 @@ namespace PswgLauncher
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = false;
                 	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = false;
         			break;
@@ -318,7 +306,7 @@ namespace PswgLauncher
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
                 	linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = false;
+
 					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = true;
         			break;
@@ -335,7 +323,6 @@ namespace PswgLauncher
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
                 	linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = true;
                 	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = false;
         			break;
@@ -351,7 +338,6 @@ namespace PswgLauncher
             		pictureBox2.Image = null;
         			PlayButton.Disable = false;
             		linkRetryChecksums.Visible = false;
-                	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = false;
         			break;
@@ -381,7 +367,6 @@ namespace PswgLauncher
 
         }
 
- 
 
         private void MinimizeClick(object sender, EventArgs e)
         {
@@ -465,14 +450,10 @@ namespace PswgLauncher
 		        	String theKey = file.Key;
 		        	backgroundWorker.ReportProgress( progress, "Debug " + file.Key);
 		            backgroundWorker.ReportProgress( progress, file.Key);
-		            	
 					
-					
-					for (int j = 0; j < 4 && dlstatus == false; i++) {
-		                dlstatus = DownloadFile(file.Key, file.Value, wc,backgroundWorker, progress, j);
-		                
+					while (dlstatus == false && !backgroundWorker.CancellationPending) {
+		            	dlstatus = DownloadFile(file.Key, file.Value, wc,backgroundWorker, progress);
 					}
-		            	
 		            
 		            if(backgroundWorker.CancellationPending) {
 			      		e.Cancel = true;
@@ -604,11 +585,11 @@ namespace PswgLauncher
         }
         
         
-        private bool DownloadFile(String file, String checksum, WebClient webclient, BackgroundWorker backgroundWorker, int progress, int count) {
+        private bool DownloadFile(String file, String checksum, WebClient webclient, BackgroundWorker backgroundWorker, int progress) {
         	
         	String path = swgdirsave + "\\" + file;
         	String localsrc = Controller.SwgDir + "\\" + file;
-        	String remotesrc;
+        	String remotesrc = GuiController.FTPURL + "/" + file;
         	
         	if (file.Contains("/")) {
 	        	if (!this.MakeDirIfRequired(file)) {
@@ -616,8 +597,6 @@ namespace PswgLauncher
 	        		return false;
 	        	}
         	}
-
-        	remotesrc = GuiController.FTPURL + "/" + file;
         	
         	try {
         	
@@ -625,10 +604,13 @@ namespace PswgLauncher
 	        	
 	        	if (Controller.SWGFiles.isGood(file)) {
 	        		backgroundWorker.ReportProgress( progress, "Debug " + "was already good: " + file);
+	        		backgroundWorker.ReportProgress(progress, "OK " + file);
 	        		return true;
 	        	}
 	        	
+	        	
 	        	if (File.Exists(file) && !Controller.checksumOption && !this.ForceChecksums) {
+	        		backgroundWorker.ReportProgress( progress, "Debug " + "file exists, skipping checksum for " + file);
 	        		backgroundWorker.ReportProgress(progress, "OK " + file);
 	        		return true;
 	        	}
@@ -639,23 +621,22 @@ namespace PswgLauncher
 	        		return true;
 	        	}
 	        	
-	        	
 	        	// only get tre files from local storage
 	        	if (Regex.IsMatch(file, @"\.tre$", RegexOptions.IgnoreCase)) {
 	        		
 	        		backgroundWorker.ReportProgress(progress, "Checking SWGDir for " + file);
 	        		
-	        		
 	        		if (compareCheckSum(localsrc, checksum)) {
-	        		
+
+	        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
+	        			backgroundWorker.ReportProgress(progress, "Reading " + file);
+	        			
 						//File.Copy(localsrc, swgdirsave);
 						File.Copy(@localsrc, @path, true);
 	        			
-	        			backgroundWorker.ReportProgress( progress, "Debug " + "Reading " + file);
-	        			backgroundWorker.ReportProgress(progress, "Reading " + file);
 	        			
 	        			if (compareCheckSum(path,checksum) ) {
-	        				backgroundWorker.ReportProgress( progress, "Debug " + "Read " + file);
+	        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
 	        				backgroundWorker.ReportProgress(progress, "Read " + file);
 	        				return true;
 	        			}
@@ -666,7 +647,6 @@ namespace PswgLauncher
 	        	
 	        	backgroundWorker.ReportProgress(progress, "Debug " + "Patching " + file);
 				backgroundWorker.ReportProgress(progress, "Patching " + file);
-	        	
 				
 	        	webclient.DownloadFile(remotesrc,path);
 	        		
@@ -676,10 +656,9 @@ namespace PswgLauncher
 	        		return true;
 	        	}
         			
-        	} catch(Exception e) {
+        	} catch {
         		
         	}
-        	
         	
         	backgroundWorker.ReportProgress(progress, "Debug " + "Error patching " + file);
         	backgroundWorker.ReportProgress(progress, "Error patching " + file);
@@ -938,27 +917,7 @@ namespace PswgLauncher
         	
         }
         
-        void LinkListMissingLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-        	String missing = "Missing Files " + Environment.NewLine;
-        	
-        	
-        	foreach (KeyValuePair<String,String> file in Controller.SWGFiles.SwgFileTable) {
-        		
-        		if (Controller.SWGFiles.isGood(file.Key)) {
-		           	continue;
-		        }
 
-        		missing += file.Key + Environment.NewLine;
-        		
-        	}
-        	
-        	
-        	MessageBox.Show(missing, "Missing Files", MessageBoxButtons.OK);
-
-        	
-        	
-        }
         
         void LinkLabelContinueChecksumLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
