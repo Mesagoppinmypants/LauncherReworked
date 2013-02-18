@@ -30,9 +30,6 @@
         {
         	this.components = new System.ComponentModel.Container();
         	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-        	this.PLAY = new System.Windows.Forms.Button();
-        	this.close = new System.Windows.Forms.Button();
-        	this.button1 = new System.Windows.Forms.Button();
         	this.imageList1 = new System.Windows.Forms.ImageList(this.components);
         	this.splitter1 = new System.Windows.Forms.Splitter();
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
@@ -60,49 +57,6 @@
         	this.webBrowser1.TabIndex = 0;
         	this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/forums/update_notes.php", System.UriKind.Absolute);
         	this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
-        	// 
-        	// PLAY
-        	// 
-        	this.PLAY.BackColor = System.Drawing.Color.Transparent;
-        	this.PLAY.FlatAppearance.BorderSize = 0;
-        	this.PLAY.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
-        	this.PLAY.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
-        	this.PLAY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.PLAY.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.PLAY.Location = new System.Drawing.Point(484, 434);
-        	this.PLAY.Name = "PLAY";
-        	this.PLAY.Size = new System.Drawing.Size(98, 35);
-        	this.PLAY.TabIndex = 1;
-        	this.PLAY.UseVisualStyleBackColor = false;
-        	this.PLAY.Click += new System.EventHandler(this.PLAY_Click_1);
-        	// 
-        	// close
-        	// 
-        	this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.FlatAppearance.BorderSize = 0;
-        	this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.Location = new System.Drawing.Point(562, 10);
-        	this.close.Margin = new System.Windows.Forms.Padding(2);
-        	this.close.Name = "close";
-        	this.close.Size = new System.Drawing.Size(20, 24);
-        	this.close.TabIndex = 5;
-        	this.close.UseVisualStyleBackColor = false;
-        	this.close.Click += new System.EventHandler(this.close_Click_1);
-        	// 
-        	// button1
-        	// 
-        	this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.FlatAppearance.BorderSize = 0;
-        	this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.Location = new System.Drawing.Point(535, 12);
-        	this.button1.Margin = new System.Windows.Forms.Padding(2);
-        	this.button1.Name = "button1";
-        	this.button1.Size = new System.Drawing.Size(20, 19);
-        	this.button1.TabIndex = 6;
-        	this.button1.UseVisualStyleBackColor = false;
-        	this.button1.Click += new System.EventHandler(this.button1_Click_1);
         	// 
         	// imageList1
         	// 
@@ -218,9 +172,6 @@
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
         	this.Controls.Add(this.splitter1);
-        	this.Controls.Add(this.button1);
-        	this.Controls.Add(this.close);
-        	this.Controls.Add(this.PLAY);
         	this.Controls.Add(this.webBrowser1);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -248,10 +199,7 @@
         #endregion
 
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.Button close;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ImageList imageList1;
-        private System.Windows.Forms.Button PLAY;
         private System.Windows.Forms.Splitter splitter1;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.Label label1;

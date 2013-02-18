@@ -176,6 +176,8 @@ namespace PswgLauncher
 		{
 			
 		
+
+			
 			
 		}
 		
@@ -229,13 +231,15 @@ namespace PswgLauncher
 			GraphicsPath path = new GraphicsPath();
 			
 			if (Text.Length > 14) {
-				path.AddString(Text, fontFamily, (int) FontStyle.Bold, 10.0f, DrawPoint, strf);
+				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 8.0f, DrawPoint, strf);
+			} else if (Text.Length > 11) {
+				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 10.0f, DrawPoint, strf);
 			} else {
-				path.AddString(Text, fontFamily, (int) FontStyle.Bold, 12.0f, DrawPoint, strf);
+				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 12.0f, DrawPoint, strf);
 			}
 			
 			
-			Pen pen = new Pen(Color.FromArgb(90, 90, 90), 2);
+			Pen pen = new Pen(Color.FromArgb(90, 90, 90), 3);
 			pe.Graphics.DrawPath(pen,path);
 			pe.Graphics.FillPath(Brush,path);
 

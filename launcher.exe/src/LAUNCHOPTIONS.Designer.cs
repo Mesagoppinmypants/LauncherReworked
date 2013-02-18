@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	this.button1 = new System.Windows.Forms.Button();
-        	this.close = new System.Windows.Forms.Button();
         	this.label1 = new System.Windows.Forms.Label();
         	this.label2 = new System.Windows.Forms.Label();
         	this.soundControl = new System.Windows.Forms.CheckBox();
@@ -37,35 +35,6 @@
         	this.linkDebugWindow = new System.Windows.Forms.LinkLabel();
         	this.checkBoxLocalhost = new System.Windows.Forms.CheckBox();
         	this.SuspendLayout();
-        	// 
-        	// button1
-        	// 
-        	this.button1.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.FlatAppearance.BorderSize = 0;
-        	this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.button1.Location = new System.Drawing.Point(502, 15);
-        	this.button1.Margin = new System.Windows.Forms.Padding(2);
-        	this.button1.Name = "button1";
-        	this.button1.Size = new System.Drawing.Size(20, 19);
-        	this.button1.TabIndex = 8;
-        	this.button1.UseVisualStyleBackColor = false;
-        	this.button1.Click += new System.EventHandler(this.button1_Click);
-        	// 
-        	// close
-        	// 
-        	this.close.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.FlatAppearance.BorderSize = 0;
-        	this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.close.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.close.Location = new System.Drawing.Point(526, 12);
-        	this.close.Margin = new System.Windows.Forms.Padding(2);
-        	this.close.Name = "close";
-        	this.close.RightToLeft = System.Windows.Forms.RightToLeft.No;
-        	this.close.Size = new System.Drawing.Size(20, 24);
-        	this.close.TabIndex = 7;
-        	this.close.UseVisualStyleBackColor = false;
-        	this.close.Click += new System.EventHandler(this.close_Click);
         	// 
         	// label1
         	// 
@@ -148,8 +117,6 @@
         	this.Controls.Add(this.soundControl);
         	this.Controls.Add(this.label2);
         	this.Controls.Add(this.label1);
-        	this.Controls.Add(this.button1);
-        	this.Controls.Add(this.close);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
         	this.Margin = new System.Windows.Forms.Padding(2);
@@ -171,8 +138,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button close;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
     }

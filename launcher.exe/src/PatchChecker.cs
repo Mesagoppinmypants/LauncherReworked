@@ -45,7 +45,7 @@ namespace PswgLauncher
 			string lpatchsrv = "";
 			string lpatchusr = "";
 			
-						Controller.AddDebugMessage("checking for updates...");
+			Controller.AddDebugMessage("checking for updates...");
 			
 			try {
 				

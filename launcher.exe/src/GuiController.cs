@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -31,6 +32,14 @@ namespace PswgLauncher
 		
 	
 		private bool _soundOption;
+		
+		public PrivateFontCollection pfc {
+			get; private set;
+		}
+		
+		public bool HasFont {
+			get; private set;
+		}
 		
 		public bool soundOption { 
 			get {
@@ -108,8 +117,50 @@ namespace PswgLauncher
 			
 			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
 			PswgResources2Manager = new ResourceManager("PswgLauncher.PSWGButtons", Assembly.GetExecutingAssembly());
+			
+			pfc = new PrivateFontCollection();
+			HasFont = false;
+			LoadFont();
+			
 		}
 		
+		
+		
+		private void LoadFont() {
+			
+			try {
+				String Resource = "Starjedi.ttf";
+				Stream FontStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(Resource);
+				
+				// create an unsafe memory block for the font data
+				System.IntPtr data = Marshal.AllocCoTaskMem((int)FontStream.Length);
+				
+				// create a buffer to read in to
+				byte[] fontdata = new byte[FontStream.Length];
+				
+				// read the font data from the resource
+				FontStream.Read(fontdata, 0, (int)FontStream.Length);
+				
+				// copy the bytes to the unsafe memory block
+				Marshal.Copy(fontdata, 0, data, (int)FontStream.Length);
+				
+				// pass the font to the font collection
+				pfc.AddMemoryFont(data, (int)FontStream.Length);
+				
+				// close the resource stream
+				FontStream.Close();
+				
+				// free up the unsafe memory
+				Marshal.FreeCoTaskMem(data);
+				HasFont = true;
+			
+			} catch {
+				
+				AddDebugMessage("Couldn't load Starjedi.TTF.");
+				
+			}
+			
+		}
 		
 		
 		public void readConfig() {
@@ -294,13 +345,37 @@ namespace PswgLauncher
 		
 		
 		
-		public LauncherButton SpawnStandardButton(String text, Point p) {
+		public LauncherButton SpawnBaseButton(String text, Point p) {
 			
 			LauncherButton lb = new LauncherButton();
 			
 			if (text != null) { lb.Text = text; }
 			if (p != null) { lb.Location = p; }
 			
+        	lb.BackColor = System.Drawing.Color.Transparent;
+        	//lb.BackColor = Color.FromArgb(0, 255, 255, 255);
+        	
+        	//lb.TextColorNormal = System.Drawing.ColorTranslator.FromHtml("#ffa838");
+
+			
+        	lb.TextColorNormal = System.Drawing.ColorTranslator.FromHtml("#fffba7");
+        	lb.TextColorClick = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
+        	lb.TextColorHover = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
+        	lb.TextColorDisable = System.Drawing.ColorTranslator.FromHtml("#72502e");
+
+        	
+        	if (HasFont) {
+        		lb.Font = new Font(pfc.Families[0], 22);
+        	} 
+        	
+        	return lb;
+        	
+		}
+		
+		public LauncherButton SpawnStandardButton(String text, Point p) {
+
+			LauncherButton lb = SpawnBaseButton(text,p);
+
 			lb.ImageClick = GetResource2Image("ButtonClick");
         	lb.ImageHover = GetResource2Image("ButtonHover");
         	lb.ImageNormal = GetResource2Image("ButtonNormal");
@@ -308,18 +383,62 @@ namespace PswgLauncher
 			
         	lb.Width = 118;
         	lb.Height = 45;
-        	
-        	lb.BackColor = System.Drawing.Color.Transparent;
-        	//lb.BackColor = Color.FromArgb(0, 255, 255, 255);
-        	
-        	lb.TextColorNormal = System.Drawing.ColorTranslator.FromHtml("#ffa838");
-        	lb.TextColorClick = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
-        	lb.TextColorHover = System.Drawing.ColorTranslator.FromHtml("#ffea3b");
-        	lb.TextColorDisable = System.Drawing.ColorTranslator.FromHtml("#72502e");
 			
         	return lb;
-        	
+			
 		}
+		
+		public LauncherButton SpawnPlayButton(String text, Point p) {
+
+			LauncherButton lb = SpawnBaseButton(text,p);
+			
+			lb.ImageClick = GetResource2Image("RedClick");
+        	lb.ImageHover = GetResource2Image("RedHighlight");
+        	lb.ImageNormal = GetResource2Image("RedNormal");
+        	lb.ImageDisable = GetResource2Image("RedNormal");
+			
+        	lb.Width = 100;
+        	lb.Height = 35;
+
+        	return lb;
+			
+		}
+		
+		public LauncherButton SpawnMinimizeButton(Point p)  {
+			
+			LauncherButton lb = new LauncherButton();
+			if (p != null) { lb.Location = p; }
+			
+        	lb.BackColor = System.Drawing.Color.Transparent;
+
+			lb.ImageClick = GetResource2Image("MinimizeClick");
+        	lb.ImageHover = GetResource2Image("MinimizeHighlighted");
+        	lb.ImageNormal = GetResource2Image("MinimizeNormal");
+        	lb.ImageDisable = GetResource2Image("MinimizeNormal");
+        	
+        	lb.Width = 27;
+        	lb.Height = 20;
+        	
+        	return lb;			
+		}
+		
+		public LauncherButton SpawnCloseButton(Point p)  {
+			
+			LauncherButton lb = new LauncherButton();
+			if (p != null) { lb.Location = p; }
+			
+        	lb.BackColor = System.Drawing.Color.Transparent;
+
+			lb.ImageClick = GetResource2Image("CrossClick");
+        	lb.ImageHover = GetResource2Image("CrossHighlighted");
+        	lb.ImageNormal = GetResource2Image("CrossNormal");
+        	lb.ImageDisable = GetResource2Image("CrossNormal");
+        	
+        	lb.Width = 29;
+        	lb.Height = 32;
+        	
+        	return lb;			
+		}		
 		
 		[DllImport("Gdi32.dll", EntryPoint="CreateRoundRectRgn")]
 		public static extern IntPtr CreateRoundRectRgn

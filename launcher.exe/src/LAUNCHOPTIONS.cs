@@ -17,6 +17,9 @@ namespace PswgLauncher
     	
     	private GuiController Controller;
     	Point mouseDownPoint = Point.Empty;
+
+    	private LauncherButton MinimizeButton;
+    	private LauncherButton CloseButton;
     	
     	private LauncherButton DonateButton;
     	private LauncherButton SupportButton;
@@ -40,7 +43,14 @@ namespace PswgLauncher
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_Options");
         	
-
+        	MinimizeButton = Controller.SpawnMinimizeButton(new Point(502, 20));
+        	CloseButton = Controller.SpawnCloseButton(new Point(526, 8));        	
+        	MinimizeButton.Click += MinimizeClick;
+        	CloseButton.Click += CloseClick;
+        	this.Controls.Add(MinimizeButton);
+        	this.Controls.Add(CloseButton);
+        	
+        	
         	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 68));
         	SupportButton.Click += Support_Click;
         	this.Controls.Add(SupportButton);
@@ -49,12 +59,12 @@ namespace PswgLauncher
         	TrefixButton.Click += button2_Click;
         	this.Controls.Add(TrefixButton);	
         	
-        	
+        	/*
         	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
         	this.close.Image = Controller.GetResourceImage("WButton_close");     	
         	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
         	this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	
+        	*/
         	
         }
         
@@ -64,12 +74,12 @@ namespace PswgLauncher
 
         }
 
-        private void close_Click(object sender, EventArgs e)
+        private void CloseClick(object sender, EventArgs e)
         {
             this.Hide();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void MinimizeClick(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }

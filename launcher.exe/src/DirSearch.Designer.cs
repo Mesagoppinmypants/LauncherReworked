@@ -29,39 +29,9 @@
         private void InitializeComponent()
         {
         	this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-        	this.buttonClose = new System.Windows.Forms.Button();
-        	this.buttonMinimize = new System.Windows.Forms.Button();
         	this.textBox2 = new System.Windows.Forms.TextBox();
         	this.textBox1 = new System.Windows.Forms.TextBox();
         	this.SuspendLayout();
-        	// 
-        	// buttonClose
-        	// 
-        	this.buttonClose.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonClose.FlatAppearance.BorderSize = 0;
-        	this.buttonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonClose.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonClose.Location = new System.Drawing.Point(335, 10);
-        	this.buttonClose.Margin = new System.Windows.Forms.Padding(2);
-        	this.buttonClose.Name = "buttonClose";
-        	this.buttonClose.Size = new System.Drawing.Size(22, 22);
-        	this.buttonClose.TabIndex = 5;
-        	this.buttonClose.UseVisualStyleBackColor = false;
-        	this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
-        	// 
-        	// buttonMinimize
-        	// 
-        	this.buttonMinimize.BackColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonMinimize.FlatAppearance.BorderSize = 0;
-        	this.buttonMinimize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-        	this.buttonMinimize.ForeColor = System.Drawing.SystemColors.WindowFrame;
-        	this.buttonMinimize.Location = new System.Drawing.Point(316, 11);
-        	this.buttonMinimize.Margin = new System.Windows.Forms.Padding(2);
-        	this.buttonMinimize.Name = "buttonMinimize";
-        	this.buttonMinimize.Size = new System.Drawing.Size(15, 19);
-        	this.buttonMinimize.TabIndex = 6;
-        	this.buttonMinimize.UseVisualStyleBackColor = false;
-        	this.buttonMinimize.Click += new System.EventHandler(this.buttonMinimize_Click);
         	// 
         	// textBox2
         	// 
@@ -96,8 +66,6 @@
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(375, 406);
         	this.Controls.Add(this.textBox2);
-        	this.Controls.Add(this.buttonMinimize);
-        	this.Controls.Add(this.buttonClose);
         	this.Controls.Add(this.textBox1);
         	this.DoubleBuffered = true;
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -119,8 +87,6 @@
         #endregion
 
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.Button buttonClose;
-        private System.Windows.Forms.Button buttonMinimize;
         private System.Windows.Forms.TextBox textBox2;
         
     }

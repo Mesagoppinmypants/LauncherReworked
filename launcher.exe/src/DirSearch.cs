@@ -20,7 +20,10 @@ namespace PswgLauncher
     	private GuiController Controller;
     	private String SwgDir;
     	private bool GotValidDir;
-    	
+
+    	private LauncherButton MinimizeButton;
+    	private LauncherButton CloseButton;
+    	    	
     	private LauncherButton DirButton;
     	private LauncherButton NextButton;
     	
@@ -39,10 +42,13 @@ namespace PswgLauncher
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_DirSearch");
-        	this.buttonClose.Image = Controller.GetResourceImage("WButton_close");
-        	this.buttonMinimize.Image = Controller.GetResourceImage("WButton_minimize");
-        	this.buttonClose.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.buttonMinimize.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
+
+        	MinimizeButton = Controller.SpawnMinimizeButton(new Point(316, 20));
+        	CloseButton = Controller.SpawnCloseButton(new Point(335, 8));        	
+        	MinimizeButton.Click += MinimizeClick;
+        	CloseButton.Click += CloseClick;
+        	this.Controls.Add(MinimizeButton);
+        	this.Controls.Add(CloseButton);
         	
         	DirButton = Controller.SpawnStandardButton("Browse", new Point(128, 305	));
         	NextButton = Controller.SpawnStandardButton("Next", new Point(251, 355 ));
@@ -173,12 +179,12 @@ namespace PswgLauncher
 
         }
 
-        private void buttonClose_Click(object sender, EventArgs e)
+        private void CloseClick(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void buttonMinimize_Click(object sender, EventArgs e)
+        private void MinimizeClick(object sender, EventArgs e)
         {
         	this.WindowState = FormWindowState.Minimized;
              

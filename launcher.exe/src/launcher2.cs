@@ -49,12 +49,15 @@ namespace PswgLauncher
 		private LAUNCHOPTIONS OptionWindow;
         
         private GuiController Controller;
-        
+
+        private LauncherButton MinimizeButton;
+        private LauncherButton CloseButton;        
         private LauncherButton AcctButton;
         private LauncherButton OptButton;
         private LauncherButton ScanButton;
         private LauncherButton LOptButton;
         private LauncherButton DonateButton;
+        private LauncherButton PlayButton;
         
         private System.Windows.Forms.Timer timer;
         
@@ -86,42 +89,48 @@ namespace PswgLauncher
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_Launcher");
+
+        	MinimizeButton = Controller.SpawnMinimizeButton(new Point(535, 20));
+        	CloseButton = Controller.SpawnCloseButton(new Point(562, 8));
         	
+        	MinimizeButton.Click += MinimizeClick;
+        	CloseButton.Click += CloseClick;
+        	
+        	this.Controls.Add(MinimizeButton);
+        	this.Controls.Add(CloseButton);
+        	
+        	
+        	/*
         	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
         	this.close.Image = Controller.GetResourceImage("WButton_close");
-        	this.PLAY.Image = Controller.GetResourceImage("Button_playbad");
         	
 			this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); //Transparent
-        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-/*        	this.acct.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.options.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.scan.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.button2.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); */
-        	this.PLAY.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	
+        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255); */
+
         	//add new components
         	
         	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
-        	OptButton = Controller.SpawnStandardButton("Game Options", new Point(126, 365 ));
+        	OptButton = Controller.SpawnStandardButton("Game options", new Point(126, 365 ));
         	ScanButton = Controller.SpawnStandardButton("Scan", new Point(242, 365 ));
-        	LOptButton = Controller.SpawnStandardButton("Launcher Options", new Point(358, 365));
+        	LOptButton = Controller.SpawnStandardButton("Launcher options", new Point(358, 365));
         	DonateButton = Controller.SpawnStandardButton("Donate", new Point(474, 365));
+        	
+        	PlayButton = Controller.SpawnPlayButton("Play", new Point(484,434));
 
         	AcctButton.Click += acct_Click_1;
         	OptButton.Click += options_Click_1;
         	ScanButton.Click += scan_Click;
         	LOptButton.Click += button2_Click;
         	DonateButton.Click += Donate_Click;
+        	PlayButton.Click += PLAY_Click_1;
         	
         	this.Controls.Add(AcctButton);
         	this.Controls.Add(OptButton);
         	this.Controls.Add(ScanButton);
         	this.Controls.Add(LOptButton);
         	this.Controls.Add(DonateButton);
+        	this.Controls.Add(PlayButton);
         	
-        	//this.TestButton = new LauncherButton();
-        	
-        	//this.Controls.Add(this.TestButton);
         	
         }
         
@@ -227,7 +236,7 @@ namespace PswgLauncher
         		
         			status = 0;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-                	PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
@@ -243,7 +252,7 @@ namespace PswgLauncher
         			if (status != (int) StatusCodes.NoChecksum && status != (int) StatusCodes.ChecksumFailed) { return; }
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
@@ -262,7 +271,7 @@ namespace PswgLauncher
         			
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
@@ -286,7 +295,7 @@ namespace PswgLauncher
         		
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Green;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
@@ -304,7 +313,7 @@ namespace PswgLauncher
         			status = newstatus;
         			
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
@@ -321,7 +330,7 @@ namespace PswgLauncher
         			status = newstatus;
         			
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PLAY.Image = Controller.GetResourceImage("Button_playbad");
+        			PlayButton.Disable = true;
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
@@ -340,7 +349,7 @@ namespace PswgLauncher
             		label1.ForeColor = Color.Aqua;
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
-            		PLAY.Image = Controller.GetResourceImage("Button_playgood");
+        			PlayButton.Disable = false;
             		linkRetryChecksums.Visible = false;
                 	linkListMissing.Visible = false;
 					linkLabelContinueChecksum.Visible = false;
@@ -374,13 +383,13 @@ namespace PswgLauncher
 
  
 
-        private void button1_Click(object sender, EventArgs e)
+        private void MinimizeClick(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }
 
 
-        private void close_Click_1(object sender, EventArgs e)
+        private void CloseClick(object sender, EventArgs e)
         {
         	if (status == (int) StatusCodes.UpdatingChecksum || status == (int) StatusCodes.Patching)
             {
@@ -860,10 +869,6 @@ namespace PswgLauncher
 
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
 
         private void button2_Click(object sender, EventArgs e)
         {
