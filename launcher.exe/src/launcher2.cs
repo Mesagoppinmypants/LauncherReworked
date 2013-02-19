@@ -433,12 +433,12 @@ namespace PswgLauncher
 		        wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 		
 		            
-		        Dictionary<String,String> files = Controller.SWGFiles.SwgFileTable;
+		        Dictionary<String,SWGFile> files = Controller.SWGFiles.SwgFileTable;
 		            
 		        float step = (float) 100 / (float) files.Count;
 		        int i = 0;
 		            
-		        foreach (KeyValuePair<String,String> file in files) {
+		        foreach (KeyValuePair<String,SWGFile> file in files) {
 		        	i++;
 		            	
 		        	// don't download good files again.
@@ -454,7 +454,7 @@ namespace PswgLauncher
 		            backgroundWorker.ReportProgress( progress, file.Key);
 					
 					while (dlstatus == false && !backgroundWorker.CancellationPending) {
-		            	dlstatus = DownloadFile(file.Key, file.Value, wc,backgroundWorker, progress);
+		            	dlstatus = DownloadFile(file.Key, file.Value, backgroundWorker, progress);
 					}
 		            
 		            if(backgroundWorker.CancellationPending) {
@@ -546,7 +546,7 @@ namespace PswgLauncher
         
         private bool checkForCompleteness() {
         	
-        	foreach (KeyValuePair<String,String> file in Controller.SWGFiles.SwgFileTable) {
+        	foreach (KeyValuePair<String,SWGFile> file in Controller.SWGFiles.SwgFileTable) {
         		
         		if (Controller.SWGFiles.isGood(file.Key)) {
 		           	continue;
@@ -588,11 +588,14 @@ namespace PswgLauncher
         }
         
         
-        private bool DownloadFile(String file, String checksum, WebClient webclient, BackgroundWorker backgroundWorker, int progress) {
+        private bool DownloadFile(String file, SWGFile swgfile, BackgroundWorker backgroundWorker, int progress) {
         	
         	String path = swgdirsave + "\\" + file;
         	String localsrc = Controller.SwgDir + "\\" + file;
         	String remotesrc = GuiController.FTPURL + "/" + file;
+        	long offset = 0;
+        	
+        	String checksum = swgfile.Checksum;
         	
         	if (file.Contains("/")) {
 	        	if (!this.MakeDirIfRequired(file)) {
@@ -600,64 +603,149 @@ namespace PswgLauncher
 	        		return false;
 	        	}
         	}
-        	
+
+	        backgroundWorker.ReportProgress(progress, "Checking " + file);
+
         	try {
-        	
-	        	backgroundWorker.ReportProgress(progress, "Checking " + file);
-	        	
-	        	if (Controller.SWGFiles.isGood(file)) {
-	        		backgroundWorker.ReportProgress( progress, "Debug " + "was already good: " + file);
-	        		backgroundWorker.ReportProgress(progress, "OK " + file);
-	        		return true;
-	        	}
-	        	
-	        	
-	        	if (File.Exists(file) && !Controller.checksumOption && !this.ForceChecksums) {
-	        		backgroundWorker.ReportProgress( progress, "Debug " + "file exists, skipping checksum for " + file);
-	        		backgroundWorker.ReportProgress(progress, "OK " + file);
-	        		return true;
-	        	}
-	        	
-	        	if (compareCheckSum(path, checksum)) {
-	        		backgroundWorker.ReportProgress( progress, "Debug " + "is good: " + file);
-	        		backgroundWorker.ReportProgress(progress, "OK " + file);
-	        		return true;
-	        	}
+	        
+		        if (Controller.SWGFiles.isGood(file)) {
+		        	backgroundWorker.ReportProgress( progress, "Debug " + "was already good: " + file);
+		        	backgroundWorker.ReportProgress(progress, "OK " + file);
+		        	return true;
+		        }
+		        
+		        if (File.Exists(file)) {
+		        	if (!swgfile.Strict) {
+			        	backgroundWorker.ReportProgress( progress, "Debug " + "file exists and is not strict, skipping checksum for " + file);
+			        	backgroundWorker.ReportProgress(progress, "OK " + file);
+			        	return true;
+		        	}
+		        	
+		        	FileInfo f = new FileInfo(file);
+		        	
+		        	if (f.Length == swgfile.Filesize) {
+		        		
+		        		if (!Controller.checksumOption && !this.ForceChecksums) {
+			        		backgroundWorker.ReportProgress( progress, "Debug " + "file exists, skipping checksum for " + file);
+			        		backgroundWorker.ReportProgress(progress, "OK " + file);		        			
+		        			return true;
+		        		}
+		        		
+
+			        	if (compareCheckSum(path, checksum)) {
+			        		backgroundWorker.ReportProgress( progress, "Debug " + "is good: " + file);
+			        		backgroundWorker.ReportProgress(progress, "OK " + file);
+			        		return true;
+		        		} else {
+		        			backgroundWorker.ReportProgress( progress, "Debug " + "checksum check failed for " + file);
+		        		}
+		        		
+		        		
+		        	} else if (f.Length < swgfile.Filesize) {
+		        		if (Controller.ResumeOption) {
+		        			offset = f.Length;
+		        		}
+		        	}
+		        	
+		        }
+	        
 	        	
 	        	// only get tre files from local storage
 	        	if (Regex.IsMatch(file, @"\.tre$", RegexOptions.IgnoreCase)) {
 	        		
 	        		backgroundWorker.ReportProgress(progress, "Checking SWGDir for " + file);
 	        		
-	        		if (compareCheckSum(localsrc, checksum)) {
-
-	        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
-	        			backgroundWorker.ReportProgress(progress, "Reading " + file);
-	        			
-						//File.Copy(localsrc, swgdirsave);
-						File.Copy(@localsrc, @path, true);
-	        			
-	        			
-	        			if (compareCheckSum(path,checksum) ) {
-	        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
-	        				backgroundWorker.ReportProgress(progress, "Read " + file);
-	        				return true;
-	        			}
-	        			
-	        			return false;
+	        		if (File.Exists(localsrc)) {
+	        		
+		        		if (compareCheckSum(localsrc, checksum)) {
+	
+		        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
+		        			backgroundWorker.ReportProgress(progress, "Reading " + file);
+		        			
+							//File.Copy(localsrc, swgdirsave);
+							File.Copy(@localsrc, @path, true);
+		        			
+		        			
+		        			if (compareCheckSum(path,checksum) ) {
+		        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
+		        				backgroundWorker.ReportProgress(progress, "Read " + file);
+		        				return true;
+		        			}
+		        			
+							backgroundWorker.ReportProgress(progress, "Debug " + "Postcopy checksum mismatch (rare!) " + file);
+		        			return false;
+		        		} else {
+		        			backgroundWorker.ReportProgress(progress, "Debug " + "found locally but checksum mismatch. " + file);
+		        		}
 	        		}
 	        	}
 	        	
 	        	backgroundWorker.ReportProgress(progress, "Debug " + "Patching " + file);
 				backgroundWorker.ReportProgress(progress, "Patching " + file);
 				
-	        	webclient.DownloadFile(remotesrc,path);
-	        		
+				long Filesize = 0;
+				
+				
+				while (Filesize < swgfile.Filesize) {
+					//this is a hack, yes...
+					try {
+					
+						FileMode mode;
+						
+						FtpWebRequest FtpReq = (FtpWebRequest) FtpWebRequest.Create(new Uri(remotesrc));
+						if (offset > 0) {
+							backgroundWorker.ReportProgress(progress, "Debug " + "Resume from " + offset);
+							FtpReq.ContentOffset = offset;
+							mode = FileMode.Append;
+						} else {
+							mode = FileMode.Create;
+			        	}
+						FtpReq.UseBinary = true;
+						FtpReq.Credentials = new NetworkCredential("anonymous","anonymous");
+						
+						FtpWebResponse response = (FtpWebResponse) FtpReq.GetResponse();
+						Stream ftpStream = response.GetResponseStream();
+						FileStream OutputStream = new FileStream(path, mode);
+						long length = response.ContentLength;
+						int bufsiz = 2048;
+						byte[] buffer = new byte[2048];
+						long readbytes = offset;
+						int readcount = 0;
+						
+						
+						do {
+							
+				
+							readcount = ftpStream.Read(buffer, 0, bufsiz);
+							readbytes += readcount;
+							OutputStream.Write(buffer,0,readcount);
+							
+							//Debug.WriteLine(readbytes + " " + readcount + " " + length);
+							
+						} while (readcount != 0);
+						
+						
+						ftpStream.Close();
+						OutputStream.Close();
+						response.Close();
+						
+						FileInfo f = new FileInfo (path);
+						Filesize = f.Length;
+					
+					} catch {
+						backgroundWorker.ReportProgress(progress, "Debug " + "patching interrupted, resuming" + file);
+						backgroundWorker.ReportProgress(progress, "Error patching " + file);
+					}
+				}
+	        	
+				
 	        	if (compareCheckSum(path,checksum) ) {
 	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
 	        		backgroundWorker.ReportProgress(progress, "Patched " + file);
 	        		return true;
-	        	}
+				} else {
+					backgroundWorker.ReportProgress(progress, "Debug " + "Postpatch checksum mismatch " + file);
+				}
         			
         	} catch {
         		
@@ -696,7 +784,7 @@ namespace PswgLauncher
         	
         	try {
         		
-        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.FTPURL + "/launcher.dl.dat"));
+        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.FTPURL + "/launcherS.dl.dat"));
 				
         		Controller.SWGFiles.CreateFileList(sr,true);
 
@@ -716,7 +804,7 @@ namespace PswgLauncher
         		return false;
         	}
         	
-        	Controller.SWGFiles.WriteConfig(swgdirsave + @"\launcher.dl.dat");
+        	Controller.SWGFiles.WriteConfig(GuiController.LocalFilelist);
         	
         	return true;
         	

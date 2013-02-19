@@ -140,6 +140,7 @@
       <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="SWGFile.cs" />
     <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DirSearch.resx">

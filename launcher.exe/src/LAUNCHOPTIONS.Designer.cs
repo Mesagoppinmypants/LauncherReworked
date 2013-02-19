@@ -35,6 +35,7 @@
         	this.linkDebugWindow = new System.Windows.Forms.LinkLabel();
         	this.checkBoxLocalhost = new System.Windows.Forms.CheckBox();
         	this.linkMissingFiles = new System.Windows.Forms.LinkLabel();
+        	this.checkBoxResume = new System.Windows.Forms.CheckBox();
         	this.SuspendLayout();
         	// 
         	// label1
@@ -63,7 +64,7 @@
         	// 
         	this.soundControl.BackColor = System.Drawing.Color.Transparent;
         	this.soundControl.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.soundControl.Location = new System.Drawing.Point(126, 261);
+        	this.soundControl.Location = new System.Drawing.Point(126, 211);
         	this.soundControl.Name = "soundControl";
         	this.soundControl.Size = new System.Drawing.Size(104, 24);
         	this.soundControl.TabIndex = 18;
@@ -74,7 +75,7 @@
         	// checksumControl
         	// 
         	this.checksumControl.BackColor = System.Drawing.Color.Transparent;
-        	this.checksumControl.Location = new System.Drawing.Point(126, 282);
+        	this.checksumControl.Location = new System.Drawing.Point(126, 241);
         	this.checksumControl.Name = "checksumControl";
         	this.checksumControl.Size = new System.Drawing.Size(212, 24);
         	this.checksumControl.TabIndex = 19;
@@ -117,12 +118,25 @@
         	this.linkMissingFiles.Text = "List Missing Files";
         	this.linkMissingFiles.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkMissingFilesClicked);
         	// 
+        	// checkBoxResume
+        	// 
+        	this.checkBoxResume.BackColor = System.Drawing.Color.Transparent;
+        	this.checkBoxResume.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
+        	this.checkBoxResume.Location = new System.Drawing.Point(126, 271);
+        	this.checkBoxResume.Name = "checkBoxResume";
+        	this.checkBoxResume.Size = new System.Drawing.Size(158, 24);
+        	this.checkBoxResume.TabIndex = 23;
+        	this.checkBoxResume.Text = "Try to resume downloads";
+        	this.checkBoxResume.UseVisualStyleBackColor = false;
+        	this.checkBoxResume.CheckedChanged += new System.EventHandler(this.CheckBoxResumeCheckedChanged);
+        	// 
         	// LAUNCHOPTIONS
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(562, 409);
+        	this.Controls.Add(this.checkBoxResume);
         	this.Controls.Add(this.linkMissingFiles);
         	this.Controls.Add(this.checkBoxLocalhost);
         	this.Controls.Add(this.linkDebugWindow);
@@ -144,6 +158,7 @@
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
+        private System.Windows.Forms.CheckBox checkBoxResume;
         private System.Windows.Forms.LinkLabel linkMissingFiles;
         private System.Windows.Forms.CheckBox checkBoxLocalhost;
         private System.Windows.Forms.LinkLabel linkDebugWindow;

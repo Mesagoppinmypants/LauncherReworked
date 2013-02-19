@@ -34,6 +34,7 @@ namespace PswgLauncher
             soundControl.Checked = Controller.soundOption;
             checksumControl.Checked = Controller.checksumOption;
             checkBoxLocalhost.Checked = Controller.LocalhostOption;
+            checkBoxResume.Checked = Controller.ResumeOption;
              
         }
         
@@ -160,6 +161,11 @@ namespace PswgLauncher
         {
         	Controller.LocalhostOption = checkBoxLocalhost.Checked;
         }
+
+        void CheckBoxResumeCheckedChanged(object sender, EventArgs e)
+        {
+        	Controller.ResumeOption = checkBoxResume.Checked;
+        }
         
         
         void LinkMissingFilesClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -167,7 +173,7 @@ namespace PswgLauncher
         	String missing = "Missing Files " + Environment.NewLine;
         	
         	
-        	foreach (KeyValuePair<String,String> file in Controller.SWGFiles.SwgFileTable) {
+        	foreach (KeyValuePair<String,SWGFile> file in Controller.SWGFiles.SwgFileTable) {
         		
         		if (Controller.SWGFiles.isGood(file.Key)) {
 		           	continue;
@@ -185,5 +191,7 @@ namespace PswgLauncher
         }
         
         
+        
+
     }
 }

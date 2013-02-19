@@ -30,7 +30,9 @@ namespace PswgLauncher
 		public static string FTPURL = "ftp://patch1.projectswg.com/files/";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
-	
+		public static string LocalFilelist = Application.StartupPath + "\\launcherS.dl.dat";
+		
+		
 		private bool _soundOption;
 		
 		public PrivateFontCollection pfc {
@@ -77,6 +79,18 @@ namespace PswgLauncher
 			
 		}
 
+		
+		private bool _resumeOption;
+		public bool ResumeOption {
+			get {
+				return _resumeOption;
+			}
+			set {
+				_resumeOption = value;
+				setAppSetting("ResumeEnable", ((_resumeOption == true) ? "true" : "false" ));
+			}
+		}
+		
 
 		private String _SwgDir;
 		
@@ -91,6 +105,8 @@ namespace PswgLauncher
 				setAppSetting("SwgDir", _SwgDir);
 			}
 		}
+		
+		
 		
 		private Configuration config;
 		
@@ -109,8 +125,9 @@ namespace PswgLauncher
 		{
 			_soundOption = false;
 			_SwgDir = "";
-			_checksumOption = true;
+			_checksumOption = false;
 			_localhostOption = false;
+			_resumeOption = true;
 			
 			_DebugMessages = new List<String>();
 			SWGFiles = new SWGFileList(this);
@@ -168,23 +185,24 @@ namespace PswgLauncher
 			AddDebugMessage("Using " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
 			_soundOption = ( ( getAppSetting("SoundEnable")  == "true") ? true : false);
-			_checksumOption = ( ( getAppSetting("ChecksumEnable")  == "false") ? false : true);
+			_checksumOption = ( ( getAppSetting("ChecksumEnable")  == "true") ? true : false);
 			_localhostOption = ( ( getAppSetting("LocalhostEnable")  == "true") ? true : false);
+			_resumeOption = ( ( getAppSetting("ResumeEnable")  == "false") ? false : true);
 			
 			_SwgDir = getAppSetting("SwgDir");
 			
-			String FileList = Application.StartupPath + "\\launcher.dl.dat";
-			if (File.Exists(FileList)) {
+			
+			if (File.Exists(GuiController.LocalFilelist)) {
 				try {
-					AddDebugMessage("Reading " + FileList);
-					StreamReader sr = new StreamReader(FileList);
+					AddDebugMessage("Reading " + GuiController.LocalFilelist);
+					StreamReader sr = new StreamReader(GuiController.LocalFilelist);
 					SWGFiles.CreateFileList(sr,false);
 				} catch (Exception e) {
-					AddDebugMessage("No luck reading " + FileList + ", needs downloading.");
+					AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
 					//do nothing.. there's still downloading ;)
 				}
 			} else {
-				AddDebugMessage("No " + FileList + " present, needs downloading.");
+				AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
 			}
 
 		}

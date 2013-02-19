@@ -24,8 +24,8 @@ namespace PswgLauncher
 		
 		private GuiController Controller;
 
-		private Dictionary<String,String> _swgfiletable;
-		public Dictionary<String,String> SwgFileTable {
+		private Dictionary<String,SWGFile> _swgfiletable;
+		public Dictionary<String,SWGFile> SwgFileTable {
 			get {
 				return _swgfiletable;
 			}
@@ -54,7 +54,7 @@ namespace PswgLauncher
 			
 			Controller = gc;
 			
-			_swgfiletable = new Dictionary<String, String>();
+			_swgfiletable = new Dictionary<String, SWGFile>();
 			GotFiles = new Dictionary<String, String>();
 			
 			
@@ -145,20 +145,20 @@ namespace PswgLauncher
 			return true;
 		}
 		
-		public Dictionary<String,String> LoopChecksums(StreamReader SR) {
+		public Dictionary<String,SWGFile> LoopChecksums(StreamReader SR) {
 			
 			String line;
 			List<String> text = new List<String>();
-			Dictionary<String,String> NewChecksums = new Dictionary<String,String>();
+			Dictionary<String,SWGFile> NewChecksums = new Dictionary<String,SWGFile>();
 			
-			Regex regex = new Regex(@"^([0-9a-fA-F]{32})\s+(\S+)$");
+			Regex regex = new Regex(@"^([0-9]+)\s+([0-9a-fA-F]{32})\s+([0-9]+)\s+(\S+)$");
 			
 			while ((line = SR.ReadLine()) != null) {
         			Match match = regex.Match(line);
         			
         			if (match.Success) {
         				//Debug.WriteLine("Found " + match.Groups[2].Value + ":" + match.Groups[1].Value);
-        				NewChecksums.Add(match.Groups[2].Value, match.Groups[1].Value);
+        				NewChecksums.Add(match.Groups[4].Value, new SWGFile( (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value)) );
         				
         				text.Add(line) ;
         				continue;
@@ -193,7 +193,7 @@ namespace PswgLauncher
 			
 			if (!HasBegin(SR)) { return; }
 
-			Dictionary<String,String> NewDictionary = LoopChecksums(SR);
+			Dictionary<String,SWGFile> NewDictionary = LoopChecksums(SR);
 			
 			if (NewDictionary == null)  {
 				Controller.AddDebugMessage("Couldn't read file list from disk."  + ((isDownload) ? "server" : "disk") );
@@ -225,8 +225,8 @@ namespace PswgLauncher
 					file.WriteLine(this._timestamp.ToString());
 					file.WriteLine("BEGIN");
 					
-					foreach (KeyValuePair<String,String> kv in this._swgfiletable) {
-						file.WriteLine(kv.Value + "  " + kv.Key);
+					foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
+						file.WriteLine(kv.Value.ToString() + "  " + kv.Key);
 					}
 					file.WriteLine("END");
 				} 
