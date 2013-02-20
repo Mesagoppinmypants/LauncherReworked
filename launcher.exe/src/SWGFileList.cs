@@ -158,7 +158,7 @@ namespace PswgLauncher
         			
         			if (match.Success) {
         				//Debug.WriteLine("Found " + match.Groups[2].Value + ":" + match.Groups[1].Value);
-        				NewChecksums.Add(match.Groups[4].Value, new SWGFile( (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value)) );
+        				NewChecksums.Add(match.Groups[4].Value, new SWGFile(match.Groups[4].Value, (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value)) );
         				
         				text.Add(line) ;
         				continue;
@@ -226,7 +226,7 @@ namespace PswgLauncher
 					file.WriteLine("BEGIN");
 					
 					foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
-						file.WriteLine(kv.Value.ToString() + "  " + kv.Key);
+						file.WriteLine(kv.Value.ToString());
 					}
 					file.WriteLine("END");
 				} 

@@ -687,55 +687,15 @@ namespace PswgLauncher
 				
 				
 				while (Filesize < swgfile.Filesize) {
-					//this is a hack, yes...
-					try {
 					
-						FileMode mode;
-						
-						FtpWebRequest FtpReq = (FtpWebRequest) FtpWebRequest.Create(new Uri(remotesrc));
-						if (offset > 0) {
-							backgroundWorker.ReportProgress(progress, "Debug " + "Resume from " + offset);
-							FtpReq.ContentOffset = offset;
-							mode = FileMode.Append;
-						} else {
-							mode = FileMode.Create;
-			        	}
-						FtpReq.UseBinary = true;
-						FtpReq.Credentials = new NetworkCredential("anonymous","anonymous");
-						
-						FtpWebResponse response = (FtpWebResponse) FtpReq.GetResponse();
-						Stream ftpStream = response.GetResponseStream();
-						FileStream OutputStream = new FileStream(path, mode);
-						long length = response.ContentLength;
-						int bufsiz = 2048;
-						byte[] buffer = new byte[2048];
-						long readbytes = offset;
-						int readcount = 0;
-						
-						
-						do {
-							
-				
-							readcount = ftpStream.Read(buffer, 0, bufsiz);
-							readbytes += readcount;
-							OutputStream.Write(buffer,0,readcount);
-							
-							//Debug.WriteLine(readbytes + " " + readcount + " " + length);
-							
-						} while (readcount != 0);
-						
-						
-						ftpStream.Close();
-						OutputStream.Close();
-						response.Close();
-						
-						FileInfo f = new FileInfo (path);
+					FTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress);
+					
+					if (File.Exists(file)) {
+						FileInfo f = new FileInfo(file);
 						Filesize = f.Length;
-					
-					} catch {
-						backgroundWorker.ReportProgress(progress, "Debug " + "patching interrupted, resuming" + file);
-						backgroundWorker.ReportProgress(progress, "Error patching " + file);
+						offset = Filesize;
 					}
+					
 				}
 	        	
 				
@@ -747,14 +707,61 @@ namespace PswgLauncher
 					backgroundWorker.ReportProgress(progress, "Debug " + "Postpatch checksum mismatch " + file);
 				}
         			
-        	} catch {
+	        } catch (Exception ex) {
         		
+	        	backgroundWorker.ReportProgress(progress, "Debug " + "Error patching " + file + " " + ex);
         	}
         	
         	backgroundWorker.ReportProgress(progress, "Debug " + "Error patching " + file);
         	backgroundWorker.ReportProgress(progress, "Error patching " + file);
         	
         	return false;
+        }
+        
+        
+        private void FTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress) {
+
+        	FileMode mode;
+        	
+			if (offset > 0) {
+				backgroundWorker.ReportProgress(progress, "Debug " + "Resume from " + offset);
+				mode = FileMode.Append;
+			} else {
+				mode = FileMode.Create;
+			}
+        	
+        	using ( FileStream OutputStream = new FileStream(swgfile.Filename, mode) ) {
+        		
+        		FtpWebRequest FtpReq = (FtpWebRequest) FtpWebRequest.Create(new Uri(remoteURL));
+
+        		if (offset > 0) {
+			    	FtpReq.ContentOffset = offset;
+			    }
+        		
+				FtpReq.Method = WebRequestMethods.Ftp.DownloadFile;
+				FtpReq.UseBinary = true;
+				FtpReq.KeepAlive = false;
+				FtpReq.Credentials = new NetworkCredential("anonymous","anonymous");
+        		
+        		using (FtpWebResponse response = (FtpWebResponse) FtpReq.GetResponse()) {
+        			using (Stream ftpStream = response.GetResponseStream()) {
+						
+						long length = response.ContentLength;
+						int bufsiz = 2048;
+						byte[] buffer = new byte[bufsiz];
+										
+						int readcount = ftpStream.Read(buffer, 0, bufsiz);
+										
+						while (readcount > 0) {
+							
+							OutputStream.Write(buffer,0,readcount);
+							
+							readcount = ftpStream.Read(buffer, 0, bufsiz);
+							
+						} 
+        			}
+        		}
+        	}
         }
         
         

@@ -15,6 +15,9 @@ namespace PswgLauncher
 	/// </summary>
 	public class SWGFile
 	{
+		public String Filename {
+			get; set; 
+		}
 		
 		public bool Strict {
 			get; set;
@@ -28,15 +31,17 @@ namespace PswgLauncher
 			get; set;
 		}
 		
-		public SWGFile(bool IsStrict, String MDFiveSum, int Size)
+		
+		public SWGFile(String File, bool IsStrict, String MDFiveSum, int Size)
 		{
+			Filename = File;
 			Strict = IsStrict;
 			Checksum = MDFiveSum;
 			Filesize = Size;
 		}
 		
 		public override String ToString() {
-			return ((Strict) ? "1" : "0") + " " + Checksum + " " + Filesize.ToString();
+			return ((Strict) ? "1" : "0") + " " + Checksum + " " + Filesize.ToString() + " " + Filename;
 		}
 	}
 }
