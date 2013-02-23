@@ -53,8 +53,8 @@ namespace PswgLauncher
 				
 				WebClient wc = new WebClient();
 				wc.Encoding = System.Text.Encoding.UTF8;
-	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.FTPURL + "lpatch.cfg"));
+
+	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.LAUNCHER + "lpatch.cfg"));
 	            
 	            lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
 

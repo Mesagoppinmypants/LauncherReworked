@@ -144,7 +144,7 @@ namespace PswgLauncher
         		
             	WebClient wc = new WebClient();
             	wc.Encoding = System.Text.Encoding.UTF8;
-	            wc.Credentials = new NetworkCredential("anonymous","anonymous");
+            	wc.Credentials = Controller.GetNetworkCredential();
 
             	Controller.AddDebugMessage("Processing Checksums.");
             	
@@ -427,12 +427,7 @@ namespace PswgLauncher
   			if(backgroundWorker != null)
   			{
 	    		backgroundWorker.ReportProgress(0);
-	    		
-		        WebClient wc = new WebClient();
-		        wc.Encoding = System.Text.Encoding.UTF8;
-		        wc.Credentials = new NetworkCredential("anonymous", "anonymous");
-		
-		            
+	   
 		        Dictionary<String,SWGFile> files = Controller.SWGFiles.SwgFileTable;
 		            
 		        float step = (float) 100 / (float) files.Count;
@@ -592,7 +587,7 @@ namespace PswgLauncher
         	
         	String path = swgdirsave + "\\" + file;
         	String localsrc = Controller.SwgDir + "\\" + file;
-        	String remotesrc = GuiController.FTPURL + "/" + file;
+        	String remotesrc = GuiController.MAINURL + "/" + file;
         	long offset = 0;
         	
         	String checksum = swgfile.Checksum;
@@ -605,6 +600,15 @@ namespace PswgLauncher
         	}
 
 	        backgroundWorker.ReportProgress(progress, "Checking " + file);
+	        
+	        // empty files just need to have their dir created.
+	        if (swgfile.Filesize <= 0) {
+	        	
+		        backgroundWorker.ReportProgress( progress, "Debug " + "empty file is good: " + file);
+		        backgroundWorker.ReportProgress(progress, "OK " + file);
+    	
+	        	return true;
+	        }
 
         	try {
 	        
@@ -688,7 +692,7 @@ namespace PswgLauncher
 				
 				while (Filesize < swgfile.Filesize) {
 					
-					FTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress);
+					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress);
 					
 					if (File.Exists(file)) {
 						FileInfo f = new FileInfo(file);
@@ -719,7 +723,7 @@ namespace PswgLauncher
         }
         
         
-        private void FTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress) {
+        private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress) {
 
         	FileMode mode;
         	
@@ -732,31 +736,28 @@ namespace PswgLauncher
         	
         	using ( FileStream OutputStream = new FileStream(swgfile.Filename, mode) ) {
         		
-        		FtpWebRequest FtpReq = (FtpWebRequest) FtpWebRequest.Create(new Uri(remoteURL));
+        		HttpWebRequest WebReq = (HttpWebRequest) HttpWebRequest.Create(new Uri(remoteURL));
 
-        		if (offset > 0) {
-			    	FtpReq.ContentOffset = offset;
+        		if (Controller.ResumeOption && offset > 0) {
+        			WebReq.AddRange(offset);
 			    }
         		
-				FtpReq.Method = WebRequestMethods.Ftp.DownloadFile;
-				FtpReq.UseBinary = true;
-				FtpReq.KeepAlive = false;
-				FtpReq.Credentials = new NetworkCredential("anonymous","anonymous");
+				WebReq.Credentials = Controller.GetNetworkCredential();
         		
-        		using (FtpWebResponse response = (FtpWebResponse) FtpReq.GetResponse()) {
-        			using (Stream ftpStream = response.GetResponseStream()) {
+        		using (HttpWebResponse response = (HttpWebResponse) WebReq.GetResponse()) {
+        			using (Stream webStream = response.GetResponseStream()) {
 						
 						long length = response.ContentLength;
 						int bufsiz = 2048;
 						byte[] buffer = new byte[bufsiz];
 										
-						int readcount = ftpStream.Read(buffer, 0, bufsiz);
+						int readcount = webStream.Read(buffer, 0, bufsiz);
 										
 						while (readcount > 0) {
 							
 							OutputStream.Write(buffer,0,readcount);
 							
-							readcount = ftpStream.Read(buffer, 0, bufsiz);
+							readcount = webStream.Read(buffer, 0, bufsiz);
 							
 						} 
         			}
@@ -791,7 +792,7 @@ namespace PswgLauncher
         	
         	try {
         		
-        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.FTPURL + "/launcherS.dl.dat"));
+        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.MAINURL + "/launcherS.dl.dat"));
 				
         		Controller.SWGFiles.CreateFileList(sr,true);
 
@@ -817,22 +818,16 @@ namespace PswgLauncher
         	
         }
         
-        //FIXME: this should be in a different class.
-        private void Download(WebClient wc, String Filename) {
-        	
-        	//this.launcherProgressBar1.Text = Filename;
-        	wc.DownloadFile(GuiController.FTPURL + "/" + Filename, swgdirsave + "/" + Filename);
-        	
-        }
+
 
         
-        private bool GetLoginCfg(String filename, String savename) {
+        private bool GetLoginCfg(String filename, String savename, bool auth) {
 
         	try {
 
 	            WebClient wc = new WebClient();
 	            wc.Encoding = System.Text.Encoding.UTF8;
-	            wc.Credentials = new NetworkCredential("anonymous", "anonymous");
+	            if (auth) { wc.Credentials = Controller.GetNetworkCredential(); }
 	            wc.DownloadFile(filename, savename);
         		
         	} catch {
@@ -885,11 +880,11 @@ namespace PswgLauncher
         	
         	
         	if (!gotfile) {
-        		gotfile = GetLoginCfg(GuiController.FTPURL + "/login.cfg", swgdirsave + "/login.cfg");
+        		gotfile = GetLoginCfg(GuiController.MAINURL + "/login.cfg", swgdirsave + "/login.cfg", true);
         	}
         	
         	if (!gotfile) {
-        		gotfile = GetLoginCfg(GuiController.ALTURL + "/login.cfg", swgdirsave + "/login.cfg");
+        		gotfile = GetLoginCfg(GuiController.ALTURL + "/login.cfg", swgdirsave + "/login.cfg", false);
         	}
         	
 

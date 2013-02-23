@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -27,10 +28,14 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
-		public static string FTPURL = "ftp://patch1.projectswg.com/files/";
+		public static string MAINURL = "http://patch1.projectswg.com/files/";
+		public static string LAUNCHER = "http://patch1.projectswg.com/launcher/";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
 		public static string LocalFilelist = Application.StartupPath + "\\launcherS.dl.dat";
+		
+		private static string HttpAuthUser = "pswglaunch";
+		private static string HttpAuthPass = "wvQAxc5mGgF0";
 		
 		
 		private bool _soundOption;
@@ -321,6 +326,12 @@ namespace PswgLauncher
 		
 			return Application.ProductVersion.ToString().Trim();
 		
+		}
+		
+		public NetworkCredential GetNetworkCredential() {
+			
+			return new NetworkCredential(HttpAuthUser, HttpAuthPass);
+			
 		}
 		
 		
