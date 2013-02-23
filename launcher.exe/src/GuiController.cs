@@ -200,8 +200,10 @@ namespace PswgLauncher
 			if (File.Exists(GuiController.LocalFilelist)) {
 				try {
 					AddDebugMessage("Reading " + GuiController.LocalFilelist);
-					StreamReader sr = new StreamReader(GuiController.LocalFilelist);
-					SWGFiles.CreateFileList(sr,false);
+					using (StreamReader sr = new StreamReader(GuiController.LocalFilelist)) {
+						SWGFiles.CreateFileList(sr,false);
+					}
+					
 				} catch (Exception e) {
 					AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
 					//do nothing.. there's still downloading ;)

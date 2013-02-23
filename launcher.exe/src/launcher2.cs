@@ -790,11 +790,13 @@ namespace PswgLauncher
 
         	
         	
+        	
         	try {
         		
-        		StreamReader sr = new StreamReader(wc.OpenRead(GuiController.MAINURL + "/launcherS.dl.dat"));
+        		using (StreamReader sr = new StreamReader(wc.OpenRead(GuiController.MAINURL + "/launcherS.dl.dat"))) {
 				
-        		Controller.SWGFiles.CreateFileList(sr,true);
+        			Controller.SWGFiles.CreateFileList(sr,true);
+        		}
 
         		
         	} catch (Exception ex) {

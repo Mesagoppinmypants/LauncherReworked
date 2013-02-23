@@ -196,7 +196,7 @@ namespace PswgLauncher
 			Dictionary<String,SWGFile> NewDictionary = LoopChecksums(SR);
 			
 			if (NewDictionary == null)  {
-				Controller.AddDebugMessage("Couldn't read file list from disk."  + ((isDownload) ? "server" : "disk") );
+				Controller.AddDebugMessage("Couldn't read file list from "  + ((isDownload) ? "server" : "disk") );
 				return;
 			}
 			
@@ -219,21 +219,25 @@ namespace PswgLauncher
 			}
 			
 			try {
-				using (StreamWriter file = new StreamWriter(filename)) {
 				
-					file.WriteLine(this._swgfiletable.Count.ToString());
-					file.WriteLine(this._timestamp.ToString());
-					file.WriteLine("BEGIN");
-					
-					foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
-						file.WriteLine(kv.Value.ToString());
+				
+				using (FileStream fs = new FileStream(filename,FileMode.Create)) {
+					using (StreamWriter file = new StreamWriter(fs)) {
+				
+						file.WriteLine(this._swgfiletable.Count.ToString());
+						file.WriteLine(this._timestamp.ToString());
+						file.WriteLine("BEGIN");
+						
+						foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
+							file.WriteLine(kv.Value.ToString());
+						}
+						file.WriteLine("END");
 					}
-					file.WriteLine("END");
 				} 
 			} catch (Exception e) {
-				Controller.AddDebugMessage("Something went wrong writing file list.");
+				Controller.AddDebugMessage("Something went wrong writing file list." + e.ToString());
 				return false;
-			}
+			} 
 			
 			return true;
 		}

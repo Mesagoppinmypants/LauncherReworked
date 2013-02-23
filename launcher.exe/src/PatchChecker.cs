@@ -61,7 +61,7 @@ namespace PswgLauncher
             
 			} catch (WebException e) {
 				
-				Controller.AddDebugMessage("Eek! Exception " + e.ToString() );
+				Controller.AddDebugMessage("Couldn't read server launcher version " + e.ToString() );
 				
 				remoteError = true;
 				return;
@@ -74,8 +74,8 @@ namespace PswgLauncher
 			ProgramVersion ThisVersion = new ProgramVersion(Controller.GetProgramVersion());
 			ProgramVersion ServerVersion = new ProgramVersion(lpatchsrv);
 			
-			Controller.AddDebugMessage("Server Launcher Version" + Controller.GetProgramVersion() + "|" + ThisVersion.ToCompactString() + " |" + ThisVersion.ToString());
-			Controller.AddDebugMessage("Local Launcher Version" + lpatchsrv + "|" + ServerVersion.ToCompactString() + " |" + ServerVersion.ToString());
+			Controller.AddDebugMessage("Local Launcher Version" + Controller.GetProgramVersion() + "|" + ThisVersion.ToCompactString() + " |" + ThisVersion.ToString());
+			Controller.AddDebugMessage("Server Launcher Version" + lpatchsrv + "|" + ServerVersion.ToCompactString() + " |" + ServerVersion.ToString());
 	        
 	        //backward compatibility for launcher patcher for the time being.
 	        try {
