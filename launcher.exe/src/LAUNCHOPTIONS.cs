@@ -21,7 +21,7 @@ namespace PswgLauncher
     	private LauncherButton MinimizeButton;
     	private LauncherButton CloseButton;
     	
-    	private LauncherButton DonateButton;
+		private LauncherButton AboutButton;    	
     	private LauncherButton SupportButton;
     	private LauncherButton TrefixButton;
     	
@@ -58,14 +58,12 @@ namespace PswgLauncher
 
         	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 68));
         	TrefixButton.Click += button2_Click;
-        	this.Controls.Add(TrefixButton);	
+        	this.Controls.Add(TrefixButton);
+
+        	AboutButton = Controller.SpawnStandardButton("About", new Point(125, 125));
+        	AboutButton.Click += About_Click;
+        	this.Controls.Add(AboutButton);
         	
-        	/*
-        	this.button1.Image = Controller.GetResourceImage("WButton_minimize");
-        	this.close.Image = Controller.GetResourceImage("WButton_close");     	
-        	this.close.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	this.button1.FlatAppearance.BorderColor = Color.FromArgb(0, 255, 255, 255);
-        	*/
         	
         }
         
@@ -133,6 +131,13 @@ namespace PswgLauncher
             }
 
         }
+        
+        private void About_Click(object sender, EventArgs e) {
+        	
+        	DialogResult dr = MessageBox.Show("Build " + Controller.GetProgramVersion() + "\n\nButtons created with Star Jedi Font by Davide Canavero, available under\nhttp://projectswg.com/download/star_jedi.zip","Project SWG Launcher",MessageBoxButtons.OK);
+        	
+        }
+        	
    
 
         void ChecksumControlCheckedChanged(object sender, EventArgs e)
