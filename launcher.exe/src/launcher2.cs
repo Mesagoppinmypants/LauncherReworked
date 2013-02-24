@@ -709,11 +709,15 @@ namespace PswgLauncher
         
         private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress) {
 
+        	bool append = false;
         	FileMode mode;
         	
-			if (offset > 0) {
+			if (Controller.ResumeOption && offset > 0) {
+        		
 				backgroundWorker.ReportProgress(progress, "Debug " + "Resume from " + offset);
+				append = true;
 				mode = FileMode.Append;
+				
 			} else {
 				mode = FileMode.Create;
 			}
@@ -722,7 +726,7 @@ namespace PswgLauncher
         		
         		HttpWebRequest WebReq = (HttpWebRequest) HttpWebRequest.Create(new Uri(remoteURL));
 
-        		if (Controller.ResumeOption && offset > 0) {
+        		if ( append ) {
         			WebReq.AddRange(offset);
 			    }
         		
@@ -924,46 +928,6 @@ namespace PswgLauncher
             f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
         }
 
-        private void LinkRetryChecksumsTimerTicked(object sender, EventArgs e)
-        {
-        	timer.Stop();
-        	timer.Dispose();
-        	
-        	Process();
-        }
-        
-        
-        
-        void LinkRetryChecksumsLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-        	if (status != (int) StatusCodes.ChecksumFailed) {
-        		return;
-        	}
-        	
-        	                        
-            timer = new System.Windows.Forms.Timer();
-            timer.Interval = 100;
-            timer.Tick += LinkRetryChecksumsTimerTicked;
-            timer.Start();
-        	
-        }
-        
-
-        
-        void LinkLabelContinueChecksumLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-        	
-        	UpdateStatus((int) StatusCodes.ChecksumOk);
-        	Process();
-        	
-        	
-        }
-        
-        void LauncherButton1Click(object sender, EventArgs e)
-        {
-        	
-        }
-        
         
         private void Donate_Click(object sender, EventArgs e)
         {
