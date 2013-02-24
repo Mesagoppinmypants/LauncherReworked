@@ -178,37 +178,48 @@ namespace PswgLauncher
 		}
 		
 
-		public void CreateFileList(StreamReader SR, bool isDownload) {
+		public bool CreateFileList(StreamReader SR, bool isDownload) {
 			
 			String Checksum;
 			int LineNumber;
 			int MasterTimestamp;
-			if ( (LineNumber = RetrieveLineNumber(SR)) <= 0 )  { return; }
-			if ( (MasterTimestamp = RetrieveTimestamp(SR)) <= 0)  { return;}
+			if ( (LineNumber = RetrieveLineNumber(SR)) <= 0 )  {
+				Controller.AddDebugMessage("remote file is empty.");
+				return false;
+			}
+			
+			if ( (MasterTimestamp = RetrieveTimestamp(SR)) <= 0)  {
+				Controller.AddDebugMessage("remote file is malformed.");
+				return false;
+			}
 			
 			if (this.HasFileList && this._timestamp != null && this._timestamp >= MasterTimestamp) {
 				Controller.AddDebugMessage("new list timestamp less or equal, ignoring new list. " + _timestamp + " vs " + MasterTimestamp);
-				return;
+				return false;
 			}
 			
-			if (!HasBegin(SR)) { return; }
+			if (!HasBegin(SR)) {
+				Controller.AddDebugMessage("remote file is malformed.");
+				return false;
+			}
 
 			Dictionary<String,SWGFile> NewDictionary = LoopChecksums(SR);
 			
 			if (NewDictionary == null)  {
 				Controller.AddDebugMessage("Couldn't read file list from "  + ((isDownload) ? "server" : "disk") );
-				return;
+				return false;
 			}
 			
 			if (NewDictionary.Count != LineNumber) {
 				Controller.AddDebugMessage("Line Number mismatch" );
-				return;				
+				return false;				
 			}
 
 			this._swgfiletable = NewDictionary;
 			this._timestamp = MasterTimestamp;
 			this._hasFileList = true;
 			Controller.AddDebugMessage("Successfully read file list from " + ((isDownload) ? "server" : "disk"));
+			return true;
 			
 		}
 		

@@ -787,33 +787,24 @@ namespace PswgLauncher
         
         //FIXME: this might as well go in the Controller.
         private bool ProcessChecksums(WebClient wc) {
-
-        	
-        	
+	
+        	bool read = false;
         	
         	try {
         		
         		using (StreamReader sr = new StreamReader(wc.OpenRead(GuiController.MAINURL + "/launcherS.dl.dat"))) {
 				
-        			Controller.SWGFiles.CreateFileList(sr,true);
+        			read = Controller.SWGFiles.CreateFileList(sr,true);
         		}
 
         		
-        	} catch (Exception ex) {
-        		
-        		Controller.AddDebugMessage("chksum exception/download");
-        		
-        		return false;
-
-        	}
+        	} catch {}
         	
-        	
-        	if (!Controller.SWGFiles.HasFileList) {
-        		Controller.AddDebugMessage("chksum exception/incomplete");
-        		
+        	if (!read) {
+        		Controller.AddDebugMessage("chksum exception/incomplete");       		
         		return false;
         	}
-        	
+        	      	
         	Controller.SWGFiles.WriteConfig(GuiController.LocalFilelist);
         	
         	return true;
