@@ -67,9 +67,16 @@ namespace PswgLauncher
 				return;
 				
 			}
+
 			
+
 			lpatchsrv = lpatchsrv.Trim();
 
+			if (lpatchsrv == "") {
+				remoteError = true;
+				return;
+			}
+			
 
 			ProgramVersion ThisVersion = new ProgramVersion(Controller.GetProgramVersion());
 			ProgramVersion ServerVersion = new ProgramVersion(lpatchsrv);

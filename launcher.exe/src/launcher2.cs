@@ -822,107 +822,56 @@ namespace PswgLauncher
         
 
 
-        
-        private bool GetLoginCfg(String filename, String savename, bool auth) {
+        private void PLAY_Click_1(object sender, EventArgs e) {
 
-        	try {
-
-	            WebClient wc = new WebClient();
-	            wc.Encoding = System.Text.Encoding.UTF8;
-	            if (auth) { wc.Credentials = Controller.GetNetworkCredential(); }
-	            wc.DownloadFile(filename, savename);
-        		
-        	} catch {
-        		return false;
-        	}
-
-        	return true;
-        	
-        }
-
-
-        private void PLAY_Click_1(object sender, EventArgs e)
-        {
-        	
-        	
         	if (status != (int) StatusCodes.PatchingComplete) {
-        		
         		Controller.PlaySound("Sound_Error");
-
         		return;
         	}
 
         	Controller.PlaySound("Sound_Play");
-        	
-        	bool gotfile = false;
-        	
+
+        	String address = "login1.projectswg.com";
+        	String port = "44453";
+       	
         	if (Controller.LocalhostOption) {
-        	
-        		try {
-        			
-        			StreamWriter sw = new StreamWriter(swgdirsave + "/login.cfg");
-        			
-        			sw.WriteLine("[ClientGame]");
-        			sw.WriteLine("loginServerPort0=44453");
-        			sw.WriteLine("loginServerAddress0=127.0.0.1");
-        			sw.WriteLine("[Station]");
-        			sw.WriteLine("subscriptionFeatures=1");
-        			sw.WriteLine("gameFeatures=65535");
-        			sw.Close();
-        			gotfile = true;
-        			
-        			
-        		} catch {
+        		address = "127.0.0.1";
+        		port = "44453";
+        	} 
         		
-					DialogResult dr = MessageBox.Show("Couldn't pass login server while using localhost option.","Write error",MessageBoxButtons.OK);
-					return;        			
+        	try {
+        			
+        		using (StreamWriter sw = new StreamWriter(swgdirsave + "/login.cfg")) {
+        			
+	        		sw.WriteLine("[ClientGame]");
+	        		sw.WriteLine("loginServerPort0="+port);
+	        		sw.WriteLine("loginServerAddress0="+address);
+	        		sw.WriteLine("[Station]");
+	        		sw.WriteLine("subscriptionFeatures=1");
+	        		sw.WriteLine("gameFeatures=65535");
+	        		sw.Close();
         		}
+        			
+        	} catch {
         		
+				DialogResult dr = MessageBox.Show("Couldn't pass login server while using localhost option.","Write error",MessageBoxButtons.OK);
+				return;        			
         	}
         	
+        	this.Hide();
+            Directory.SetCurrentDirectory(swgdirsave);
+            System.Threading.Thread.Sleep(200);
+            System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
+            System.Threading.Thread.Sleep(40000);
+            File.Delete(swgdirsave + "/login.cfg");
+            Application.Exit();
+            return;
         	
-        	if (!gotfile) {
-        		gotfile = GetLoginCfg(GuiController.MAINURL + "/login.cfg", swgdirsave + "/login.cfg", true);
-        	}
-        	
-        	if (!gotfile) {
-        		gotfile = GetLoginCfg(GuiController.ALTURL + "/login.cfg", swgdirsave + "/login.cfg", false);
-        	}
-        	
-
-        	if (gotfile) {
-        	
-            	this.Hide();
-            	Directory.SetCurrentDirectory(swgdirsave);
-            	System.Threading.Thread.Sleep(200);
-            	System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
-            	System.Threading.Thread.Sleep(35000);
-            	File.Delete(swgdirsave + "/login.cfg");
-            	Application.Exit();
-            	return;
-            	
-        	} else {
-        		
-        		DialogResult dr = MessageBox.Show("Couldn't read login server information from remote servers.","Network error",MessageBoxButtons.OK);
-        		
-        	}
-                   
-
         }
 
-        private void options_SizeChanged(object sender, EventArgs e)
-        {
-              
-
-			// !?! 
-            //  backgroundWorker2.CancelAsync();
-                
-         
-        }
 
         private void scan_Click(object sender, EventArgs e)
         {
-
         	
             //only scan if complete
             if (status != (int) StatusCodes.PatchingComplete && status != (int) StatusCodes.PatchingFailed)
