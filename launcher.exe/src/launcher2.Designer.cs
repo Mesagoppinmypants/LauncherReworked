@@ -35,8 +35,6 @@
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
         	this.label1 = new System.Windows.Forms.Label();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
-        	this.linkRetryChecksums = new System.Windows.Forms.LinkLabel();
-        	this.linkLabelContinueChecksum = new System.Windows.Forms.LinkLabel();
         	this.launcherProgressBar1 = new PswgLauncher.LauncherProgressBar();
         	this.labelError = new System.Windows.Forms.Label();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -55,7 +53,6 @@
         	this.webBrowser1.Size = new System.Drawing.Size(208, 298);
         	this.webBrowser1.TabIndex = 0;
         	this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/forums/update_notes.php", System.UriKind.Absolute);
-        	this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
         	// 
         	// imageList1
         	// 
@@ -102,30 +99,6 @@
         	this.pictureBox2.TabIndex = 9;
         	this.pictureBox2.TabStop = false;
         	// 
-        	// linkRetryChecksums
-        	// 
-        	this.linkRetryChecksums.BackColor = System.Drawing.Color.Transparent;
-        	this.linkRetryChecksums.Location = new System.Drawing.Point(148, 421);
-        	this.linkRetryChecksums.Name = "linkRetryChecksums";
-        	this.linkRetryChecksums.Size = new System.Drawing.Size(28, 13);
-        	this.linkRetryChecksums.TabIndex = 16;
-        	this.linkRetryChecksums.TabStop = true;
-        	this.linkRetryChecksums.Text = "retry";
-        	this.linkRetryChecksums.Visible = false;
-        	this.linkRetryChecksums.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkRetryChecksumsLinkClicked);
-        	// 
-        	// linkLabelContinueChecksum
-        	// 
-        	this.linkLabelContinueChecksum.BackColor = System.Drawing.Color.Transparent;
-        	this.linkLabelContinueChecksum.Location = new System.Drawing.Point(182, 421);
-        	this.linkLabelContinueChecksum.Name = "linkLabelContinueChecksum";
-        	this.linkLabelContinueChecksum.Size = new System.Drawing.Size(189, 13);
-        	this.linkLabelContinueChecksum.TabIndex = 17;
-        	this.linkLabelContinueChecksum.TabStop = true;
-        	this.linkLabelContinueChecksum.Text = "Continue existing local checksums";
-        	this.linkLabelContinueChecksum.Visible = false;
-        	this.linkLabelContinueChecksum.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelContinueChecksumLinkClicked);
-        	// 
         	// launcherProgressBar1
         	// 
         	this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
@@ -153,8 +126,6 @@
         	this.ControlBox = false;
         	this.Controls.Add(this.launcherProgressBar1);
         	this.Controls.Add(this.labelError);
-        	this.Controls.Add(this.linkLabelContinueChecksum);
-        	this.Controls.Add(this.linkRetryChecksums);
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
         	this.Controls.Add(this.splitter1);
@@ -178,8 +149,6 @@
         }
         private PswgLauncher.LauncherProgressBar launcherProgressBar1;
         private System.Windows.Forms.Label labelError;
-        private System.Windows.Forms.LinkLabel linkLabelContinueChecksum;
-        private System.Windows.Forms.LinkLabel linkRetryChecksums;
 
         #endregion
 

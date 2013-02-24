@@ -12,6 +12,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace PswgLauncher
@@ -229,20 +231,27 @@ namespace PswgLauncher
 				return false;
 			}
 			
+			RijndaelManaged aes = new RijndaelManaged();
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);
+			
 			try {
 				
 				
 				using (FileStream fs = new FileStream(filename,FileMode.Create)) {
-					using (StreamWriter file = new StreamWriter(fs)) {
-				
-						file.WriteLine(this._swgfiletable.Count.ToString());
-						file.WriteLine(this._timestamp.ToString());
-						file.WriteLine("BEGIN");
-						
-						foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
-							file.WriteLine(kv.Value.ToString());
+					using (CryptoStream cs = new CryptoStream(fs, aes.CreateEncryptor(key, key), CryptoStreamMode.Write)) {
+						using (StreamWriter file = new StreamWriter(cs)) {
+					
+							file.WriteLine(this._swgfiletable.Count.ToString());
+							file.WriteLine(this._timestamp.ToString());
+							file.WriteLine("BEGIN");
+							
+							foreach (KeyValuePair<String,SWGFile> kv in this._swgfiletable) {
+								file.WriteLine(kv.Value.ToString());
+							}
+							file.WriteLine("END");
+							
+							aes.Clear();
 						}
-						file.WriteLine("END");
 					}
 				} 
 			} catch (Exception e) {
@@ -250,9 +259,61 @@ namespace PswgLauncher
 				return false;
 			} 
 			
+			
 			return true;
 		}
 		
+		public void ReadLocalConfigUnEnc() {
+
+			if (!File.Exists(GuiController.LocalFilelist)) {
+				Controller.AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
+				return;
+			}
+			
+			RijndaelManaged aes = new RijndaelManaged();
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
+			
+			try {
+				Controller.AddDebugMessage("Reading " + GuiController.LocalFilelist);
+				using (FileStream fs = new FileStream(GuiController.LocalFilelist,FileMode.Open)) {
+					
+						using (StreamReader sr = new StreamReader(fs)) {
+							CreateFileList(sr,false);
+						}
+					
+				}
+						
+			} catch (Exception e) {
+				Controller.AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
+			}
+			
+		}
+		
+		public void ReadLocalConfig() {
+			
+			if (!File.Exists(GuiController.LocalFilelist)) {
+				Controller.AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
+				return;
+			}
+			
+			RijndaelManaged aes = new RijndaelManaged();
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
+			
+			try {
+				Controller.AddDebugMessage("Reading " + GuiController.LocalFilelist);
+				using (FileStream fs = new FileStream(GuiController.LocalFilelist,FileMode.Open)) {
+					using (CryptoStream cs = new CryptoStream(fs, aes.CreateDecryptor(key, key), CryptoStreamMode.Read)) {
+						using (StreamReader sr = new StreamReader(cs)) {
+							CreateFileList(sr,false);
+						}
+					}
+				}
+						
+			} catch (Exception e) {
+				Controller.AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
+			}
+
+		}
 		
 		public void AddGoodFile(String filename) {
 			if (filename != null) {

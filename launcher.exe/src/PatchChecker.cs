@@ -54,9 +54,11 @@ namespace PswgLauncher
 				WebClient wc = new WebClient();
 				wc.Encoding = System.Text.Encoding.UTF8;
 
-	            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.LAUNCHER + "lpatch.cfg"));
-	            
-	            lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
+				using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.LAUNCHER + "lpatch.cfg"))) {
+
+	            	lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
+					
+				}
 
             
 			} catch (WebException e) {

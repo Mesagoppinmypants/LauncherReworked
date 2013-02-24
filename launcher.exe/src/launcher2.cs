@@ -139,8 +139,6 @@ namespace PswgLauncher
             
             if (status == (int) StatusCodes.NoChecksum || status == (int) StatusCodes.ChecksumFailed) {
             	
-        		UpdateStatus((int) StatusCodes.UpdatingChecksum);
-        		
         		
             	WebClient wc = new WebClient();
             	wc.Encoding = System.Text.Encoding.UTF8;
@@ -149,19 +147,32 @@ namespace PswgLauncher
             	Controller.AddDebugMessage("Processing Checksums.");
             	
             	bool rv = false;
+				int c = 0;
             	
-            	for (int c = 0; c < 20 && rv == false; c++) {
-            		
+				while (rv == false) {
+					
             		if (c>0) {
+						UpdateStatus((int) StatusCodes.ChecksumFailed);
             			errorcounter++;
             			UpdateErrors();
+
+		            	DialogResult res = MessageBox.Show("File checksums could not be read from server. Unfortunately we don't have a local copy that we could use instead. You can retry with OK button now or try again later.", "Retry downloading?",MessageBoxButtons.OKCancel);
+        		
+			        	if (res == DialogResult.Cancel) {
+			        		return;
+			        	}
+            			
             		}
-            		rv = this.ProcessChecksums(wc);
-            		
-            	}
+					
+					UpdateStatus((int) StatusCodes.UpdatingChecksum);
+					
+					c++;
+					rv = this.ProcessChecksums(wc);
+				}
             	
-            	if (rv) { UpdateStatus((int) StatusCodes.ChecksumOk); }
-            	else { UpdateStatus((int) StatusCodes.ChecksumFailed); }
+            	
+            	UpdateStatus((int) StatusCodes.ChecksumOk);
+
             	
             }
         	
@@ -230,12 +241,11 @@ namespace PswgLauncher
         			status = 0;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = true;
+        			PlayButton.Text = "Play";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetryChecksums.Visible = false;
-                	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = true;
         			break;
         		case (int) StatusCodes.UpdatingChecksum:
@@ -245,12 +255,11 @@ namespace PswgLauncher
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = true;
+        			PlayButton.Text = "Play";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetryChecksums.Visible = false;
-					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = true;
         			break;
 
@@ -262,17 +271,13 @@ namespace PswgLauncher
         			
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PlayButton.Disable = true;
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Retry";
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetryChecksums.Visible = true;
-                	if (Controller.SWGFiles.HasFileList) {
-						linkLabelContinueChecksum.Visible = true;
-                	} else {
-                		linkLabelContinueChecksum.Visible = false;
-                	}
+
                 	ScanButton.Disable = true;
         			break;
         			
@@ -286,12 +291,11 @@ namespace PswgLauncher
         			status = newstatus;
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = true;
+        			PlayButton.Text = "Play";
                 	label1.ForeColor = Color.Green;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
-                	linkRetryChecksums.Visible = false;
-                	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = false;
         			break;
         			
@@ -303,12 +307,10 @@ namespace PswgLauncher
         			
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = true;
+        			PlayButton.Text = "Play";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
-                	linkRetryChecksums.Visible = false;
-
-					linkLabelContinueChecksum.Visible = false;
 					ScanButton.Disable = true;
         			break;
         		
@@ -319,12 +321,11 @@ namespace PswgLauncher
         			status = newstatus;
         			
         			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PlayButton.Disable = true;
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Retry";
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
-                	linkRetryChecksums.Visible = false;
-                	linkLabelContinueChecksum.Visible = false;
                 	ScanButton.Disable = false;
         			break;
         		
@@ -338,36 +339,19 @@ namespace PswgLauncher
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
         			PlayButton.Disable = false;
-            		linkRetryChecksums.Visible = false;
-					linkLabelContinueChecksum.Visible = false;
+        			PlayButton.Text = "Play";
 					ScanButton.Disable = false;
         			break;
         	}
         	
         	this.Refresh();
         	
-        }
-        
-        
-        private void AskRetry() {
-        	
-        	DialogResult res = MessageBox.Show("Some Files could not be downloaded. This may be due to unreliable patch server connection. Would you like us to retry?", "Retry downloading?",MessageBoxButtons.YesNo);
-        		
-        	if (res == DialogResult.No) {
-        		return;
-        	}
-        		
-        	DispatchWorker();
         	
         }
         
+
         
-        private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e) //displays current project status
-        {
-            
-
-        }
-
+        
 
         private void MinimizeClick(object sender, EventArgs e)
         {
@@ -801,10 +785,16 @@ namespace PswgLauncher
         	} catch {}
         	
         	if (!read) {
-        		Controller.AddDebugMessage("chksum exception/incomplete");       		
+        		Controller.AddDebugMessage("chksum exception/incomplete while reading from server.");
+        	}
+        	
+        	if (!Controller.SWGFiles.HasFileList) {
+        		Controller.AddDebugMessage("can't use local checksums");
         		return false;
         	}
-        	      	
+        	
+        	Controller.AddDebugMessage("using local checksums");
+
         	Controller.SWGFiles.WriteConfig(GuiController.LocalFilelist);
         	
         	return true;
@@ -814,6 +804,11 @@ namespace PswgLauncher
 
 
         private void PLAY_Click_1(object sender, EventArgs e) {
+        	
+        	if (status == (int) StatusCodes.ChecksumFailed || status == (int) StatusCodes.PatchingFailed) {
+        		Process();
+        		return;
+        	}
 
         	if (status != (int) StatusCodes.PatchingComplete) {
         		Controller.PlaySound("Sound_Error");

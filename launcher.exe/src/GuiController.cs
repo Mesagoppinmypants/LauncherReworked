@@ -37,6 +37,8 @@ namespace PswgLauncher
 		private static string HttpAuthUser = "pswglaunch";
 		private static string HttpAuthPass = "wvQAxc5mGgF0";
 		
+		public static string EncKey = "eKgeg75J3pTBURgh";
+		
 		
 		private bool _soundOption;
 		
@@ -196,21 +198,7 @@ namespace PswgLauncher
 			
 			_SwgDir = getAppSetting("SwgDir");
 			
-			
-			if (File.Exists(GuiController.LocalFilelist)) {
-				try {
-					AddDebugMessage("Reading " + GuiController.LocalFilelist);
-					using (StreamReader sr = new StreamReader(GuiController.LocalFilelist)) {
-						SWGFiles.CreateFileList(sr,false);
-					}
-					
-				} catch (Exception e) {
-					AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
-					//do nothing.. there's still downloading ;)
-				}
-			} else {
-				AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
-			}
+			SWGFiles.ReadLocalConfig();
 
 		}
 		

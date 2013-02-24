@@ -42,39 +42,7 @@ namespace PswgLauncher
 		}
 		
 
-
-
        
-       	void ButtonRunClick(object sender, System.EventArgs e)
-		{
-			this.DialogResult = DialogResult.OK;
-		}
-       	
-       	
-       	void ButtonUpdateClick(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Yes;
-		}
-       	
-       			
-		void ButtonCancelClick(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-		}
-       	
-       
-		void ButtonRetryClick(object sender, EventArgs e)
-		{
-			
-			label2.Text = "Checking...";
-
-			buttonRun.Enabled = false;
-			buttonUpdate.Enabled = false;
-			buttonRetry.Enabled = false;
-			
-			this.setTimer();
-			
-		}
 		
 		// need to use this, otherwise the dialog won't close 
 		private void setTimer() {
@@ -91,13 +59,14 @@ namespace PswgLauncher
 	        timer.Stop();
 	        timer.Dispose();
 	        
-	        if (checkForUpdate()) {
-	        	if (update) {
+	        if (checkForUpdate() && update) {
 	        		this.DialogResult = DialogResult.Yes;
-	        	} else {
-	        		this.DialogResult = DialogResult.OK;
-	        	}
+	        		return;
 	        }
+	        
+	        this.DialogResult = DialogResult.OK;
+	        return;
+	        
     	}
 		
 		
@@ -107,31 +76,20 @@ namespace PswgLauncher
 			// --darkk
 			PatchChecker patch = new PatchChecker(Controller);
 			update = patch.UpdateNeeded;
-			
-			
+
 			if (patch.remoteError) {
-				label2.Text = "Remote error while checking for updates.";
-				buttonRun.Enabled = true;
-				buttonRetry.Enabled = true;
+				Controller.AddDebugMessage("Remote error while checking for updates.");
 			} else if (patch.localError) {
-				label2.Text = "Local error while checking for updates, lpatchusr.cfg write problems?";
-				buttonRun.Enabled = true;
-				buttonRetry.Enabled = true;
+				Controller.AddDebugMessage("Local error while checking for updates, lpatchusr.cfg write problems?");
 			} else {
 			
 				if (update) {
-					label2.Text = "There's an Update available. We recommend you update by clicking the Update Button below.";
-					
-					buttonRun.Enabled = true;
-					buttonUpdate.Enabled = true;
+					Controller.AddDebugMessage("Update available!");
 					return true;
 
 				} else {
-					label2.Text = "The Launcher is uptodate. There is no need to run the Launcher Patcher at this time.";
-					buttonRun.Enabled = true;
-					buttonUpdate.Enabled = true;
+					Controller.AddDebugMessage("Launcher is uptodate.");
 					return true;
-					
 				}
 			
 			}
