@@ -66,8 +66,14 @@ namespace PswgLauncher
         {
         	
         	this.Controller = gc;
+
+        	this.AutoScaleMode = AutoScaleMode.None;
+        	
         	InitializeComponent();
         	InitializeComponent2();
+        	
+        	
+        	
         	this.Show();
         	
         	swgdirsave = Application.StartupPath;  //loads the swg install directory from the patch file
@@ -83,6 +89,7 @@ namespace PswgLauncher
         }
         
         public void InitializeComponent2() {
+        	
         	
         	// modify existing components from designer
 

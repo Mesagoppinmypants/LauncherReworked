@@ -28,8 +28,12 @@ namespace PswgLauncher
         public LAUNCHOPTIONS(GuiController gc)
         {
         	this.Controller = gc;
+        	
+        	this.AutoScaleMode = AutoScaleMode.None;        	
+        	
             InitializeComponent();
             InitializeComponent2();
+            
             
             soundControl.Checked = Controller.soundOption;
             checksumControl.Checked = Controller.checksumOption;
@@ -39,6 +43,8 @@ namespace PswgLauncher
         }
         
         private void InitializeComponent2() {
+        	
+
         	
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();

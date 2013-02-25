@@ -31,7 +31,9 @@ namespace PswgLauncher
     	
         public DirSearch(GuiController gc)
         {
+        	
         	this.Controller = gc;
+			this.AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
             InitializeComponent2();
         }
@@ -39,12 +41,14 @@ namespace PswgLauncher
         
         private void InitializeComponent2() {
         	
+        	
+        	
         	this.Region = System.Drawing.Region.FromHrgn(GuiController.CreateRoundRectRgn( 0, 0, Width, Height, 24, 24));      	
         	this.Icon= Controller.GetAppIcon();
         	this.BackgroundImage = Controller.GetResourceImage("Background_DirSearch");
 
-        	MinimizeButton = Controller.SpawnMinimizeButton(new Point(316, 20));
-        	CloseButton = Controller.SpawnCloseButton(new Point(335, 8));        	
+        	MinimizeButton = Controller.SpawnMinimizeButton(new Point(this.Width - 60, 20));
+        	CloseButton = Controller.SpawnCloseButton(new Point(this.Width - 40, 8));        	
         	MinimizeButton.Click += MinimizeClick;
         	CloseButton.Click += CloseClick;
         	this.Controls.Add(MinimizeButton);
