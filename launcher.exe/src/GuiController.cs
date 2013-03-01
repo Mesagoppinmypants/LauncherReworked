@@ -28,8 +28,12 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
-		public static string MAINURL = "http://patch1.projectswg.com/files/";
-		public static string LAUNCHER = "http://patch1.projectswg.com/launcher/";
+		public static string PatchServer = "patch1.projectswg.com";
+		public static string LoginServer = "login1.projectswg.com";
+		public static string WebServer = "www.projectswg.com";
+		
+		public static string MAINURL = "http://"+PatchServer+"/files/";
+		public static string LAUNCHER = "http://"+PatchServer+"/launcher/";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
 		public static string LocalFilelist = Application.StartupPath + "\\launcherS.dl.dat";
@@ -123,6 +127,7 @@ namespace PswgLauncher
 		private List<String> _DebugMessages2;
 		
 		private DebugWindow _debug;
+		private NetworkWindow _network;
 		
 		
 		private ResourceManager PswgResourcesManager;
@@ -294,6 +299,18 @@ namespace PswgLauncher
 			}
 			
 		}
+		
+		public void LaunchNetwork() {
+			if (_network == null || _network.IsDisposed) {
+				_network = new NetworkWindow(this);
+				
+			}
+			
+			if (_network.Visible == false) {
+				_network.Visible = true;
+			}
+			
+		}		
 		
 		
 		public void AddDebugMessage(String msg) {

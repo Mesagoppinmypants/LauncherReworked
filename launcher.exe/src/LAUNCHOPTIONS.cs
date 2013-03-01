@@ -24,6 +24,7 @@ namespace PswgLauncher
 		private LauncherButton AboutButton;    	
     	private LauncherButton SupportButton;
     	private LauncherButton TrefixButton;
+    	private LauncherButton NetworkButton;
     	
         public LAUNCHOPTIONS(GuiController gc)
         {
@@ -70,6 +71,9 @@ namespace PswgLauncher
         	AboutButton.Click += About_Click;
         	this.Controls.Add(AboutButton);
         	
+        	NetworkButton = Controller.SpawnStandardButton("Network Diag", new Point(300, 125));
+        	NetworkButton.Click += Network_Click;
+        	this.Controls.Add(NetworkButton);        	
         	
         }
         
@@ -121,6 +125,14 @@ namespace PswgLauncher
             support.Show();
         }
 
+        
+        private void Network_Click(object sender, EventArgs e)
+        {
+            Controller.LaunchNetwork();
+        }
+        
+        
+        
         private void button2_Click(object sender, EventArgs e)
         {
             if (File.Exists(Application.StartupPath + "/TREFix.exe"))

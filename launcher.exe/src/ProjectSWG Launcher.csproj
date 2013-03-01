@@ -114,6 +114,10 @@
     </Compile>
     <Compile Include="LauncherButton.cs" />
     <Compile Include="LauncherProgressBar.cs" />
+    <Compile Include="NetworkWindow.cs" />
+    <Compile Include="NetworkWindow.Designer.cs">
+      <DependentUpon>NetworkWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgramVersion.cs" />
     <Compile Include="SupportWindow.cs">
       <SubType>Form</SubType>
@@ -151,6 +155,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LAUNCHOPTIONS.resx">
       <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NetworkWindow.resx">
+      <DependentUpon>NetworkWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PatchCheckerDialog.resx">
       <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
