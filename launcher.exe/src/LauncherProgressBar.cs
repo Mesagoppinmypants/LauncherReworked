@@ -10,6 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace PswgLauncher
@@ -128,23 +129,34 @@ namespace PswgLauncher
 		
 		private void DrawText(PaintEventArgs pe) {
 			
-			Graphics g = pe.Graphics;
-			
 			if (base.Text == null || base.Text.Trim() == "" || pe == null || base.Font == null || _textcolor == null) {
 				return;
 			}
 			
+			PointF DrawPoint = new PointF(base.Width /2,base.Height /2);
+			
+			pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			pe.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+			
+			SolidBrush Brush = new SolidBrush(this.TextColor);
+			FontFamily fontFamily = base.Font.FontFamily;
+			StringFormat strf = new StringFormat();
+			strf.Alignment = StringAlignment.Center;
+			strf.LineAlignment = StringAlignment.Center;
+			GraphicsPath path = new GraphicsPath();
+			
+			String drstr = Text.Replace('_', ' ');
 			
 			
-			SolidBrush Brush = new SolidBrush(_textcolor);
-			SizeF StringSize = g.MeasureString(base.Text, base.Font);
-			PointF DrawPoint;
-			
-
-			DrawPoint = new PointF(base.Width /2 - StringSize.Width /2, base.Height/2 - StringSize.Height /2);
+			path.AddString(drstr, fontFamily, (int) FontStyle.Regular, 10.0f, DrawPoint, strf);
 			
 			
-			g.DrawString(base.Text, base.Font, Brush, DrawPoint);		
+			Pen pen = new Pen(Color.FromArgb(90, 90, 90), 3);
+			pe.Graphics.DrawPath(pen,path);
+			pe.Graphics.FillPath(Brush,path);			
+			
+			
+			
 		}
 		
 		

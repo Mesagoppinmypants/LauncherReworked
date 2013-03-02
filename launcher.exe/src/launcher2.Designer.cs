@@ -35,7 +35,6 @@
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
         	this.label1 = new System.Windows.Forms.Label();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
-        	this.launcherProgressBar1 = new PswgLauncher.LauncherProgressBar();
         	this.labelError = new System.Windows.Forms.Label();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
         	this.SuspendLayout();
@@ -98,15 +97,6 @@
         	this.pictureBox2.TabIndex = 9;
         	this.pictureBox2.TabStop = false;
         	// 
-        	// launcherProgressBar1
-        	// 
-        	this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        	this.launcherProgressBar1.Location = new System.Drawing.Point(23, 452);
-        	this.launcherProgressBar1.Name = "launcherProgressBar1";
-        	this.launcherProgressBar1.Size = new System.Drawing.Size(441, 17);
-        	this.launcherProgressBar1.TabIndex = 18;
-        	this.launcherProgressBar1.TextColor = System.Drawing.Color.Gray;
-        	// 
         	// labelError
         	// 
         	this.labelError.BackColor = System.Drawing.Color.Transparent;
@@ -123,7 +113,6 @@
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(600, 488);
         	this.ControlBox = false;
-        	this.Controls.Add(this.launcherProgressBar1);
         	this.Controls.Add(this.labelError);
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
@@ -145,7 +134,6 @@
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
         	this.ResumeLayout(false);
         }
-        private PswgLauncher.LauncherProgressBar launcherProgressBar1;
         private System.Windows.Forms.Label labelError;
 
         #endregion

@@ -85,7 +85,12 @@ namespace PswgLauncher
 				rtb.AppendText(".");
 				rtb.Refresh();
 				
-				PingReply reply = ping.Send(adx, 1000, data, options);
+				PingReply reply = null;
+				
+				try {
+					 reply = ping.Send(adx, 1000, data, options);
+				} catch {	
+				}
 				
 				if ((reply != null) && (reply.Status == IPStatus.Success)) {
 					received++;

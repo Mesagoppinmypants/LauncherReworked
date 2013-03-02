@@ -33,7 +33,7 @@ namespace PswgLauncher
         {
         	
         	this.Controller = gc;
-			this.AutoScaleMode = AutoScaleMode.None;
+			//this.AutoScaleMode = AutoScaleMode.None;
             InitializeComponent();
             InitializeComponent2();
         }

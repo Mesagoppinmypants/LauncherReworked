@@ -45,10 +45,12 @@ namespace PswgLauncher
         	
         }
         
-        
+       
 		private LAUNCHOPTIONS OptionWindow;
         
         private GuiController Controller;
+        
+        private LauncherProgressBar launcherProgressBar1;
 
         private LauncherButton MinimizeButton;
         private LauncherButton CloseButton;        
@@ -67,7 +69,7 @@ namespace PswgLauncher
         	
         	this.Controller = gc;
 
-        	this.AutoScaleMode = AutoScaleMode.None;
+        	//this.AutoScaleMode = AutoScaleMode.None;
         	
         	InitializeComponent();
         	InitializeComponent2();
@@ -107,6 +109,9 @@ namespace PswgLauncher
         	this.Controls.Add(CloseButton);
         	
         	//add new components
+        	
+        	launcherProgressBar1 = Controller.SpawnProgressBar(new System.Drawing.Point(23, 452), new System.Drawing.Size(441, 17));
+        	this.Controls.Add(launcherProgressBar1);
         	
         	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
         	OptButton = Controller.SpawnStandardButton("Game options", new Point(126, 365 ));

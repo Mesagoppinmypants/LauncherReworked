@@ -397,6 +397,23 @@ namespace PswgLauncher
 		}
 		
 		
+		public LauncherProgressBar SpawnProgressBar(System.Drawing.Point Location , System.Drawing.Size Size) {
+		
+			LauncherProgressBar lpb = new LauncherProgressBar();
+			
+			lpb.Location = Location;
+			lpb.Size = Size;
+			
+			lpb.ForeColor = System.Drawing.Color.Red;
+			lpb.TextColor = System.Drawing.ColorTranslator.FromHtml("#fffba7");
+			
+       		if (HasFont) {
+        		lpb.Font = new Font(pfc.Families[0], 8);
+        	}
+        	
+        	return lpb;			
+		}
+		
 		
 		public LauncherButton SpawnBaseButton(String text, Point p) {
 			
@@ -433,9 +450,8 @@ namespace PswgLauncher
         	lb.ImageHover = GetResource2Image("ButtonHover");
         	lb.ImageNormal = GetResource2Image("ButtonNormal");
         	lb.ImageDisable = GetResource2Image("ButtonDisabled");
-			
-        	lb.Width = 118;
-        	lb.Height = 45;
+        	
+        	lb.Size = new Size(118, 45);
 			
         	return lb;
 			
@@ -450,9 +466,8 @@ namespace PswgLauncher
         	lb.ImageNormal = GetResource2Image("RedNormal");
         	lb.ImageDisable = GetResource2Image("RedNormal");
 			
-        	lb.Width = 100;
-        	lb.Height = 35;
-
+        	lb.Size = new Size(100, 35);
+        	
         	return lb;
 			
 		}
@@ -469,8 +484,7 @@ namespace PswgLauncher
         	lb.ImageNormal = GetResource2Image("MinimizeNormal");
         	lb.ImageDisable = GetResource2Image("MinimizeNormal");
         	
-        	lb.Width = 27;
-        	lb.Height = 20;
+        	lb.Size = new Size(27, 20);
         	
         	return lb;			
 		}
@@ -487,8 +501,7 @@ namespace PswgLauncher
         	lb.ImageNormal = GetResource2Image("CrossNormal");
         	lb.ImageDisable = GetResource2Image("CrossNormal");
         	
-        	lb.Width = 29;
-        	lb.Height = 32;
+        	lb.Size = new Size(29, 32);
         	
         	return lb;			
 		}		
