@@ -227,10 +227,17 @@ namespace PswgLauncher
 		        config.AppSettings.Settings.Remove(key);
 		    }
 		    config.AppSettings.Settings.Add(key, value);
-		    config.Save(ConfigurationSaveMode.Modified);
+		    
+		    try {
+		    	config.Save(ConfigurationSaveMode.Modified);
+		    } catch {
+		    	ShowErrorPermissions("Error writing config.");
+		    }
 		}
 		
-		
+		public static void ShowErrorPermissions(String issue) {
+			MessageBox.Show(issue + "\nMake sure ProjectSWG launcher is running with sufficent permissions.\n\nRestart with admin rights if needed.", "Error writing config", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
 		
 		public bool runPatchChecker() {
 			

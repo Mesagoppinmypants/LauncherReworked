@@ -826,6 +826,7 @@ namespace PswgLauncher
         		return;
         	}
 
+        	// this is actually "play" here now.
         	Controller.PlaySound("Sound_Play");
 
         	String address = "login1.projectswg.com";
@@ -851,7 +852,7 @@ namespace PswgLauncher
         			
         	} catch {
         		
-				DialogResult dr = MessageBox.Show("Couldn't pass login server while using localhost option.","Write error",MessageBoxButtons.OK);
+        		GuiController.ShowErrorPermissions("Error passing login config to client." + ((Controller.LocalhostOption) ? " (using localhost)" : ""));
 				return;        			
         	}
         	
