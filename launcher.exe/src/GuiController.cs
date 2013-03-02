@@ -240,9 +240,11 @@ namespace PswgLauncher
 		}
 
 
-		public bool runPatchChecker() {
+		public bool RunPatchChecker() {
 			
 			PatchCheckerInfoWindow pciw = new PatchCheckerInfoWindow(this);
+			pciw.Refresh();
+			System.Threading.Thread.Sleep( 1000 );
 			
 			PatchChecker patch = new PatchChecker(this);
 			bool update = patch.UpdateNeeded;
