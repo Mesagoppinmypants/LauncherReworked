@@ -39,7 +39,7 @@ namespace PswgLauncher
             GuiController gc = new GuiController();
             
             
-            if (!gc.runPatchChecker()) {
+            if (!gc.RunPatchChecker()) {
             	Application.Exit();
             	return;
             }
