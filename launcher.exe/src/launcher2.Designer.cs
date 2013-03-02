@@ -33,9 +33,7 @@
         	this.imageList1 = new System.Windows.Forms.ImageList(this.components);
         	this.splitter1 = new System.Windows.Forms.Splitter();
         	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
-        	this.label1 = new System.Windows.Forms.Label();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
-        	this.labelError = new System.Windows.Forms.Label();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
         	this.SuspendLayout();
         	// 
@@ -76,17 +74,6 @@
         	this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
         	this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
         	// 
-        	// label1
-        	// 
-        	this.label1.BackColor = System.Drawing.Color.Transparent;
-        	this.label1.ForeColor = System.Drawing.Color.Maroon;
-        	this.label1.Location = new System.Drawing.Point(23, 421);
-        	this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-        	this.label1.Name = "label1";
-        	this.label1.Size = new System.Drawing.Size(120, 13);
-        	this.label1.TabIndex = 10;
-        	this.label1.Text = "Downloading Patches...";
-        	// 
         	// pictureBox2
         	// 
         	this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
@@ -97,14 +84,6 @@
         	this.pictureBox2.TabIndex = 9;
         	this.pictureBox2.TabStop = false;
         	// 
-        	// labelError
-        	// 
-        	this.labelError.BackColor = System.Drawing.Color.Transparent;
-        	this.labelError.Location = new System.Drawing.Point(23, 434);
-        	this.labelError.Name = "labelError";
-        	this.labelError.Size = new System.Drawing.Size(143, 13);
-        	this.labelError.TabIndex = 18;
-        	// 
         	// launcher2
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -113,8 +92,6 @@
         	this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         	this.ClientSize = new System.Drawing.Size(600, 488);
         	this.ControlBox = false;
-        	this.Controls.Add(this.labelError);
-        	this.Controls.Add(this.label1);
         	this.Controls.Add(this.pictureBox2);
         	this.Controls.Add(this.splitter1);
         	this.Controls.Add(this.webBrowser1);
@@ -134,7 +111,6 @@
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
         	this.ResumeLayout(false);
         }
-        private System.Windows.Forms.Label labelError;
 
         #endregion
 
@@ -142,7 +118,6 @@
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Splitter splitter1;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox2;
 
     }

@@ -61,6 +61,9 @@ namespace PswgLauncher
         private LauncherButton DonateButton;
         private LauncherButton PlayButton;
         
+        private LauncherLabel label1;
+        private LauncherLabel labelError;
+        
         private System.Windows.Forms.Timer timer;
         
         
@@ -69,7 +72,7 @@ namespace PswgLauncher
         	
         	this.Controller = gc;
 
-        	//this.AutoScaleMode = AutoScaleMode.None;
+        	this.AutoScaleMode = AutoScaleMode.None;
         	
         	InitializeComponent();
         	InitializeComponent2();
@@ -134,6 +137,12 @@ namespace PswgLauncher
         	this.Controls.Add(LOptButton);
         	this.Controls.Add(DonateButton);
         	this.Controls.Add(PlayButton);
+        	
+        	label1 = Controller.SpawnLabel("", new Point(23, 415), new Size(160, 15));
+        	this.Controls.Add(label1);
+        	
+        	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(160, 15));
+        	this.Controls.Add(labelError);
         	
         	
         }

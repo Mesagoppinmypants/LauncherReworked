@@ -398,6 +398,22 @@ namespace PswgLauncher
 			
 		}
 		
+		public LauncherLabel SpawnLabel(String Text, System.Drawing.Point Location , System.Drawing.Size Size) {
+			LauncherLabel Label = new LauncherLabel();
+			
+			
+			Label.Location = Location;
+			Label.Size = Size;
+
+			Label.BackColor = System.Drawing.Color.Transparent;
+			
+       		if (HasFont) {
+        		Label.Font = new Font(pfc.Families[0], 8);
+        	}
+			
+			return Label;
+		}
+		
 		
 		public LauncherProgressBar SpawnProgressBar(System.Drawing.Point Location , System.Drawing.Size Size) {
 		
