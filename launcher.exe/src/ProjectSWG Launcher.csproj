@@ -147,6 +147,9 @@
     <Compile Include="SWGFile.cs" />
     <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DirSearch.resx">
       <DependentUpon>DirSearch.cs</DependentUpon>
     </EmbeddedResource>

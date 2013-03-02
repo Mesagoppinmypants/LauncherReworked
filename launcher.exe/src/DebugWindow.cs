@@ -30,7 +30,6 @@ namespace PswgLauncher
 			InitializeComponent();
 			this.Icon= Controller.GetAppIcon();
 			
-			
 		}
 		
 		private void ButtonCloseClick(object sender, EventArgs e)
@@ -39,7 +38,7 @@ namespace PswgLauncher
 		}
 		
 		public void AddText(String message) {
-			richTextBox1.AppendText(message + Environment.NewLine);
+			textBox1.AppendText(message + Environment.NewLine);
 		}
 		
 		
@@ -52,6 +51,30 @@ namespace PswgLauncher
 		{
 			this.Visible = false;
 			return;
+		}
+		
+		void ButtonCopyClick(object sender, EventArgs e)
+		{
+			textBox1.SelectAll();
+			textBox1.Copy();
+			textBox1.SelectionLength = 0;
+		}
+		
+		void ButtonSaveClick(object sender, EventArgs e)
+		{
+
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = "Text files (*.txt)|*.txt";
+            DialogResult result = dlg.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK) {
+            	try {
+	            	using (System.IO.StreamWriter outfile = new System.IO.StreamWriter(dlg.FileName)) {
+	            		outfile.Write(textBox1.Text);
+	            	}
+            	} catch {
+            		MessageBox.Show("Error Writing file.", "Write Error", MessageBoxButtons.OK,MessageBoxIcon.Error);
+            	}
+            }
 		}
 	}
 }
