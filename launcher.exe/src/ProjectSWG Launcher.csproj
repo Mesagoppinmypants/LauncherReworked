@@ -118,6 +118,10 @@
     <Compile Include="NetworkWindow.Designer.cs">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="PatchCheckerInfoWindow.cs" />
+    <Compile Include="PatchCheckerInfoWindow.Designer.cs">
+      <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgramVersion.cs" />
     <Compile Include="SupportWindow.cs">
       <SubType>Form</SubType>
@@ -139,10 +143,6 @@
       <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
     </Compile>
     <Compile Include="PatchChecker.cs" />
-    <Compile Include="PatchCheckerDialog.cs" />
-    <Compile Include="PatchCheckerDialog.Designer.cs">
-      <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="SWGFile.cs" />
     <Compile Include="SWGFileList.cs" />
@@ -162,8 +162,8 @@
     <EmbeddedResource Include="NetworkWindow.resx">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PatchCheckerDialog.resx">
-      <DependentUpon>PatchCheckerDialog.cs</DependentUpon>
+    <EmbeddedResource Include="PatchCheckerInfoWindow.resx">
+      <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSWGButtons.resx" />
     <EmbeddedResource Include="PswgRes.resx" />

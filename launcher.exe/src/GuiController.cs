@@ -238,28 +238,38 @@ namespace PswgLauncher
 		public static void ShowErrorPermissions(String issue) {
 			MessageBox.Show(issue + "\nMake sure ProjectSWG launcher is running with sufficent permissions.\n\nRestart with admin rights if needed.", "Error writing config", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
-		
+
+
 		public bool runPatchChecker() {
 			
-			PatchCheckerDialog pcd = new PatchCheckerDialog(this);
+			PatchCheckerInfoWindow pciw = new PatchCheckerInfoWindow(this);
 			
-			DialogResult result = pcd.ShowDialog();
+			PatchChecker patch = new PatchChecker(this);
+			bool update = patch.UpdateNeeded;
+
+			pciw.CloseInfo();
 			
-			AddDebugMessage(result.ToString());
-			
-			if (result == DialogResult.OK) {
+			if (patch.remoteError) {
+				AddDebugMessage("Remote error while checking for updates.");
 				return true;
-			}
+			} else if (patch.localError) {
+				AddDebugMessage("Local error while checking for updates, lpatchusr.cfg write problems?");
+				return true;
+			} 
 			
-			if (result == DialogResult.Yes) {
-				
+			if (update) {
 				System.Diagnostics.Process.Start(Application.StartupPath + "/launcher patcher.exe");
+				AddDebugMessage("Update available!");
+				return false;
 
 			}
 			
-			return false;
+			AddDebugMessage("Launcher is uptodate.");
+			return true;
 			
 		}
+
+
 		
 		
 		public bool runDirSearch() {
