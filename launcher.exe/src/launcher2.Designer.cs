@@ -79,7 +79,6 @@
         	// 
         	// label1
         	// 
-        	this.label1.AutoSize = true;
         	this.label1.BackColor = System.Drawing.Color.Transparent;
         	this.label1.ForeColor = System.Drawing.Color.Maroon;
         	this.label1.Location = new System.Drawing.Point(23, 421);
@@ -145,7 +144,6 @@
         	this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.launcher2_MouseUp);
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
         	this.ResumeLayout(false);
-        	this.PerformLayout();
         }
         private PswgLauncher.LauncherProgressBar launcherProgressBar1;
         private System.Windows.Forms.Label labelError;

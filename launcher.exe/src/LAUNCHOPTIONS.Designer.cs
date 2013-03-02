@@ -101,9 +101,9 @@
         	this.checkBoxLocalhost.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
         	this.checkBoxLocalhost.Location = new System.Drawing.Point(126, 302);
         	this.checkBoxLocalhost.Name = "checkBoxLocalhost";
-        	this.checkBoxLocalhost.Size = new System.Drawing.Size(123, 24);
+        	this.checkBoxLocalhost.Size = new System.Drawing.Size(212, 24);
         	this.checkBoxLocalhost.TabIndex = 21;
-        	this.checkBoxLocalhost.Text = "Connect Localhost";
+        	this.checkBoxLocalhost.Text = "Connect Localhost (Dev only option)";
         	this.checkBoxLocalhost.UseVisualStyleBackColor = false;
         	this.checkBoxLocalhost.CheckedChanged += new System.EventHandler(this.CheckBoxLocalhostCheckedChanged);
         	// 
