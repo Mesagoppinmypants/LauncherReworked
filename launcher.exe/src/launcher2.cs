@@ -520,8 +520,11 @@ namespace PswgLauncher
         private void backgroundWorker2_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
         	
-        	
+        	bool scanned = false;
+        	//this needs to be checked if interruptions are possible.
         	if (ForceChecksums) {
+        		
+        		scanned = true;
         		ForceChecksums = false;
         	}
         	
@@ -533,6 +536,9 @@ namespace PswgLauncher
         	} else {
         		
         		if (checkForCompleteness()) {
+        			if (scanned) {
+        				Controller.SaveScanComplete();
+        			}
         			UpdateStatus((int) StatusCodes.PatchingComplete);
         		} else {
         			UpdateStatus((int) StatusCodes.PatchingFailed);
@@ -835,10 +841,24 @@ namespace PswgLauncher
         		return;
         	}
 
+        	
         	if (status != (int) StatusCodes.PatchingComplete) {
         		Controller.PlaySound("Sound_Error");
         		return;
         	}
+        	
+        	/*
+        	 * this needs some tweaking :P
+        	SWGFile swgcl;
+        	Controller.SWGFiles.SwgFileTable.TryGetValue("SWGClient_r.exe", out swgcl);
+        	Controller.AddDebugMessage(swgcl.Checksum);
+        	if (swgcl == null || !compareCheckSum(swgdirsave + @"\SwgClient_r.exe", swgcl.Checksum)) {
+        		
+        		MessageBox.Show("SwgClient_r.exe is not OK. Please use the scan button to fix.","SwgClient not OK", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        		
+        		return;
+        	}*/
+        	
 
         	// this is actually "play" here now.
         	Controller.PlaySound("Sound_Play");
@@ -850,32 +870,14 @@ namespace PswgLauncher
         		address = "127.0.0.1";
         		port = "44453";
         	} 
-        		
-        	try {
-        			
-        		using (StreamWriter sw = new StreamWriter(swgdirsave + "/login.cfg")) {
-        			
-	        		sw.WriteLine("[ClientGame]");
-	        		sw.WriteLine("loginServerPort0="+port);
-	        		sw.WriteLine("loginServerAddress0="+address);
-	        		sw.WriteLine("[Station]");
-	        		sw.WriteLine("subscriptionFeatures=1");
-	        		sw.WriteLine("gameFeatures=65535");
-	        		sw.Close();
-        		}
-        			
-        	} catch {
-        		
-        		GuiController.ShowErrorPermissions("Error passing login config to client." + ((Controller.LocalhostOption) ? " (using localhost)" : ""));
-				return;        			
-        	}
+        	
+        	String args = String.Format("-- -s Station subscriptionFeatures=1 gameFeatures=34374193 -s ClientGame loginServerPort0={0} loginServerAddress0={1}", port, address);
+        	
         	
         	this.Hide();
             Directory.SetCurrentDirectory(swgdirsave);
             System.Threading.Thread.Sleep(200);
-            System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
-            System.Threading.Thread.Sleep(40000);
-            File.Delete(swgdirsave + "/login.cfg");
+            System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe", args);
             Application.Exit();
             return;
         	

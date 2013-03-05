@@ -51,6 +51,9 @@ namespace PswgLauncher
             	return;
             }
             
+
+            gc.CheckScanNeeded();
+            
             gc.runLauncher();
             Application.Run();
 

@@ -36,13 +36,18 @@ namespace PswgLauncher
 		public static string LAUNCHER = "http://"+PatchServer+"/launcher/";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
-		public static string LocalFilelist = Application.StartupPath + "\\launcherS.dl.dat";
+		public static string LocalPath = Application.StartupPath;
+		public static string LocalLastScan = LocalPath + @"\LastScan";
+		public static string LocalFilelist = LocalPath + "\\launcherS.dl.dat";
 		
 		private static string HttpAuthUser = "pswglaunch";
 		private static string HttpAuthPass = "wvQAxc5mGgF0";
 		
 		public static string EncKey = "eKgeg75J3pTBURgh";
 		
+		public bool CrashFiles {
+			get; private set;
+		}
 		
 		private bool _soundOption;
 		
@@ -135,6 +140,8 @@ namespace PswgLauncher
 		
 		public GuiController()
 		{
+			CrashFiles = false;
+			
 			_soundOption = false;
 			_SwgDir = "";
 			_checksumOption = false;
@@ -344,7 +351,49 @@ namespace PswgLauncher
 		}
 		
 
+		public void CheckScanNeeded() {
+			
+			System.IO.FileInfo LastScan = new System.IO.FileInfo(LocalLastScan);
+            
+			String[] files = System.IO.Directory.GetFiles(LocalPath, "SwgClient_r.exe-stage.*", System.IO.SearchOption.TopDirectoryOnly);
+			
+			foreach (String f in files) {
+				
+				FileInfo fi = new System.IO.FileInfo(f);
+				
+				if (fi.LastWriteTimeUtc > LastScan.LastWriteTimeUtc) {
+					CrashFiles = true;
+					
+					if (checksumOption) {
+						return;
+					}
+					
+	    			MessageBox.Show("We have detected a client crash. We recommend using the Scan option to detect possible file corruption.","Scan recommended",MessageBoxButtons.OK, MessageBoxIcon.Information);
+	    			return;
+					
+				}
+				
+			}
+            
+		}
 		
+		public void SaveScanComplete() {
+			
+			AddDebugMessage("Scanning complete.");
+			
+			try {
+				
+				if (!File.Exists(LocalLastScan)) {
+					File.Create(LocalLastScan);
+				}
+				
+				File.SetCreationTimeUtc(LocalLastScan, DateTime.UtcNow);
+				
+			} catch {
+				
+			}
+			
+		}
 		
 		
 		
@@ -397,6 +446,7 @@ namespace PswgLauncher
             if (this.soundOption) { player.Play(); }
 			
 		}
+		
 		
 		public LauncherLabel SpawnLabel(String Text, System.Drawing.Point Location , System.Drawing.Size Size) {
 			LauncherLabel Label = new LauncherLabel();
