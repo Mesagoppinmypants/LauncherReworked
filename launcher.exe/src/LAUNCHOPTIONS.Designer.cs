@@ -64,7 +64,7 @@
         	// 
         	this.soundControl.BackColor = System.Drawing.Color.Transparent;
         	this.soundControl.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.soundControl.Location = new System.Drawing.Point(126, 211);
+        	this.soundControl.Location = new System.Drawing.Point(126, 228);
         	this.soundControl.Name = "soundControl";
         	this.soundControl.Size = new System.Drawing.Size(104, 24);
         	this.soundControl.TabIndex = 18;
@@ -75,7 +75,7 @@
         	// checksumControl
         	// 
         	this.checksumControl.BackColor = System.Drawing.Color.Transparent;
-        	this.checksumControl.Location = new System.Drawing.Point(126, 241);
+        	this.checksumControl.Location = new System.Drawing.Point(126, 258);
         	this.checksumControl.Name = "checksumControl";
         	this.checksumControl.Size = new System.Drawing.Size(212, 24);
         	this.checksumControl.TabIndex = 19;
@@ -99,7 +99,7 @@
         	// 
         	this.checkBoxLocalhost.BackColor = System.Drawing.Color.Transparent;
         	this.checkBoxLocalhost.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.checkBoxLocalhost.Location = new System.Drawing.Point(126, 302);
+        	this.checkBoxLocalhost.Location = new System.Drawing.Point(126, 318);
         	this.checkBoxLocalhost.Name = "checkBoxLocalhost";
         	this.checkBoxLocalhost.Size = new System.Drawing.Size(212, 24);
         	this.checkBoxLocalhost.TabIndex = 21;
@@ -122,7 +122,7 @@
         	// 
         	this.checkBoxResume.BackColor = System.Drawing.Color.Transparent;
         	this.checkBoxResume.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
-        	this.checkBoxResume.Location = new System.Drawing.Point(126, 271);
+        	this.checkBoxResume.Location = new System.Drawing.Point(126, 288);
         	this.checkBoxResume.Name = "checkBoxResume";
         	this.checkBoxResume.Size = new System.Drawing.Size(158, 24);
         	this.checkBoxResume.TabIndex = 23;

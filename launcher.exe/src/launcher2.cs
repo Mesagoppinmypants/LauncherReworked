@@ -235,12 +235,12 @@ namespace PswgLauncher
         }
         
 
-        private void CheckGameOptions() {
+        private void RefreshButtonState() {
         	
-        	if (File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe")) {
-        		OptButton.Disable = false;
-        	} else {
-        		OptButton.Disable = true;
+        	OptButton.Disable = !File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe");
+        	
+        	if (OptionWindow != null) {
+        		OptionWindow.RefreshButtonState();
         	}
         	
         }
@@ -249,7 +249,7 @@ namespace PswgLauncher
         	
         	Controller.AddDebugMessage("New Status: " + newstatus);
         	
-        	CheckGameOptions();
+        	RefreshButtonState();
         	
         	switch (newstatus) {
         		//checksums need downloading	
@@ -507,13 +507,15 @@ namespace PswgLauncher
 	        			//Controller.SWGFiles.SwgFileTable.Remove(msg[1]);
 	        		}
 	        		
+	        		RefreshButtonState();
+	        		
 	        	}
         	}
         	
 
         	
         	launcherProgressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
-        	CheckGameOptions();
+        	RefreshButtonState();
 
         }
 
@@ -820,7 +822,7 @@ namespace PswgLauncher
         	
         	Controller.AddDebugMessage("using local checksums");
 
-        	Controller.SWGFiles.WriteConfig(GuiController.LocalFilelist);
+        	Controller.SWGFiles.WriteConfig(Controller.LocalFilelist);
         	
         	return true;
         	
@@ -912,6 +914,7 @@ namespace PswgLauncher
         	Controller.PlaySound("Sound_Click");
 			
         	if (OptionWindow != null) {
+        		OptionWindow.RefreshButtonState();
         		OptionWindow.Show();
         		OptionWindow.BringToFront();
         		return;

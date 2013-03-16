@@ -28,6 +28,8 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
+		
+		
 		public static string PatchServer = "patch1.projectswg.com";
 		public static string LoginServer = "login1.projectswg.com";
 		public static string WebServer = "www.projectswg.com";
@@ -36,15 +38,30 @@ namespace PswgLauncher
 		public static string LAUNCHER = "http://"+PatchServer+"/launcher/";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
-		public static string LocalFilelist = Application.StartupPath + "\\launcherS.dl.dat";
+		public static string AppPath = Application.StartupPath;
+		public static string HomePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PSWG";
+		
 		
 		private static string HttpAuthUser = "pswglaunch";
 		private static string HttpAuthPass = "wvQAxc5mGgF0";
 		
 		public static string EncKey = "eKgeg75J3pTBURgh";
+
+
 		
+
+		
+		
+		private int _runAsMode;
 		
 		private bool _soundOption;
+
+		public String SwgSavePath { get; private set; }
+		public String LocalFilelist { get; private set; }
+		public String FileTrefix { get; private set; }
+		public String FileAdmSettings { get; private set; }
+		public String ConfigPath { get; private set; }
+
 		
 		public PrivateFontCollection pfc {
 			get; private set;
@@ -133,15 +150,35 @@ namespace PswgLauncher
 		private ResourceManager PswgResourcesManager;
 		private ResourceManager PswgResources2Manager;		
 		
-		public GuiController()
+		public GuiController(int runmode)
 		{
+
+			_DebugMessages = new List<String>();
+			
+			_runAsMode = runmode;
+			
+			
+			SwgSavePath = ((_runAsMode == 2) ? GuiController.HomePath : GuiController.AppPath);
+			LocalFilelist = SwgSavePath + @"\launcherS.dl.dat";
+			FileTrefix = SwgSavePath + @"\TREFix.exe";
+			FileAdmSettings = SwgSavePath + @"\AdmSettings.exe";
+			ConfigPath = SwgSavePath + @"ProjectSWG Launcher.exe";
+			
+			ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
+			fileMap.ExeConfigFilename = SwgSavePath + @"\ProjectSWG Launcher.exe.config";
+			
+			config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
+			if (config != null && config.FilePath != null) {
+				AddDebugMessage("Using config from " + config.FilePath);
+			}
+
+			
 			_soundOption = false;
 			_SwgDir = "";
 			_checksumOption = false;
 			_localhostOption = false;
 			_resumeOption = true;
 			
-			_DebugMessages = new List<String>();
 			SWGFiles = new SWGFileList(this);
 			
 			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
@@ -209,8 +246,7 @@ namespace PswgLauncher
 		
 		public string getAppSetting(string key)
 		{
-		    Configuration config = ConfigurationManager.OpenExeConfiguration(
-		                            System.Reflection.Assembly.GetExecutingAssembly().Location);
+		    
 			if (config.AppSettings.Settings[key] != null) {
 		    	return config.AppSettings.Settings[key].Value;
 			}
@@ -220,8 +256,7 @@ namespace PswgLauncher
 		 
 		public void setAppSetting(string key, string value)
 		{
-		    Configuration config = ConfigurationManager.OpenExeConfiguration(
-		                            System.Reflection.Assembly.GetExecutingAssembly().Location);
+
 		    if (config.AppSettings.Settings[key] != null)
 		    {
 		        config.AppSettings.Settings.Remove(key);
