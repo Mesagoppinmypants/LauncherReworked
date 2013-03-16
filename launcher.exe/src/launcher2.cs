@@ -25,8 +25,6 @@ namespace PswgLauncher
 
     	int errorcounter = 0;
     	
-    	
-        string swgdirsave;
         string[] userdir;
         string checks;
         
@@ -81,7 +79,6 @@ namespace PswgLauncher
         	
         	this.Show();
         	
-        	swgdirsave = Application.StartupPath;  //loads the swg install directory from the patch file
         	Controller.AddDebugMessage(Controller.SwgDir);
         	userdir = Directory.GetFiles(Controller.SwgDir);  //gets a list of all files in the SWG directory 
             
@@ -237,7 +234,7 @@ namespace PswgLauncher
 
         private void RefreshButtonState() {
         	
-        	OptButton.Disable = !File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe");
+        	OptButton.Disable = !File.Exists(Controller.SwgSavePath + @"\swgclientsetup_r.exe");
         	
         	if (OptionWindow != null) {
         		OptionWindow.RefreshButtonState();
@@ -406,10 +403,10 @@ namespace PswgLauncher
         
         private void options_Click_1(object sender, EventArgs e)
         {
-            if (File.Exists(Application.StartupPath + "/SwgClientSetup_r.exe"))
+            if (File.Exists(Controller.SwgSavePath + @"\SwgClientSetup_r.exe"))
             {
             	Controller.PlaySound("Sound_Click");
-                System.Diagnostics.Process.Start(swgdirsave + "/SwgClientSetup_r.exe");
+                System.Diagnostics.Process.Start(Controller.SwgSavePath + @"\SwgClientSetup_r.exe");
             }
             else
             {
@@ -579,7 +576,7 @@ namespace PswgLauncher
         	}
 	
         	try {
-        		Directory.CreateDirectory(swgdirsave + "\\" + m1.Groups[1].Value);
+        		Directory.CreateDirectory(Controller.SwgSavePath + @"\" + m1.Groups[1].Value);
         	} catch (Exception e) {
         		
         		return false;
@@ -592,8 +589,8 @@ namespace PswgLauncher
         
         private bool DownloadFile(String file, SWGFile swgfile, BackgroundWorker backgroundWorker, int progress) {
         	
-        	String path = swgdirsave + "\\" + file;
-        	String localsrc = Controller.SwgDir + "\\" + file;
+        	String path = Controller.SwgSavePath + @"\" + file;
+        	String localsrc = Controller.SwgDir + @"\" + file;
         	String remotesrc = GuiController.MAINURL + "/" + file;
         	long offset = 0;
         	
@@ -625,14 +622,14 @@ namespace PswgLauncher
 		        	return true;
 		        }
 		        
-		        if (File.Exists(file)) {
+		        if (File.Exists(path)) {
 		        	if (!swgfile.Strict) {
 			        	backgroundWorker.ReportProgress( progress, "Debug " + "file exists and is not strict, skipping checksum for " + file);
 			        	backgroundWorker.ReportProgress(progress, "OK " + file);
 			        	return true;
 		        	}
 		        	
-		        	FileInfo f = new FileInfo(file);
+		        	FileInfo f = new FileInfo(path);
 		        	
 		        	if (f.Length == swgfile.Filesize) {
 		        		
@@ -701,8 +698,8 @@ namespace PswgLauncher
 					
 					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress);
 					
-					if (File.Exists(file)) {
-						FileInfo f = new FileInfo(file);
+					if (File.Exists(path)) {
+						FileInfo f = new FileInfo(path);
 						Filesize = f.Length;
 						offset = Filesize;
 					}
@@ -851,35 +848,25 @@ namespace PswgLauncher
         	if (Controller.LocalhostOption) {
         		address = "127.0.0.1";
         		port = "44453";
-        	} 
+        	}
+        	
+        	String tpl = "-s ClientGame loginServerPort0={0} loginServerAddress0={1} -s Station subscriptionFeatures=1 gameFeatures=65535";
+        	String parameters = String.Format(tpl, port, address);
+        	
+        	
         		
         	try {
-        			
-        		using (StreamWriter sw = new StreamWriter(swgdirsave + "/login.cfg")) {
-        			
-	        		sw.WriteLine("[ClientGame]");
-	        		sw.WriteLine("loginServerPort0="+port);
-	        		sw.WriteLine("loginServerAddress0="+address);
-	        		sw.WriteLine("[Station]");
-	        		sw.WriteLine("subscriptionFeatures=1");
-	        		sw.WriteLine("gameFeatures=65535");
-	        		sw.Close();
-        		}
+	        	this.Hide();
+        		System.Diagnostics.Process.Start(Controller.FileSWGClient, parameters);
+	            Application.Exit();
         			
         	} catch {
         		
-        		GuiController.ShowErrorPermissions("Error passing login config to client." + ((Controller.LocalhostOption) ? " (using localhost)" : ""));
-				return;        			
+        		GuiController.ShowErrorPermissions("Error starting swgclient_r.exe");
         	}
-        	
-        	this.Hide();
-            Directory.SetCurrentDirectory(swgdirsave);
-            System.Threading.Thread.Sleep(200);
-            System.Diagnostics.Process.Start(swgdirsave + "/SwgClient_r.exe");
-            System.Threading.Thread.Sleep(40000);
-            File.Delete(swgdirsave + "/login.cfg");
-            Application.Exit();
+
             return;
+        	
         	
         }
 

@@ -61,6 +61,7 @@ namespace PswgLauncher
 		public String FileTrefix { get; private set; }
 		public String FileAdmSettings { get; private set; }
 		public String ConfigPath { get; private set; }
+		public String FileSWGClient { get; private set; }
 
 		
 		public PrivateFontCollection pfc {
@@ -162,7 +163,8 @@ namespace PswgLauncher
 			LocalFilelist = SwgSavePath + @"\launcherS.dl.dat";
 			FileTrefix = SwgSavePath + @"\TREFix.exe";
 			FileAdmSettings = SwgSavePath + @"\AdmSettings.exe";
-			ConfigPath = SwgSavePath + @"ProjectSWG Launcher.exe";
+			ConfigPath = SwgSavePath + @"\ProjectSWG Launcher.exe";
+			FileSWGClient = SwgSavePath + @"\swgclient_r.exe";
 			
 			ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
 			fileMap.ExeConfigFilename = SwgSavePath + @"\ProjectSWG Launcher.exe.config";
