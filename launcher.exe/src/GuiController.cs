@@ -41,6 +41,7 @@ namespace PswgLauncher
 		public static string AppPath = Application.StartupPath;
 		public static string HomePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PSWG";
 		
+		public string LocalLastScan;
 		
 		private static string HttpAuthUser = "pswglaunch";
 		private static string HttpAuthPass = "wvQAxc5mGgF0";
@@ -51,8 +52,11 @@ namespace PswgLauncher
 		
 
 		
-		
 		private int _runAsMode;
+
+		public bool CrashFiles {
+			get; private set;
+		}
 		
 		private bool _soundOption;
 
@@ -165,6 +169,9 @@ namespace PswgLauncher
 			FileAdmSettings = SwgSavePath + @"\AdmSettings.exe";
 			ConfigPath = SwgSavePath + @"\ProjectSWG Launcher.exe";
 			FileSWGClient = SwgSavePath + @"\swgclient_r.exe";
+
+			LocalLastScan = SwgSavePath + @"\LastScan";
+		
 			
 			ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
 			fileMap.ExeConfigFilename = SwgSavePath + @"\ProjectSWG Launcher.exe.config";
@@ -174,6 +181,7 @@ namespace PswgLauncher
 				AddDebugMessage("Using config from " + config.FilePath);
 			}
 
+			CrashFiles = false;
 			
 			_soundOption = false;
 			_SwgDir = "";
@@ -381,7 +389,49 @@ namespace PswgLauncher
 		}
 		
 
+		public void CheckScanNeeded() {
+			
+			System.IO.FileInfo LastScan = new System.IO.FileInfo(LocalLastScan);
+            
+			String[] files = System.IO.Directory.GetFiles(LocalPath, "SwgClient_r.exe-stage.*", System.IO.SearchOption.TopDirectoryOnly);
+			
+			foreach (String f in files) {
+				
+				FileInfo fi = new System.IO.FileInfo(f);
+				
+				if (fi.LastWriteTimeUtc > LastScan.LastWriteTimeUtc) {
+					CrashFiles = true;
+					
+					if (checksumOption) {
+						return;
+					}
+					
+	    			MessageBox.Show("We have detected a client crash. We recommend using the Scan option to detect possible file corruption.","Scan recommended",MessageBoxButtons.OK, MessageBoxIcon.Information);
+	    			return;
+					
+				}
+				
+			}
+            
+		}
 		
+		public void SaveScanComplete() {
+			
+			AddDebugMessage("Scanning complete.");
+			
+			try {
+				
+				if (!File.Exists(LocalLastScan)) {
+					File.Create(LocalLastScan);
+				}
+				
+				File.SetCreationTimeUtc(LocalLastScan, DateTime.UtcNow);
+				
+			} catch {
+				
+			}
+			
+		}
 		
 		
 		
@@ -434,6 +484,7 @@ namespace PswgLauncher
             if (this.soundOption) { player.Play(); }
 			
 		}
+		
 		
 		public LauncherLabel SpawnLabel(String Text, System.Drawing.Point Location , System.Drawing.Size Size) {
 			LauncherLabel Label = new LauncherLabel();

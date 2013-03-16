@@ -519,8 +519,11 @@ namespace PswgLauncher
         private void backgroundWorker2_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
         	
-        	
+        	bool scanned = false;
+        	//this needs to be checked if interruptions are possible.
         	if (ForceChecksums) {
+        		
+        		scanned = true;
         		ForceChecksums = false;
         	}
         	
@@ -532,6 +535,9 @@ namespace PswgLauncher
         	} else {
         		
         		if (checkForCompleteness()) {
+        			if (scanned) {
+        				Controller.SaveScanComplete();
+        			}
         			UpdateStatus((int) StatusCodes.PatchingComplete);
         		} else {
         			UpdateStatus((int) StatusCodes.PatchingFailed);
@@ -834,10 +840,24 @@ namespace PswgLauncher
         		return;
         	}
 
+        	
         	if (status != (int) StatusCodes.PatchingComplete) {
         		Controller.PlaySound("Sound_Error");
         		return;
         	}
+        	
+        	/*
+        	 * this needs some tweaking :P
+        	SWGFile swgcl;
+        	Controller.SWGFiles.SwgFileTable.TryGetValue("SWGClient_r.exe", out swgcl);
+        	Controller.AddDebugMessage(swgcl.Checksum);
+        	if (swgcl == null || !compareCheckSum(swgdirsave + @"\SwgClient_r.exe", swgcl.Checksum)) {
+        		
+        		MessageBox.Show("SwgClient_r.exe is not OK. Please use the scan button to fix.","SwgClient not OK", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        		
+        		return;
+        	}*/
+        	
 
         	// this is actually "play" here now.
         	Controller.PlaySound("Sound_Play");
@@ -848,22 +868,24 @@ namespace PswgLauncher
         	if (Controller.LocalhostOption) {
         		address = "127.0.0.1";
         		port = "44453";
-        	}
-        	
-        	String tpl = "-- -s ClientGame loginServerPort0={0} loginServerAddress0={1} -s Station subscriptionFeatures=1 gameFeatures=65535";
-        	String parameters = String.Format(tpl, port, address);
+
+        	String args = String.Format("-- -s Station subscriptionFeatures=1 gameFeatures=34374193 -s ClientGame loginServerPort0={0} loginServerAddress0={1}", port, address);
         	
         	
-        		
+        	this.Hide();
+            Directory.SetCurrentDirectory(swgdirsave);
+            System.Threading.Thread.Sleep(200);
+
         	try {
 	        	this.Hide();
-        		System.Diagnostics.Process.Start(Controller.FileSWGClient, parameters);
+        		System.Diagnostics.Process.Start(Controller.FileSWGClient, args);
 	            Application.Exit();
         			
         	} catch {
         		
         		GuiController.ShowErrorPermissions("Error starting swgclient_r.exe");
         	}
+
 
             return;
         	
