@@ -240,7 +240,7 @@ namespace PswgLauncher
         	}
         	
         	if (checkBoxLocalhost.Checked == true) {
-        		DialogResult dr = MessageBox.Show("The localhost option is meant for development only.\nIf you enable it, you won't be able to connect to ProjectSWG the game server.\n\nAre you certain you want to connect to locahost?","localhost option",MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+        		DialogResult dr = MessageBox.Show("The localhost option is meant for development only.\nIf you enable it, you won't be able to connect to the ProjectSWG game server.\n\nAre you certain you want to connect to locahost?","localhost option",MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
         		
         		if (dr == DialogResult.No) {
         			checkBoxLocalhost.Checked = false;

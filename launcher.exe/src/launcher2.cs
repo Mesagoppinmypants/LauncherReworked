@@ -850,7 +850,7 @@ namespace PswgLauncher
         		port = "44453";
         	}
         	
-        	String tpl = "-s ClientGame loginServerPort0={0} loginServerAddress0={1} -s Station subscriptionFeatures=1 gameFeatures=65535";
+        	String tpl = "-- -s ClientGame loginServerPort0={0} loginServerAddress0={1} -s Station subscriptionFeatures=1 gameFeatures=65535";
         	String parameters = String.Format(tpl, port, address);
         	
         	
