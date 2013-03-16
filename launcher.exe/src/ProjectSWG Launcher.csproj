@@ -113,6 +113,7 @@
       <DependentUpon>AccountWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="LauncherButton.cs" />
+    <Compile Include="LauncherLabel.cs" />
     <Compile Include="LauncherProgressBar.cs" />
     <Compile Include="NetworkWindow.cs" />
     <Compile Include="NetworkWindow.Designer.cs">

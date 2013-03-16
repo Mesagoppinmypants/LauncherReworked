@@ -61,6 +61,9 @@ namespace PswgLauncher
         private LauncherButton DonateButton;
         private LauncherButton PlayButton;
         
+        private LauncherLabel label1;
+        private LauncherLabel labelError;
+        
         private System.Windows.Forms.Timer timer;
         
         
@@ -69,7 +72,7 @@ namespace PswgLauncher
         	
         	this.Controller = gc;
 
-        	//this.AutoScaleMode = AutoScaleMode.None;
+        	this.AutoScaleMode = AutoScaleMode.None;
         	
         	InitializeComponent();
         	InitializeComponent2();
@@ -134,6 +137,12 @@ namespace PswgLauncher
         	this.Controls.Add(LOptButton);
         	this.Controls.Add(DonateButton);
         	this.Controls.Add(PlayButton);
+        	
+        	label1 = Controller.SpawnLabel("", new Point(23, 415), new Size(160, 15));
+        	this.Controls.Add(label1);
+        	
+        	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(160, 15));
+        	this.Controls.Add(labelError);
         	
         	
         }
@@ -226,12 +235,12 @@ namespace PswgLauncher
         }
         
 
-        private void CheckGameOptions() {
+        private void RefreshButtonState() {
         	
-        	if (File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe")) {
-        		OptButton.Disable = false;
-        	} else {
-        		OptButton.Disable = true;
+        	OptButton.Disable = !File.Exists(Application.StartupPath + @"\swgclientsetup_r.exe");
+        	
+        	if (OptionWindow != null) {
+        		OptionWindow.RefreshButtonState();
         	}
         	
         }
@@ -240,7 +249,7 @@ namespace PswgLauncher
         	
         	Controller.AddDebugMessage("New Status: " + newstatus);
         	
-        	CheckGameOptions();
+        	RefreshButtonState();
         	
         	switch (newstatus) {
         		//checksums need downloading	
@@ -498,13 +507,15 @@ namespace PswgLauncher
 	        			//Controller.SWGFiles.SwgFileTable.Remove(msg[1]);
 	        		}
 	        		
+	        		RefreshButtonState();
+	        		
 	        	}
         	}
         	
 
         	
         	launcherProgressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
-        	CheckGameOptions();
+        	RefreshButtonState();
 
         }
 
@@ -811,7 +822,7 @@ namespace PswgLauncher
         	
         	Controller.AddDebugMessage("using local checksums");
 
-        	Controller.SWGFiles.WriteConfig(GuiController.LocalFilelist);
+        	Controller.SWGFiles.WriteConfig(Controller.LocalFilelist);
         	
         	return true;
         	
@@ -903,6 +914,7 @@ namespace PswgLauncher
         	Controller.PlaySound("Sound_Click");
 			
         	if (OptionWindow != null) {
+        		OptionWindow.RefreshButtonState();
         		OptionWindow.Show();
         		OptionWindow.BringToFront();
         		return;

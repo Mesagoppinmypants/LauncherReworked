@@ -265,8 +265,8 @@ namespace PswgLauncher
 		
 		public void ReadLocalConfigUnEnc() {
 
-			if (!File.Exists(GuiController.LocalFilelist)) {
-				Controller.AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
+			if (!File.Exists(Controller.LocalFilelist)) {
+				Controller.AddDebugMessage("No " + Controller.LocalFilelist + " present, needs downloading.");
 				return;
 			}
 			
@@ -274,8 +274,8 @@ namespace PswgLauncher
 			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
 			
 			try {
-				Controller.AddDebugMessage("Reading " + GuiController.LocalFilelist);
-				using (FileStream fs = new FileStream(GuiController.LocalFilelist,FileMode.Open)) {
+				Controller.AddDebugMessage("Reading " + Controller.LocalFilelist);
+				using (FileStream fs = new FileStream(Controller.LocalFilelist,FileMode.Open)) {
 					
 						using (StreamReader sr = new StreamReader(fs)) {
 							CreateFileList(sr,false);
@@ -284,15 +284,15 @@ namespace PswgLauncher
 				}
 						
 			} catch (Exception e) {
-				Controller.AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
+				Controller.AddDebugMessage("No luck reading " + Controller.LocalFilelist + ", needs downloading.");
 			}
 			
 		}
 		
 		public void ReadLocalConfig() {
 			
-			if (!File.Exists(GuiController.LocalFilelist)) {
-				Controller.AddDebugMessage("No " + GuiController.LocalFilelist + " present, needs downloading.");
+			if (!File.Exists(Controller.LocalFilelist)) {
+				Controller.AddDebugMessage("No " + Controller.LocalFilelist + " present, needs downloading.");
 				return;
 			}
 			
@@ -300,8 +300,8 @@ namespace PswgLauncher
 			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
 			
 			try {
-				Controller.AddDebugMessage("Reading " + GuiController.LocalFilelist);
-				using (FileStream fs = new FileStream(GuiController.LocalFilelist,FileMode.Open)) {
+				Controller.AddDebugMessage("Reading " + Controller.LocalFilelist);
+				using (FileStream fs = new FileStream(Controller.LocalFilelist,FileMode.Open)) {
 					using (CryptoStream cs = new CryptoStream(fs, aes.CreateDecryptor(key, key), CryptoStreamMode.Read)) {
 						using (StreamReader sr = new StreamReader(cs)) {
 							CreateFileList(sr,false);
@@ -310,7 +310,7 @@ namespace PswgLauncher
 				}
 						
 			} catch (Exception e) {
-				Controller.AddDebugMessage("No luck reading " + GuiController.LocalFilelist + ", needs downloading.");
+				Controller.AddDebugMessage("No luck reading " + Controller.LocalFilelist + ", needs downloading.");
 			}
 
 		}

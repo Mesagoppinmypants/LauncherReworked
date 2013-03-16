@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Media;
+using System.Net;
+using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
-using System.Media;
-using System.IO;
-using System.Net;
 
 namespace PswgLauncher
 {
@@ -25,12 +26,17 @@ namespace PswgLauncher
     	private LauncherButton SupportButton;
     	private LauncherButton TrefixButton;
     	private LauncherButton NetworkButton;
+    	private LauncherButton AdminButton;
+    	private LauncherButton SwgDirButton;
+    	
+    	private bool init = false;
     	
         public LAUNCHOPTIONS(GuiController gc)
         {
+        	
         	this.Controller = gc;
         	
-        	//this.AutoScaleMode = AutoScaleMode.None;        	
+        	this.AutoScaleMode = AutoScaleMode.None;        	
         	
             InitializeComponent();
             InitializeComponent2();
@@ -40,7 +46,7 @@ namespace PswgLauncher
             checksumControl.Checked = Controller.checksumOption;
             checkBoxLocalhost.Checked = Controller.LocalhostOption;
             checkBoxResume.Checked = Controller.ResumeOption;
-             
+            init = true;
         }
         
         private void InitializeComponent2() {
@@ -59,22 +65,43 @@ namespace PswgLauncher
         	this.Controls.Add(CloseButton);
         	
         	
-        	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 68));
+        	SupportButton = Controller.SpawnStandardButton("Support", new Point(125, 58));
         	SupportButton.Click += Support_Click;
         	this.Controls.Add(SupportButton);
 
-        	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 68));
+        	TrefixButton = Controller.SpawnStandardButton("Run Trefix.exe", new Point(300, 58));
         	TrefixButton.Click += button2_Click;
+        	TrefixButton.Disable = true;
         	this.Controls.Add(TrefixButton);
 
-        	AboutButton = Controller.SpawnStandardButton("About", new Point(125, 125));
+        	AboutButton = Controller.SpawnStandardButton("About", new Point(125, 115));
         	AboutButton.Click += About_Click;
         	this.Controls.Add(AboutButton);
         	
-        	NetworkButton = Controller.SpawnStandardButton("Network Diag", new Point(300, 125));
+        	NetworkButton = Controller.SpawnStandardButton("Network Diag", new Point(300, 115));
         	NetworkButton.Click += Network_Click;
-        	this.Controls.Add(NetworkButton);        	
+        	this.Controls.Add(NetworkButton);
         	
+        	
+        	AdminButton = Controller.SpawnStandardButton("Admin Settings", new Point(125, 172));
+        	AdminButton.Click += Admin_Click;
+        	AdminButton.Disable = true;
+        	this.Controls.Add(AdminButton);
+
+        	SwgDirButton = Controller.SpawnStandardButton("open PSWGDir", new Point(300, 172));
+        	SwgDirButton.Click += SwgDir_Click;
+        	this.Controls.Add(SwgDirButton);
+        	
+        	RefreshButtonState();
+        	
+        }
+        
+        
+        public void RefreshButtonState() {
+
+        	TrefixButton.Disable = !File.Exists(Controller.FileTrefix);
+        	AdminButton.Disable = !File.Exists(Controller.FileAdmSettings);
+
         }
         
 
@@ -110,8 +137,9 @@ namespace PswgLauncher
 
         private void LAUNCHOPTIONS_MouseMove(object sender, MouseEventArgs e)
         {
-            if (mouseDownPoint.IsEmpty)
+        	if (mouseDownPoint.IsEmpty) {
                 return;
+        	}
             Form f = sender as Form;
             f.Location = new Point(f.Location.X + (e.X - mouseDownPoint.X), f.Location.Y + (e.Y - mouseDownPoint.Y));
         }
@@ -135,10 +163,14 @@ namespace PswgLauncher
         
         private void button2_Click(object sender, EventArgs e)
         {
-            if (File.Exists(Application.StartupPath + "/TREFix.exe"))
+            if (File.Exists(Controller.FileTrefix))
             {
             	Controller.PlaySound("Sound_Click");
-                System.Diagnostics.Process.Start(Application.StartupPath + "/TREFix.exe");
+            	try {
+                	System.Diagnostics.Process.Start(Controller.FileTrefix);
+            	} catch {
+            		Controller.AddDebugMessage("Could not start " + Controller.FileTrefix + " with elevated privs.");
+            	}
             }
 
             else
@@ -152,7 +184,27 @@ namespace PswgLauncher
         
         private void About_Click(object sender, EventArgs e) {
         	
-        	DialogResult dr = MessageBox.Show("Build " + Controller.GetProgramVersion() + "\n\nButtons created with Star Jedi Font by Davide Canavero, available under\nhttp://projectswg.com/download/star_jedi.zip","Project SWG Launcher",MessageBoxButtons.OK);
+        	DialogResult dr = MessageBox.Show("Running " + ((new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator)) ? "with" : "without") + " Elevated Privileges.\n\nBuild " + Controller.GetProgramVersion() + "\n\nButtons created with Star Jedi Font by Davide Canavero, available under\nhttp://projectswg.com/download/star_jedi.zip","Project SWG Launcher",MessageBoxButtons.OK);
+        	
+        }
+        
+        private void Admin_Click(object sender, EventArgs e) {
+        	
+        	if (File.Exists(Controller.FileAdmSettings)) {
+        		
+        		try {
+        			System.Diagnostics.Process.Start(Controller.FileAdmSettings);
+        		} catch {
+        			Controller.AddDebugMessage("Could not start " + Controller.FileAdmSettings + " with elevated privs.");
+        		}
+        		
+        	}
+        	
+        }
+        
+        private void SwgDir_Click(object sender, EventArgs e) { 
+
+			System.Diagnostics.Process.Start("explorer.exe", Controller.SwgSavePath);
         	
         }
         	
@@ -182,6 +234,10 @@ namespace PswgLauncher
 
         void CheckBoxLocalhostCheckedChanged(object sender, EventArgs e)
         {
+        	
+        	if (!init) {
+        		return;
+        	}
         	
         	if (checkBoxLocalhost.Checked == true) {
         		DialogResult dr = MessageBox.Show("The localhost option is meant for development only.\nIf you enable it, you won't be able to connect to ProjectSWG the game server.\n\nAre you certain you want to connect to locahost?","localhost option",MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
