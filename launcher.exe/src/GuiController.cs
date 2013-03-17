@@ -393,7 +393,7 @@ namespace PswgLauncher
 			
 			System.IO.FileInfo LastScan = new System.IO.FileInfo(LocalLastScan);
             
-			String[] files = System.IO.Directory.GetFiles(LocalPath, "SwgClient_r.exe-stage.*", System.IO.SearchOption.TopDirectoryOnly);
+			String[] files = System.IO.Directory.GetFiles(SwgSavePath, "SwgClient_r.exe-stage.*", System.IO.SearchOption.TopDirectoryOnly);
 			
 			foreach (String f in files) {
 				

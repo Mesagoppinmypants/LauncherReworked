@@ -868,12 +868,12 @@ namespace PswgLauncher
         	if (Controller.LocalhostOption) {
         		address = "127.0.0.1";
         		port = "44453";
+        	}
 
         	String args = String.Format("-- -s Station subscriptionFeatures=1 gameFeatures=34374193 -s ClientGame loginServerPort0={0} loginServerAddress0={1}", port, address);
         	
-        	
         	this.Hide();
-            Directory.SetCurrentDirectory(swgdirsave);
+            Directory.SetCurrentDirectory(Controller.SwgSavePath);
             System.Threading.Thread.Sleep(200);
 
         	try {
