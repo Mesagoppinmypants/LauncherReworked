@@ -124,6 +124,7 @@
       <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="ProgramVersion.cs" />
+    <Compile Include="StatusProcessor.cs" />
     <Compile Include="SupportWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -266,7 +266,7 @@ namespace PswgLauncher
         	
         	foreach (KeyValuePair<String,SWGFile> file in Controller.SWGFiles.SwgFileTable) {
         		
-        		if (Controller.SWGFiles.isGood(file.Key)) {
+        		if (Controller.SWGFiles.IsGood(file.Key)) {
 		           	continue;
 		        }
 

@@ -22,32 +22,12 @@ namespace PswgLauncher
     public partial class launcher2 : Form
     {
 
-
     	int errorcounter = 0;
-    	
-        string[] userdir;
-        string checks;
         
-        int status;
-        bool ForceChecksums = false;
-        
-        enum StatusCodes :int {
-        	
-        	NoChecksum = 0,
-        	UpdatingChecksum = 1,
-        	ChecksumFailed = 2,
-        	ChecksumOk = 3,
-        	Patching = 4,
-        	PatchingFailed = 5,
-        	PatchingComplete = 6
-        	
-        }
-        
-       
-		private LAUNCHOPTIONS OptionWindow;
-        
+        public StatusProcessor StatusProcessor;
+        private LAUNCHOPTIONS OptionWindow;
         private GuiController Controller;
-        
+
         private LauncherProgressBar launcherProgressBar1;
 
         private LauncherButton MinimizeButton;
@@ -64,34 +44,47 @@ namespace PswgLauncher
         
         private System.Windows.Forms.Timer timer;
         
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerScan;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerScanManual;
         
         public launcher2(GuiController gc)
         {
         	
         	this.Controller = gc;
+        	this.StatusProcessor = new StatusProcessor(gc);
 
         	this.AutoScaleMode = AutoScaleMode.None;
         	
         	InitializeComponent();
         	InitializeComponent2();
         	
-        	
-        	
         	this.Show();
         	
-        	Controller.AddDebugMessage(Controller.SwgDir);
-        	userdir = Directory.GetFiles(Controller.SwgDir);  //gets a list of all files in the SWG directory 
-            
             Point mouseDownPoint = Point.Empty;
-            
-            
             this.Process();
             
-           
         }
         
         public void InitializeComponent2() {
         	
+        	this.backgroundWorkerScan = new BackgroundWorker();
+       		this.backgroundWorkerScan.WorkerReportsProgress = true;
+        	this.backgroundWorkerScan.WorkerSupportsCancellation = true;
+        	this.backgroundWorkerScan.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerScan_DoWork);
+        	//this.backgroundWorkerScan.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerScan_ProgressChanged);
+        	//FIXME
+        	this.backgroundWorkerScan.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
+        	this.backgroundWorkerScan.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerScan_RunWorkerCompleted);        	
+
+        	this.backgroundWorkerScanManual = new BackgroundWorker();
+       		this.backgroundWorkerScanManual.WorkerReportsProgress = true;
+        	this.backgroundWorkerScanManual.WorkerSupportsCancellation = true;
+        	this.backgroundWorkerScanManual.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerScanManual_DoWork);
+        	//this.backgroundWorkerScanManual.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerScanManual_ProgressChanged);
+        	//FIXME
+        	this.backgroundWorkerScanManual.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
+        	this.backgroundWorkerScanManual.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerScanManual_RunWorkerCompleted);
         	
         	// modify existing components from designer
 
@@ -123,7 +116,7 @@ namespace PswgLauncher
 
         	AcctButton.Click += acct_Click_1;
         	OptButton.Click += options_Click_1;
-        	ScanButton.Click += scan_Click;
+        	ScanButton.Click += Scan_Click;
         	LOptButton.Click += button2_Click;
         	DonateButton.Click += Donate_Click;
         	PlayButton.Click += PLAY_Click_1;
@@ -141,23 +134,32 @@ namespace PswgLauncher
         	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(160, 15));
         	this.Controls.Add(labelError);
         	
+        }
+        
+        private void SetNextStatus() {
+        	
+        	int newstatus = StatusProcessor.GetNextStatus();
+        	
+        	if (newstatus >= 0) {
+        		UpdateStatus(newstatus);
+        	}
         	
         }
         
 
         private void Process() {
+        	       	
+        	this.SetNextStatus();
         	
-        	
-			
-            if (status == null) {
-        		
-        		UpdateStatus((int)StatusCodes.NoChecksum);
-        		
+        	//FIXME: well this is a bit dodgy. Maybe get rid of NoChecksum altogether.
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.NoChecksum) {
+
+        		this.SetNextStatus();
         	}
-            
-            if (status == (int) StatusCodes.NoChecksum || status == (int) StatusCodes.ChecksumFailed) {
-            	
+        	
+            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingChecksum) {
         		
+            	
             	WebClient wc = new WebClient();
             	wc.Encoding = System.Text.Encoding.UTF8;
             	wc.Credentials = Controller.GetNetworkCredential();
@@ -170,7 +172,7 @@ namespace PswgLauncher
 				while (rv == false) {
 					
             		if (c>0) {
-						UpdateStatus((int) StatusCodes.ChecksumFailed);
+						UpdateStatus((int) StatusProcessor.StatusCodes.ChecksumFailed);
             			errorcounter++;
             			UpdateErrors();
 
@@ -182,23 +184,33 @@ namespace PswgLauncher
             			
             		}
 					
-					UpdateStatus((int) StatusCodes.UpdatingChecksum);
+					UpdateStatus((int) StatusProcessor.StatusCodes.UpdatingChecksum);
 					
 					c++;
 					rv = this.ProcessChecksums(wc);
 				}
             	
+            	UpdateStatus((int) StatusProcessor.StatusCodes.ChecksumOK);
             	
-            	UpdateStatus((int) StatusCodes.ChecksumOk);
+            	this.SetNextStatus();
 
-            	
             }
-        	
-            Controller.AddDebugMessage("Status is right now:" + status);
-            if (status == (int) StatusCodes.ChecksumOk || status == (int) StatusCodes.PatchingFailed) {
+            
+            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Scanning) {
             	
-            	Controller.AddDebugMessage("Dispatching Worker.");
-            	this.DispatchWorker();
+            	Controller.AddDebugMessage("Dispatching Worker for Scanning.");
+            	this.DispatchScanWorker();
+            }
+            
+            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ScanningManual) {
+            	Controller.AddDebugMessage("Dispatching Worker for Manual Scanning.");
+            	this.DispatchScanManualWorker();
+            }
+            
+            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Patching) {
+            	
+            	Controller.AddDebugMessage("Dispatching Worker for Patching.");
+            	this.DispatchPatchWorker();
             }
             
 
@@ -214,21 +226,40 @@ namespace PswgLauncher
         }
 
 
-        
-        private void DispatchWorker() {
+
+        private void DispatchWorker(BackgroundWorker bgworker, int targetstatus) {
         	
-        	UpdateErrors();
-        	
-        	if (status != (int)StatusCodes.ChecksumOk && status != (int) StatusCodes.PatchingFailed ) {
-            	return;
-            }
-        	
+         	UpdateErrors();
+         	
+         	if (StatusProcessor.Status != targetstatus) {
+        		return;
+        	}
+        	        	
         	launcherProgressBar1.Step = 100 / Controller.SWGFiles.SwgFileTable.Count;
         	launcherProgressBar1.Value = 0;
-        	UpdateStatus((int)StatusCodes.Patching);
         	
-        	backgroundWorker2.RunWorkerAsync();
+        	
+        	bgworker.RunWorkerAsync();
 
+        }
+
+        private void DispatchPatchWorker() {
+        	
+        	DispatchWorker(backgroundWorker2, (int)StatusProcessor.StatusCodes.Patching);
+
+        }
+
+        
+        private void DispatchScanWorker() {
+        	
+        	DispatchWorker(backgroundWorkerScan, (int)StatusProcessor.StatusCodes.Scanning);
+
+        }
+        
+        private void DispatchScanManualWorker() {
+        	
+        	DispatchWorker(backgroundWorkerScanManual, (int)StatusProcessor.StatusCodes.ScanningManual);
+        	
         }
         
 
@@ -242,38 +273,30 @@ namespace PswgLauncher
         	
         }
         
-        private void UpdateStatus(int newstatus) {
+        private bool UpdateStatus(int newstatus) {
         	
-        	Controller.AddDebugMessage("New Status: " + newstatus);
-        	
-        	RefreshButtonState();
+        	Controller.AddDebugMessage("Switching Status to: " + newstatus);
+        	if (!StatusProcessor.SetNewState(newstatus)) {
+        		return false;
+        	}
+        	Controller.AddDebugMessage("Switched Status to: " + newstatus);
         	
         	switch (newstatus) {
         		//checksums need downloading	
-        		case (int) StatusCodes.NoChecksum:
-        		
-        			// only null to 0 is possible.
-        		
-        			if (status != null ) { return; }
-        		
-        			status = 0;
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Play";
+        		case (int) StatusProcessor.StatusCodes.NoChecksum:
+
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Get Checksums";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums need Checking (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	ScanButton.Disable = true;
         			break;
-        		case (int) StatusCodes.UpdatingChecksum:
-        			// only 0or2 to 1 is possible.
-        		
-        			if (status != (int) StatusCodes.NoChecksum && status != (int) StatusCodes.ChecksumFailed) { return; }
-        			status = newstatus;
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
+        		case (int) StatusProcessor.StatusCodes.UpdatingChecksum:
+
         			PlayButton.Disable = true;
-        			PlayButton.Text = "Play";
+        			PlayButton.Text = "Get Checksums";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "DL'ing Checksums (" + newstatus + ")";
@@ -282,15 +305,10 @@ namespace PswgLauncher
         			break;
 
 
-        		case (int) StatusCodes.ChecksumFailed:
+        		case (int) StatusProcessor.StatusCodes.ChecksumFailed:
         			
-        			// only from downloading to failed or OK
-        			if (status != (int) StatusCodes.UpdatingChecksum) { return; }
-        			
-        			status = newstatus;
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = false;
-        			PlayButton.Text = "Retry";
+        			PlayButton.Text = "Retry Checksums";
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksum DL failed. (" + newstatus + ")";
@@ -300,59 +318,78 @@ namespace PswgLauncher
         			break;
         			
         		//checksums present and working
-        		case (int) StatusCodes.ChecksumOk:
+        		case (int) StatusProcessor.StatusCodes.ChecksumOK:
         		
-        			// only from downloading to failed or OK
-        			if (status != (int) StatusCodes.UpdatingChecksum && status != (int) StatusCodes.PatchingComplete && status != (int) StatusCodes.ChecksumFailed )
-        			{ return; }
-        		
-        			status = newstatus;
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Play";
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Scan";
                 	label1.ForeColor = Color.Green;
                 	pictureBox2.Image = null;
                 	label1.Text = "Checksums loaded. (" + newstatus + ")";
                 	launcherProgressBar1.Text = "";
                 	ScanButton.Disable = false;
         			break;
-        			
-        		case (int) StatusCodes.Patching:
+
+        		case (int) StatusProcessor.StatusCodes.Scanning:
         		
-        			if (status != (int) StatusCodes.ChecksumOk && status != (int) StatusCodes.PatchingFailed) { return; }
-        		
-        			status = newstatus;
-        			
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = true;
-        			PlayButton.Text = "Play";
+        			PlayButton.Text = "Scan";
+                	label1.ForeColor = Color.Blue;
+                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
+                	label1.Text = "Scanning (" + newstatus + ")";
+					ScanButton.Disable = true;
+        			break;
+        			
+        		case (int) StatusProcessor.StatusCodes.ScanningManual:
+        		
+        			PlayButton.Disable = true;
+        			PlayButton.Text = "Scan";
+                	label1.ForeColor = Color.Blue;
+                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
+                	label1.Text = "Scanning (" + newstatus + ")";
+					ScanButton.Disable = true;
+        			break;
+        			
+        		case (int) StatusProcessor.StatusCodes.ScanningFailed:
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Retry Scan";
+                	label1.ForeColor = Color.Red;
+                	pictureBox2.Image = null;
+                	label1.Text = "Scanning Failed (" + newstatus + ")";
+                	ScanButton.Disable = false;
+        			break;
+        		
+        		case (int) StatusProcessor.StatusCodes.ScanningOK:
+        			
+            		label1.ForeColor = Color.Blue;
+            		label1.Text = "Scanning complete! (" + newstatus + ")";
+            		pictureBox2.Image = null;
+        			PlayButton.Disable = false;
+        			PlayButton.Text = "Patch";
+					ScanButton.Disable = false;
+        			break;
+        			
+        		case (int) StatusProcessor.StatusCodes.Patching:
+        		
+        			PlayButton.Disable = true;
+        			PlayButton.Text = "Patch";
                 	label1.ForeColor = Color.Blue;
                 	pictureBox2.Image = Controller.GetResourceImage("small-loading");
                 	label1.Text = "Patching (" + newstatus + ")";
 					ScanButton.Disable = true;
         			break;
         		
-        		case (int) StatusCodes.PatchingFailed:
+        		case (int) StatusProcessor.StatusCodes.PatchingFailed:
 					//FIXME: add retry button
-        			if (status != (int) StatusCodes.Patching) { return; }
-        		
-        			status = newstatus;
-        			
-        			this.launcherProgressBar1.ForeColor = System.Drawing.Color.Red;
         			PlayButton.Disable = false;
-        			PlayButton.Text = "Retry";
+        			PlayButton.Text = "Retry Patch";
                 	label1.ForeColor = Color.Red;
                 	pictureBox2.Image = null;
                 	label1.Text = "Patching Failed (" + newstatus + ")";
                 	ScanButton.Disable = false;
         			break;
         		
-        		case (int) StatusCodes.PatchingComplete:
+        		case (int) StatusProcessor.StatusCodes.PatchingOK:
         			
-        			if (status != (int) StatusCodes.Patching) { return; }
-        			
-        			status = newstatus;
-					this.launcherProgressBar1.ForeColor = System.Drawing.Color.Green;
             		label1.ForeColor = Color.Aqua;
             		label1.Text = "Ready to play! (" + newstatus + ")";
             		pictureBox2.Image = null;
@@ -362,65 +399,132 @@ namespace PswgLauncher
         			break;
         	}
         	
+        	//FIXME
+        	this.launcherProgressBar1.ForeColor = ((StatusProcessor.Status == (int) StatusProcessor.StatusCodes.PatchingOK) ? System.Drawing.Color.Green : System.Drawing.Color.Red);
+        	
         	this.Refresh();
         	
+        	return true;
         	
         }
-        
 
-        
-        
+        private void backgroundWorkerChecksum_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
 
-        private void MinimizeClick(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
+        	// only run in scanning State
+        	if (StatusProcessor.Status != (int) StatusProcessor.StatusCodes.UpdatingChecksum) {
+		    	e.Cancel = true;
+		        return;
+		    }
 
-
-        private void CloseClick(object sender, EventArgs e)
-        {
-        	if (status == (int) StatusCodes.UpdatingChecksum || status == (int) StatusCodes.Patching)
-            {
-               
-        		DialogResult res = MessageBox.Show("PSWG Launcher is still patching. Are you sure you want to close PSWG Launcher?", "Close ProjectSWG Launcher?",MessageBoxButtons.YesNo);
+        	BackgroundWorker backgroundWorker = sender as BackgroundWorker;
+  			if(backgroundWorker != null) {
         		
-        		if (res == DialogResult.No) {
-        			return;
-        		}
-        		
-            }
+	    		backgroundWorker.ReportProgress(0);
+	    		
+	    		
+	    	}
+
+	    	if(backgroundWorker.CancellationPending) {
+			     e.Cancel = true;
+        	}
+			else {
+            		backgroundWorker.ReportProgress(100,"Scanning finished.");
+			}
+
         	
-            Application.Exit();
         }
 
-        private void acct_Click_1(object sender, EventArgs e)
-        {
-        	
-        	Controller.PlaySound("Sound_Click");
-            AccountWindow acct = new AccountWindow(Controller);
-            acct.Show();
+        
+        private void ScanWork(bool checksums, int checkstatus, object sender, System.ComponentModel.DoWorkEventArgs e) {
+
+        	// only run in scanning State
+		    if (StatusProcessor.Status != checkstatus) {
+		    	e.Cancel = true;
+		        return;
+		    }
+
+        	BackgroundWorker backgroundWorker = sender as BackgroundWorker;
+  			if(backgroundWorker != null) {
+        		
+	    		backgroundWorker.ReportProgress(0);
+	    		Controller.SWGFiles.Scan(checksums, backgroundWorker);
+	    		
+	    	}
+
+	    	if(backgroundWorker.CancellationPending) {
+			     e.Cancel = true;
+        	}
+			else {
+            		backgroundWorker.ReportProgress(100,"Scanning finished.");
+			}
+
         }
         
-        private void options_Click_1(object sender, EventArgs e)
-        {
-            if (File.Exists(Controller.SwgSavePath + @"\SwgClientSetup_r.exe"))
-            {
-            	Controller.PlaySound("Sound_Click");
-                System.Diagnostics.Process.Start(Controller.SwgSavePath + @"\SwgClientSetup_r.exe");
-            }
-            else
-            {
-            	Controller.AddDebugMessage("Cannot launch swgclientsetup_r.exe because it is missing.");
-            	Controller.PlaySound("Sound_Error");
-            }
+        
+
+        
+        
+        private void backgroundWorkerScan_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+
+        	ScanWork(Controller.checksumOption,(int)StatusProcessor.StatusCodes.Scanning, sender, e);
+	    		
         }
+
+        private void backgroundWorkerScanManual_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+
+	    	ScanWork(true,(int)StatusProcessor.StatusCodes.ScanningManual, sender, e);
+	    	
+        }
+        
+        
+        private void ScanComplete(bool checksum, bool DoContinue, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+
+        	if (e.Cancelled || e.Error != null) {
+        		
+        		Debug.WriteLine("Scan cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
+        		this.launcherProgressBar1.Text = "";
+        		
+        		UpdateStatus((int) StatusProcessor.StatusCodes.ScanningFailed);
+        		
+        		return;
+        	} 
+
+        	UpdateStatus((int) StatusProcessor.StatusCodes.ScanningOK);
+
+        	if (checksum) {
+        		Controller.SaveScanComplete();
+        	}
+
+        	
+        	if (DoContinue) {
+        		Process();
+        	}
+        	
+        }
+        
+        
+        //FIXME: consolidate with manual
+        private void backgroundWorkerScan_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+        	
+        	ScanComplete(Controller.checksumOption, true, sender, e);
+        	
+        }
+
+
+        
+        //FIXME
+        private void backgroundWorkerScanManual_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+
+        	ScanComplete(true, true, sender, e);
+        	
+        }        
+        
 
         private void backgroundWorker2_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
         	
         	// only run if checksums are present
-		    if (status != (int)StatusCodes.Patching) {
-		            	
+		    if (StatusProcessor.Status != (int)StatusProcessor.StatusCodes.Patching) {
 		    	e.Cancel = true;
 		        return;
 		    }
@@ -439,7 +543,7 @@ namespace PswgLauncher
 		        	i++;
 		            	
 		        	// don't download good files again.
-		            if (Controller.SWGFiles.isGood(file.Key)) {
+		            if (Controller.SWGFiles.IsGood(file.Key)) {
 		            	continue;
 		            }
 		            	
@@ -474,7 +578,6 @@ namespace PswgLauncher
         
         private void backgroundWorker2_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-        	//Controller.AsyncSync();
         	
         	if (e.UserState != null) {
 	        	
@@ -504,8 +607,6 @@ namespace PswgLauncher
 	        			//Controller.SWGFiles.SwgFileTable.Remove(msg[1]);
 	        		}
 	        		
-	        		RefreshButtonState();
-	        		
 	        	}
         	}
         	
@@ -519,51 +620,22 @@ namespace PswgLauncher
         private void backgroundWorker2_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
         	
-        	bool scanned = false;
-        	//this needs to be checked if interruptions are possible.
-        	if (ForceChecksums) {
-        		
-        		scanned = true;
-        		ForceChecksums = false;
-        	}
-        	
 	       	if (e.Cancelled || e.Error != null) {
         		
         		Debug.WriteLine("DL cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
         		this.launcherProgressBar1.Text = "";
-        		UpdateStatus((int) StatusCodes.PatchingFailed);
+        		UpdateStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
+        		
         	} else {
-        		
-        		if (checkForCompleteness()) {
-        			if (scanned) {
-        				Controller.SaveScanComplete();
-        			}
-        			UpdateStatus((int) StatusCodes.PatchingComplete);
+
+        		if (Controller.SWGFiles.IsComplete()) {
+        			UpdateStatus((int) StatusProcessor.StatusCodes.PatchingOK);
         		} else {
-        			UpdateStatus((int) StatusCodes.PatchingFailed);
+        			UpdateStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
         		}
-        		
-        		
         	}
-           
-            
         }
         
-        private bool checkForCompleteness() {
-        	
-        	foreach (KeyValuePair<String,SWGFile> file in Controller.SWGFiles.SwgFileTable) {
-        		
-        		if (Controller.SWGFiles.isGood(file.Key)) {
-		           	continue;
-		        }
-
-        		return false;
-        		
-        	}
-        	
-        	return true;
-
-        }
         
         private bool MakeDirIfRequired(String filename) {
         	
@@ -622,7 +694,7 @@ namespace PswgLauncher
 
         	try {
 	        
-		        if (Controller.SWGFiles.isGood(file)) {
+		        if (Controller.SWGFiles.IsGood(file)) {
 		        	backgroundWorker.ReportProgress( progress, "Debug " + "was already good: " + file);
 		        	backgroundWorker.ReportProgress(progress, "OK " + file);
 		        	return true;
@@ -639,14 +711,15 @@ namespace PswgLauncher
 		        	
 		        	if (f.Length == swgfile.Filesize) {
 		        		
-		        		if (!Controller.checksumOption && !this.ForceChecksums) {
+		        		//if (!Controller.checksumOption && !this.ForceChecksums) {
+		        		if (!Controller.checksumOption ) {
 			        		backgroundWorker.ReportProgress( progress, "Debug " + "file exists, skipping checksum for " + file);
 			        		backgroundWorker.ReportProgress(progress, "OK " + file);		        			
 		        			return true;
 		        		}
 		        		
 
-			        	if (compareCheckSum(path, checksum)) {
+			        	if (swgfile.MatchChecksum(path)) {
 			        		backgroundWorker.ReportProgress( progress, "Debug " + "is good: " + file);
 			        		backgroundWorker.ReportProgress(progress, "OK " + file);
 			        		return true;
@@ -671,7 +744,7 @@ namespace PswgLauncher
 	        		
 	        		if (File.Exists(localsrc)) {
 	        		
-		        		if (compareCheckSum(localsrc, checksum)) {
+		        		if (swgfile.MatchChecksum(localsrc)) {
 	
 		        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
 		        			backgroundWorker.ReportProgress(progress, "Reading " + file);
@@ -680,7 +753,7 @@ namespace PswgLauncher
 							File.Copy(@localsrc, @path, true);
 		        			
 		        			
-		        			if (compareCheckSum(path,checksum) ) {
+		        			if (swgfile.MatchChecksum(path)) {
 		        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
 		        				backgroundWorker.ReportProgress(progress, "Read " + file);
 		        				return true;
@@ -713,7 +786,7 @@ namespace PswgLauncher
 				}
 	        	
 				
-	        	if (compareCheckSum(path,checksum) ) {
+	        	if (swgfile.MatchChecksum(path) ) {
 	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
 	        		backgroundWorker.ReportProgress(progress, "Patched " + file);
 	        		return true;
@@ -780,23 +853,7 @@ namespace PswgLauncher
         }
         
         
-        private bool compareCheckSum(string Filepath,string Checksum) {
-        	
-        	if (!File.Exists(Filepath)) {
-        		return false;
-        	}
 
-			System.IO.FileStream FileCheck = System.IO.File.OpenRead(Filepath);                
-			System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-			byte[] md5Hash = md5.ComputeHash(FileCheck);                
-			FileCheck.Close();
-			                
-			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
-			if (Calc == Checksum.ToLower()) {
-				return true;
-			}
-			return false;                  
-		}
         
         
         //FIXME: this might as well go in the Controller.
@@ -835,13 +892,14 @@ namespace PswgLauncher
 
         private void PLAY_Click_1(object sender, EventArgs e) {
         	
-        	if (status == (int) StatusCodes.ChecksumFailed || status == (int) StatusCodes.PatchingFailed) {
+        	//FIXME
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ChecksumFailed || StatusProcessor.Status == (int) StatusProcessor.StatusCodes.PatchingFailed) {
         		Process();
         		return;
         	}
 
-        	
-        	if (status != (int) StatusCodes.PatchingComplete) {
+        	//FIXME
+        	if (StatusProcessor.Status != (int) StatusProcessor.StatusCodes.PatchingOK) {
         		Controller.PlaySound("Sound_Error");
         		return;
         	}
@@ -893,25 +951,20 @@ namespace PswgLauncher
         }
 
 
-        private void scan_Click(object sender, EventArgs e)
+        private void Scan_Click(object sender, EventArgs e)
         {
         	
+        	//FIXME
             //only scan if complete
-            if (status != (int) StatusCodes.PatchingComplete && status != (int) StatusCodes.PatchingFailed)
+            if (StatusProcessor.Status != (int) StatusProcessor.StatusCodes.PatchingOK && StatusProcessor.Status != (int) StatusProcessor.StatusCodes.PatchingFailed)
             {
-            
             	return;
             }
             
             Controller.PlaySound("Sound_Click");
-
-			// reset what good files we thought we had
-			Controller.SWGFiles.ResetGoodFiles();
-			
-			ForceChecksums = true;
 			
 			
-			UpdateStatus((int) StatusCodes.ChecksumOk);
+			UpdateStatus((int) StatusProcessor.StatusCodes.ScanningManual);
 			Process();
 
         }
@@ -971,6 +1024,53 @@ namespace PswgLauncher
         }
         
 
+        private void MinimizeClick(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+
+        private void CloseClick(object sender, EventArgs e)
+        {
+        	
+        	//FIXME
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingChecksum || StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Patching)
+            {
+               
+        		DialogResult res = MessageBox.Show("PSWG Launcher is still patching. Are you sure you want to close PSWG Launcher?", "Close ProjectSWG Launcher?",MessageBoxButtons.YesNo);
+        		
+        		if (res == DialogResult.No) {
+        			return;
+        		}
+        		
+            }
+        	
+            Application.Exit();
+        }
+
+        private void acct_Click_1(object sender, EventArgs e)
+        {
+        	
+        	Controller.PlaySound("Sound_Click");
+            AccountWindow acct = new AccountWindow(Controller);
+            acct.Show();
+        }
+        
+        private void options_Click_1(object sender, EventArgs e)
+        {
+            if (File.Exists(Controller.SwgSavePath + @"\SwgClientSetup_r.exe"))
+            {
+            	Controller.PlaySound("Sound_Click");
+                System.Diagnostics.Process.Start(Controller.SwgSavePath + @"\SwgClientSetup_r.exe");
+            }
+            else
+            {
+            	Controller.AddDebugMessage("Cannot launch swgclientsetup_r.exe because it is missing.");
+            	Controller.PlaySound("Sound_Error");
+            }
+        }        
+        
+        
     }
 }
        

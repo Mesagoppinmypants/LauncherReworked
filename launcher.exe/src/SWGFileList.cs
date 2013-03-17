@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -40,8 +41,6 @@ namespace PswgLauncher
 			}
 		}
 		
-		private Dictionary<String,String> GotFiles;
-		
 		private bool _hasFileList = false;
 		public bool HasFileList {
 			get {
@@ -57,9 +56,6 @@ namespace PswgLauncher
 			Controller = gc;
 			
 			_swgfiletable = new Dictionary<String, SWGFile>();
-			GotFiles = new Dictionary<String, String>();
-			
-			
 			
 		}
 		
@@ -160,7 +156,10 @@ namespace PswgLauncher
         			
         			if (match.Success) {
         				//Debug.WriteLine("Found " + match.Groups[2].Value + ":" + match.Groups[1].Value);
-        				NewChecksums.Add(match.Groups[4].Value, new SWGFile(match.Groups[4].Value, (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value)) );
+        				
+        				SWGFile swgfile = new SWGFile(match.Groups[4].Value, (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value), Controller);
+        				
+        				NewChecksums.Add(match.Groups[4].Value, swgfile);
         				
         				text.Add(line) ;
         				continue;
@@ -197,7 +196,7 @@ namespace PswgLauncher
 			
 			if (this.HasFileList && this._timestamp != null && this._timestamp >= MasterTimestamp) {
 				Controller.AddDebugMessage("new list timestamp less or equal, ignoring new list. " + _timestamp + " vs " + MasterTimestamp);
-				return false;
+				return true;
 			}
 			
 			if (!HasBegin(SR)) {
@@ -315,25 +314,105 @@ namespace PswgLauncher
 
 		}
 		
+		// FIXME: should be obsolete after launcher2 refactor
 		public void AddGoodFile(String filename) {
-			if (filename != null) {
-				//meh...
-				
-				this.GotFiles.Add(filename.ToLower(), "1");
+			if (filename == null) {
+				return;
 			}
+			
+			if (! _swgfiletable.ContainsKey(filename)) {
+				return;
+			}
+			
+			SWGFile swgfile;
+			_swgfiletable.TryGetValue(filename, out swgfile);
+			
+			if (swgfile == null) {
+				return;
+			}
+			
+			//well this is a hack :p
+			swgfile.SetGood();
+			
 		}
 		
-		public bool isGood(String filename) {
-			if (filename != null) {
-				
-				return GotFiles.ContainsKey(filename.ToLower());
+		public bool IsGood(String filename) {
+			if (filename == null) {
+				return false;
 			}
-			return false;
+			
+			if (! _swgfiletable.ContainsKey(filename)) {
+				return false;
+			}
+			
+			SWGFile swgfile;
+			_swgfiletable.TryGetValue(filename, out swgfile);
+			
+			if (swgfile == null) {
+				return false;
+			}
+			
+			return swgfile.IsGood;
 		}
+
+
+        public bool IsComplete() {
+        	
+        	foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
+        		
+        		if (file.Value.IsGood) {
+		           	continue;
+		        }
+
+        		return false;
+        		
+        	}
+        	
+        	return true;
+
+        }
+
 		
 		public void ResetGoodFiles() {
-			GotFiles = new Dictionary<String, String>();
+			
+			foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
+				
+				file.Value.Reset();
+				
+			}
+			
 		}
+		
+		public void Scan(bool WithChecksums, BackgroundWorker bgWorker) {
+			
+			ResetGoodFiles();
+			
+			float step = (float) 100 / (float) _swgfiletable.Count;
+			float progress = 0;
+			
+			foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
+				
+				progress += step;
+				int progressDisplay = Convert.ToInt32(progress);
+				
+				if (WithChecksums) {
+					if (file.Value.SetChecksumMatch()) {
+						file.Value.SetGood();
+					}
+					
+				} else {
+					if (file.Value.SetSizeMatch()) {
+						file.Value.SetGood();
+					}
+				}
+				
+				bgWorker.ReportProgress( progressDisplay, file.Key);				
+				
+			}
+			
+		}
+		
+		
 		
 		//FIXME: move to utility class...
 		static byte[] GetBytes(String str)
