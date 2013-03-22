@@ -146,9 +146,9 @@ namespace PswgLauncher
 			return SizeMatched;
 		}
 
+		
+		public bool MatchChecksum(string PathPrefix) {
 
-        public bool MatchChecksum(string PathPrefix) {
-        	
 			if (!FileExists(PathPrefix)) {
 				return false;
 			}
@@ -159,15 +159,26 @@ namespace PswgLauncher
 			}
 			
 			String Filepath = PathPrefix + @"\" + Filename;
+			
+			return SWGFile.MatchChecksum(Filepath, Checksum);
+			
+		}
+		
+		//FIXME: hack for re-usability. should be in a helper class.
+        public static bool MatchChecksum(string Path, string chk) {
 
-			System.IO.FileStream FileCheck = System.IO.File.OpenRead(Filepath);                
+			if (!File.Exists(Path)) {
+				return false;
+			}
+			
+			System.IO.FileStream FileCheck = System.IO.File.OpenRead(Path);                
 			System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
 			byte[] md5Hash = md5.ComputeHash(FileCheck);                
 			FileCheck.Close();
 			                
 			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
 			
-			if (Calc == Checksum.ToLower()) {
+			if (Calc == chk.ToLower()) {
 				return true;
 			}
 			

@@ -33,5 +33,9 @@ namespace PswgLauncher
 			this.DialogResult = DialogResult.Yes;
 			this.Close();
 		}
+		
+		public void ChangeText(String text) {
+			label1.Text = text;
+		}
 	}
 }

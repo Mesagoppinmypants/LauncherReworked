@@ -10,6 +10,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace PswgLauncher
@@ -20,94 +21,104 @@ namespace PswgLauncher
 	public class PatchChecker
 	{
 		
-		public bool UpdateNeeded { get; private set; }
-		public bool remoteError { get; private set; }
-		public bool localError { get; private set; }
-		
 		GuiController Controller;
+		WebClient wc;
 		
 		public PatchChecker(GuiController gc)
 		{
 			
 			this.Controller = gc;
-			UpdateNeeded = false;
-			localError = false;
-			remoteError = false;
-			this.runCheck();
+
+			wc = new WebClient();
+			wc.Encoding = System.Text.Encoding.UTF8;
 			
 		}
 		
 		
 	
-		
-		protected void runCheck() {
+		//exceptions need handling in calling method
+		public bool RunCheck() {
 			
 			string lpatchsrv = "";
-			string lpatchusr = "";
 			
 			Controller.AddDebugMessage("checking for updates...");
-			
-			try {
-				
-				//TODO this should be stored centrally somewhere.
-				
-				WebClient wc = new WebClient();
-				wc.Encoding = System.Text.Encoding.UTF8;
 
-				using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.LAUNCHER + "lpatch.cfg"))) {
+				
+			using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.PATCHURL + "lpatch.cfg"))) {
 
-	            	lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
+	        	lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
 					
-				}
-
-            
-			} catch (WebException e) {
-				
-				Controller.AddDebugMessage("Couldn't read server launcher version " + e.ToString() );
-				
-				remoteError = true;
-				return;
-				
 			}
-
-			
+		
 
 			lpatchsrv = lpatchsrv.Trim();
 
 			if (lpatchsrv == "") {
-				remoteError = true;
-				return;
+				return false;
 			}
-			
 
 			ProgramVersion ThisVersion = new ProgramVersion(Controller.GetProgramVersion());
 			ProgramVersion ServerVersion = new ProgramVersion(lpatchsrv);
 			
 			Controller.AddDebugMessage("Local Launcher Version" + Controller.GetProgramVersion() + "|" + ThisVersion.ToCompactString() + " |" + ThisVersion.ToString());
 			Controller.AddDebugMessage("Server Launcher Version" + lpatchsrv + "|" + ServerVersion.ToCompactString() + " |" + ServerVersion.ToString());
-	        
-	        //backward compatibility for launcher patcher for the time being.
-	        try {
-	        	System.IO.StreamWriter file = new System.IO.StreamWriter(Application.StartupPath + @"\lpatchusr.cfg");
-	        	file.WriteLine(Controller.GetProgramVersion());
-	        	file.Close();
-	        		
-	        } catch (Exception e) {
-	        	localError = true;
-	        	return;
-	        }
 			
-			
-	        if (!ThisVersion.IsNewerThan(ServerVersion)) {
+	        if (ThisVersion.IsNewerThan(ServerVersion)) {
             	
-            	UpdateNeeded = true;
+            	return false;
             	
-            } 
+            }
 			
-			//DEBUG
-			//UpdateNeeded = true;
+			return true;
 			
 		}
+		
+		
+		//exception handling should be done in the calling method.
+		public bool DownloadPatcher(String savepath, String URL, String filepath) {
+			
+			String checksum = "";
+			
+			String DL = URL + "/" + filepath;
+			String ChksumDL = URL + "/" + filepath + ".md5";
+			String Local = savepath + @"\" + filepath;
+			String LocalTmp =  Local + ".part";
+
+			using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(ChksumDL))) {
+				checksum = Regex.Replace(upstreamVersionStreamReader.ReadToEnd(),"\n","");
+			}
+			
+			
+
+			bool IsGood = false;
+
+			if (File.Exists(Local)) {
+				IsGood = SWGFile.MatchChecksum(Local, checksum);
+			}
+			
+			
+			if (IsGood) {
+				Controller.AddDebugMessage("Reusing existing Launcher Patcher...");
+				return true;
+			}
+			
+			wc.DownloadFile(DL, LocalTmp);
+			
+			IsGood = SWGFile.MatchChecksum(LocalTmp, checksum);
+			
+			if (IsGood) {
+				
+				if (File.Exists(Local)) {
+					File.Delete(Local);
+				}				
+				
+				File.Move(LocalTmp,Local);
+			}
+					
+			return IsGood;
+			
+		}		
+
 		
 		
 		

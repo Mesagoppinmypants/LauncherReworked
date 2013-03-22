@@ -8,6 +8,7 @@
  */
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace LauncherPatcher
@@ -48,11 +49,23 @@ namespace LauncherPatcher
 			
 			LauncherPatcher lp = new LauncherPatcher();
 			
+			string path = null;
 			
-			lp.Patch(false);
+			if (args.Length > 0) {
+				
+				path = args[0];
+				
+				if (!Directory.Exists(path)) {
+					path = null;
+				}
+				
+			}
 			
-			Application.Run();
+			lp.Patch(path);
 			
+			
+			
+			Application.Exit();
 			
 			
 		}

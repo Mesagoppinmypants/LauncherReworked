@@ -81,7 +81,7 @@ namespace AdmSettings
 			
 			
 			if (needsset) {
-				radioRunElevated.Checked = true;
+				radioNoSetting.Checked = true;
 			}
 			
 		}
@@ -131,6 +131,16 @@ namespace AdmSettings
 				} catch (Exception ex) {
 					MessageBox.Show("Error saving setting to registry." + ex.ToString(),"Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
+			} else {
+				try {
+					
+					RegistryKey TheKey = Registry.LocalMachine.OpenSubKey(RegistrySubkey, true);
+					
+					if (TheKey != null) {
+						TheKey.DeleteValue(RegistryVName);
+					}
+					
+				} catch {}
 			}
 			
 			

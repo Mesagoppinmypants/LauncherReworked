@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -23,11 +24,6 @@ namespace LauncherPatcher
 	public partial class LauncherPatcher : Form
 	{
 		
-
-		public static string FTPURL = "ftp://patch1.projectswg.com/files/";
-		
-		private int LauncherSize = 0;
-		private String LauncherChecksum;
 		
 		public LauncherPatcher()
 		{
@@ -42,19 +38,21 @@ namespace LauncherPatcher
 		
 		
 		
-		public void Patch(bool force) {
+		public void Patch(String path) {
 
+			string PatchServer = "patch1.projectswg.com";
 			
-			buttonRetry.Enabled = false;
-			buttonForceDL.Enabled = false;
-			
-			String LauncherFile = Application.StartupPath + @"\ProjectSWG Launcher.exe";
-			String TmpFile = LauncherFile + ".part";
-			
-			
-			
+			string PATCHURL = "http://"+PatchServer+"/launcher/";
+			string LAUNCHER = "ProjectSWG Launcher.exe";
+			string LAUNCHER_DL = PATCHURL + LAUNCHER;
+			string ChksumDL = LAUNCHER_DL + ".md5";
+
+			String TargetFile = Application.StartupPath + @"\pswgpath";
         	Process[] LauncherProcesses;
+        	String checksum;
         	
+        	WebClient wc = new WebClient();
+        	wc.Encoding = System.Text.Encoding.UTF8;
         	
 
         	do {
@@ -72,173 +70,131 @@ namespace LauncherPatcher
 	       	
         	
         	} while (LauncherProcesses.Length > 0  );
+        	
+        	
+			StatusLabel.Text = "Init...";
+			this.Refresh();
+					
+			Thread.Sleep(500);
 
-
-			WebClient wc = new WebClient();
-			wc.Encoding = System.Text.Encoding.UTF8;
-		    wc.Credentials = new NetworkCredential("anonymous", "anonymous");
 
         	
+        	
+        	if (path == null) {
 
-		    String remoteinfo;
-		    
-		    if (!force) {
-		    
-	        	if (LauncherSize == 0 || LauncherChecksum == null) {
-		    		
-	        		StatusLabel.Text = "Downloading Launcher info.";
-	        		this.Refresh();
+	        	try {
 	        		
-	        		try {
-						
-			            StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(FTPURL + "launcherinfo.dat"));
-			            
-			            remoteinfo = upstreamVersionStreamReader.ReadToEnd();
-		
-		            
-					} catch  {
+	        		using(StreamReader reader = new StreamReader(TargetFile)) {
+	        			path = reader.ReadLine();
 	        			
-						
-	        			StatusLabel.Text = "Remote Launcher Info download failed.";
-	        			buttonRetry.Enabled = true;
-	        			buttonForceDL.Enabled = true;
-						return;
-						
-					}
+	        			if (!Directory.Exists(path)) {
+	        				path = null;
+	        			}
+	        		}
+	        		
+	        	} catch {}
+        		
+        	}
+        	
+        	
+        	//well, that's tough! :P
+        	if (path == null) {
+        		
+        		path = Application.StartupPath;
+        		
+        	}
+        	
+        	
+        	String Local = path + @"\" + LAUNCHER;
+        	String LocalTmp = Local + ".part";
+
+			StatusLabel.Text = "Downloading launcher to..." + LocalTmp;
+			this.Refresh();
 					
-					remoteinfo = remoteinfo.Trim();
+			Thread.Sleep(500);
+
+
+        	
+        	try {
+				using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(ChksumDL))) {
+					checksum = Regex.Replace(upstreamVersionStreamReader.ReadToEnd(),"\n","");
+				}
+
+				bool IsGood = false;
 	
-	        		
-					String[] tokens = remoteinfo.Split(' ');
+				if (File.Exists(Local)) {
 					
-					if (tokens.Length >= 2) {
-						LauncherSize = int.Parse(tokens[0]);
-						LauncherChecksum = tokens[1];
-						StatusLabel.Text = LauncherSize + LauncherChecksum;
+					IsGood = MatchChecksum(Local, checksum);
+					
+				}
+				
+				
+				if (!IsGood) {
+					wc.DownloadFile(LAUNCHER_DL, LocalTmp);
+					
+					IsGood = MatchChecksum(LocalTmp, checksum);
+					
+					if (IsGood) {
+						
+						if (File.Exists(Local)) {
+							File.Delete(Local);
+						}
+						
+						
+						File.Move(LocalTmp,Local);
 					}
-	        		
-	        		
-	        	}
-			    
-	        	if (LauncherSize == 0 || LauncherChecksum == null) {
-	        		StatusLabel.Text = "Reading Launcher info failed.";
-					buttonRetry.Enabled = true;
-					buttonForceDL.Enabled = true;
-	        		this.Refresh();
-	        		return;
-			    }
-	        	
-		    }
-		    
-		    
-		    if (File.Exists(TmpFile)) {
-		    	try { 
-		    		StatusLabel.Text = "Delete existing Launcher download.";
-		    		this.Refresh();
-		    		File.Delete(TmpFile);
-		    	} catch {
-		    		StatusLabel.Text = "Deleting existing file ProjectSWG Launcher.exe.part failed.";
-					buttonRetry.Enabled = true;
-	        		this.Refresh();
-	        		return;
-		    	}
-		    }
-		    
-		    try {
-		    	StatusLabel.Text = "Downloading new Launcher.";
-		    	this.Refresh();
-		    	wc.DownloadFile(FTPURL + "ProjectSWG Launcher.exe", TmpFile);
-		    } catch {
-		    	StatusLabel.Text = "Downloading ProjectSWG Launcher.exe failed.";
-				buttonRetry.Enabled = true;
-	        	this.Refresh();
-	        	return;
-		    	
-		    }
-		    
-		    
-		    if (!force) { 
-		    	StatusLabel.Text = "Verifying downloaded Launcher.";
-		    	this.Refresh();
-		    	
-		    	if (!LauncherPatcher.compareCheckSum(TmpFile, LauncherChecksum) )  {
-		    	
-			    	StatusLabel.Text = "Verification of ProjectSWG Launcher.exe failed.";
-					buttonRetry.Enabled = true;
-					buttonForceDL.Enabled = true;
-		        	this.Refresh();
-			    	return;
-		    	}
-		    	
-		    }
-		    
-		    
-		    try {
-		    	StatusLabel.Text = "Installing new Launcher.";
-		    	this.Refresh();
-		    	if (File.Exists(LauncherFile)) {
-		    		File.Delete(LauncherFile);
-		    	}
-		    	File.Move(TmpFile, LauncherFile);
-		    } catch (Exception e) {
-		    	
-		    	StatusLabel.Text = "Copying ProjectSWG Launcher.exe failed." + e.ToString();
-				buttonRetry.Enabled = true;
-	        	this.Refresh();
-		    	return;
-		    	
-		    	
-		    }
-		    
-		    StatusLabel.Text = "Running new Launcher.";
-		    System.Diagnostics.Process.Start(LauncherFile);
-		    Application.Exit();
-			
+						
+				}
+        		
+        	} catch {
+        		//don't retry, just try to launch if it didn't work.
+				MessageBox.Show("Downloading Launcher update failed. We're trying to start the existing Launcher now.","Error Downloading Launcher", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        	}
+        	
+        	
+        	if (File.Exists(Local)) {
+        		
+            	System.Diagnostics.Process.Start(Local);
+        		
+        	}
+        	
+        	
+        	this.Hide();
+        	
+	        return;        		
+
 		}
-		
 		
 		
 		void LauncherPatcherFormClosing(object sender, FormClosingEventArgs e)
 		{
+			
 			Application.Exit();
 		}
 		
-		void ButtonCancelClick(object sender, EventArgs e)
-		{
-			Application.Exit();
-		}
-		
-		void ButtonRetryClick(object sender, EventArgs e)
-		{
-			Patch(false);
-		}
-		
-		void ButtonForceDLClick(object sender, EventArgs e)
-		{
-			Patch(true);
-		}
 		
 		
-        private static bool compareCheckSum(string Filepath,string Checksum) {
-        	
-        	if (!File.Exists(Filepath)) {
-        		return false;
-        	}
 
-			System.IO.FileStream FileCheck = System.IO.File.OpenRead(Filepath);                
+        public static bool MatchChecksum(string Path, string chk) {
+
+			if (!File.Exists(Path)) {
+				return false;
+			}
+			
+			System.IO.FileStream FileCheck = System.IO.File.OpenRead(Path);
 			System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-			byte[] md5Hash = md5.ComputeHash(FileCheck);                
+			byte[] md5Hash = md5.ComputeHash(FileCheck);
 			FileCheck.Close();
 			                
 			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
-			if (Calc == Checksum.ToLower()) {
+			
+			if (Calc == chk.ToLower()) {
 				return true;
 			}
-			return false;                  
+			
+			return false;
 		}
-		
-		
-		
+
 		
 	}
 }

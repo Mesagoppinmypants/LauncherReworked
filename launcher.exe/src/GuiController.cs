@@ -35,7 +35,11 @@ namespace PswgLauncher
 		public static string WebServer = "www.projectswg.com";
 		
 		public static string MAINURL = "http://"+PatchServer+"/files/";
-		public static string LAUNCHER = "http://"+PatchServer+"/launcher/";
+		public static string PATCHURL = "http://"+PatchServer+"/launcher/";
+		public static string LAUNCHER = "ProjectSWG Launcher.exe";
+		public static string PATCHER = "Launcher Patcher.exe";
+
+		
 		public static string ALTURL = "http://projectswg.com/download/";
 		
 		public static string AppPath = Application.StartupPath;
@@ -82,7 +86,7 @@ namespace PswgLauncher
 			}
 			set {
 				_soundOption = value;
-				setAppSetting("SoundEnable",((_soundOption == true) ? "true" : "false" )) ;
+				SetAppSetting("SoundEnable",((_soundOption == true) ? "true" : "false" )) ;
 				
 			}
 		}
@@ -95,7 +99,7 @@ namespace PswgLauncher
 			}
 			set {
 				_checksumOption = value;
-				setAppSetting("ChecksumEnable",((_checksumOption == true) ? "true" : "false" ));
+				SetAppSetting("ChecksumEnable",((_checksumOption == true) ? "true" : "false" ));
 			}
 		}
 		
@@ -107,7 +111,7 @@ namespace PswgLauncher
 			}
 			set {
 				_localhostOption = value;
-				setAppSetting("LocalhostEnable",((_localhostOption == true) ? "true" : "false" ));
+				SetAppSetting("LocalhostEnable",((_localhostOption == true) ? "true" : "false" ));
 			}
 			
 		}
@@ -120,7 +124,7 @@ namespace PswgLauncher
 			}
 			set {
 				_resumeOption = value;
-				setAppSetting("ResumeEnable", ((_resumeOption == true) ? "true" : "false" ));
+				SetAppSetting("ResumeEnable", ((_resumeOption == true) ? "true" : "false" ));
 			}
 		}
 		
@@ -135,7 +139,7 @@ namespace PswgLauncher
 			
 			set {
 				_SwgDir = value;
-				setAppSetting("SwgDir", _SwgDir);
+				SetAppSetting("SwgDir", _SwgDir);
 			}
 		}
 		
@@ -190,6 +194,7 @@ namespace PswgLauncher
 			_resumeOption = true;
 			
 			SWGFiles = new SWGFileList(this);
+			SetAppPath();
 			
 			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
 			PswgResources2Manager = new ResourceManager("PswgLauncher.PSWGButtons", Assembly.GetExecutingAssembly());
@@ -198,6 +203,21 @@ namespace PswgLauncher
 			HasFont = false;
 			LoadFont();
 			
+		}
+		
+		
+		private void SetAppPath() {
+			if (_runAsMode != 2) {
+				return;
+			}
+			
+			try {
+				using (StreamWriter w = File.CreateText(SwgSavePath + @"\pswgpath")) {
+					w.WriteLine(GuiController.AppPath);
+				}
+			} catch {
+				AddDebugMessage("Error writing path file.");
+			}
 		}
 		
 		
@@ -239,22 +259,22 @@ namespace PswgLauncher
 		}
 		
 		
-		public void readConfig() {
+		public void ReadConfig() {
 			
 			AddDebugMessage("Using " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
-			_soundOption = ( ( getAppSetting("SoundEnable")  == "true") ? true : false);
-			_checksumOption = ( ( getAppSetting("ChecksumEnable")  == "true") ? true : false);
-			_localhostOption = ( ( getAppSetting("LocalhostEnable")  == "true") ? true : false);
-			_resumeOption = ( ( getAppSetting("ResumeEnable")  == "false") ? false : true);
+			_soundOption = ( ( GetAppSetting("SoundEnable")  == "true") ? true : false);
+			_checksumOption = ( ( GetAppSetting("ChecksumEnable")  == "true") ? true : false);
+			_localhostOption = ( ( GetAppSetting("LocalhostEnable")  == "true") ? true : false);
+			_resumeOption = ( ( GetAppSetting("ResumeEnable")  == "false") ? false : true);
 			
-			_SwgDir = getAppSetting("SwgDir");
+			_SwgDir = GetAppSetting("SwgDir");
 			
 			SWGFiles.ReadLocalConfig();
 
 		}
 		
-		public string getAppSetting(string key)
+		public string GetAppSetting(string key)
 		{
 		    
 			if (config.AppSettings.Settings[key] != null) {
@@ -264,7 +284,7 @@ namespace PswgLauncher
 			return null;
 		}
 		 
-		public void setAppSetting(string key, string value)
+		public void SetAppSetting(string key, string value)
 		{
 
 		    if (config.AppSettings.Settings[key] != null)
@@ -292,34 +312,48 @@ namespace PswgLauncher
 			System.Threading.Thread.Sleep( 1000 );
 			
 			PatchChecker patch = new PatchChecker(this);
-			bool update = patch.UpdateNeeded;
-
-			pciw.CloseInfo();
+			bool update = false;
 			
-			if (patch.remoteError) {
-				AddDebugMessage("Remote error while checking for updates.");
-				return true;
-			} else if (patch.localError) {
-				AddDebugMessage("Local error while checking for updates, lpatchusr.cfg write problems?");
-				return true;
-			} 
-			
-			if (update) {
-				System.Diagnostics.Process.Start(Application.StartupPath + "/launcher patcher.exe");
-				AddDebugMessage("Update available!");
-				return false;
-
+			try {
+				update = patch.RunCheck();
+			} catch (Exception e) {
+				AddDebugMessage("Error while checking for updates. The error is: " +e.ToString());
 			}
 			
-			AddDebugMessage("Launcher is uptodate.");
-			return true;
+			if (update) {
+				AddDebugMessage("Update available!");
+				
+				pciw.ChangeText("Trying to download patcher, please wait.");
+				pciw.Refresh();
+				bool PatcherOK = false;
+				try {
+					PatcherOK = patch.DownloadPatcher(SwgSavePath, PATCHURL, PATCHER);
+				} catch (Exception e) {
+					AddDebugMessage("Error while downloading patcher. The error is: " +e.ToString());
+				}
+				
+				
+				if (PatcherOK) {
+					pciw.CloseInfo();
+					return true;
+				} else {
+					
+					AddDebugMessage("Problem Downloading Patcher.");
+				}
+
+			} else {
+			
+				AddDebugMessage("Launcher is uptodate.");
+			}
+			
+			pciw.CloseInfo();
+			return false;
 			
 		}
 
-
 		
 		
-		public bool runDirSearch() {
+		public bool RunDirSearch() {
 			
 			if (SwgDir == null || SwgDir == "" || !Directory.Exists(SwgDir)) {
 			
@@ -339,7 +373,33 @@ namespace PswgLauncher
 
 		}
 		
-		public bool runLauncher() {
+		
+		public void CleanupUpdate() {
+			
+			String[] updatedirs = System.IO.Directory.GetDirectories(SwgSavePath, "update.*", System.IO.SearchOption.TopDirectoryOnly);
+			int i = 0;
+			
+			foreach (String d in updatedirs) {
+				i++;
+				
+				try {
+					
+					Directory.Delete(d,true);
+					
+					AddDebugMessage("Deleted " + d);
+				} catch {
+					AddDebugMessage("Failed to delete " + d);
+				}
+				
+			}
+			
+			AddDebugMessage("Found "+i+ " directories for deletion.");
+			
+			
+		}
+		
+		
+		public bool RunLauncher() {
 			
 			launcher2 lt = new launcher2(this);
 			lt.Show();

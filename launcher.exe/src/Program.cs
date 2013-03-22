@@ -84,17 +84,29 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode);
+            GuiController gc = new GuiController(RunAsMode);            
             
+            bool UpdateAvailable = gc.RunPatchChecker();
             
-            if (!gc.RunPatchChecker()) {
-            	Application.Exit();
-            	return;
+            if (UpdateAvailable) {
+            	
+            	try {
+            		
+            		System.Diagnostics.Process.Start(GuiController.PATCHER, Application.StartupPath);
+            		
+	            	Application.Exit();
+	            	return;
+            		
+            	} catch {
+            		gc.AddDebugMessage("Error running  " +  GuiController.PATCHER);
+            	}
+            	
             }
             
-            gc.readConfig();
+            
+            gc.ReadConfig();
            
-            if (!gc.runDirSearch()) {
+            if (!gc.RunDirSearch()) {
             	Application.Exit();
             	return;
             }
@@ -102,7 +114,7 @@ namespace PswgLauncher
 
             gc.CheckScanNeeded();
             
-            gc.runLauncher();
+            gc.RunLauncher();
             Application.Run();
 
         }
