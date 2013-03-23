@@ -374,31 +374,6 @@ namespace PswgLauncher
 		}
 		
 		
-		public void CleanupUpdate() {
-			
-			String[] updatedirs = System.IO.Directory.GetDirectories(SwgSavePath, "update.*", System.IO.SearchOption.TopDirectoryOnly);
-			int i = 0;
-			
-			foreach (String d in updatedirs) {
-				i++;
-				
-				try {
-					
-					Directory.Delete(d,true);
-					
-					AddDebugMessage("Deleted " + d);
-				} catch {
-					AddDebugMessage("Failed to delete " + d);
-				}
-				
-			}
-			
-			AddDebugMessage("Found "+i+ " directories for deletion.");
-			
-			
-		}
-		
-		
 		public bool RunLauncher() {
 			
 			launcher2 lt = new launcher2(this);
@@ -685,8 +660,6 @@ namespace PswgLauncher
 
 		
 	}
-	
-	
 	
 	
 	

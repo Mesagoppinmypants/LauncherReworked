@@ -90,81 +90,81 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugWindow.cs" />
-    <Compile Include="DebugWindow.Designer.cs">
-      <DependentUpon>DebugWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DirSearch.cs">
+    <Compile Include="GUI\CustomElements\LauncherButton.cs" />
+    <Compile Include="GUI\CustomElements\LauncherLabel.cs" />
+    <Compile Include="GUI\CustomElements\LauncherProgressBar.cs" />
+    <Compile Include="GUI\Forms\AccountWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DirSearch.Designer.cs">
-      <DependentUpon>DirSearch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Donate.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Donate.Designer.cs">
-      <DependentUpon>Donate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="AccountWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AccountWindow.Designer.cs">
+    <Compile Include="GUI\Forms\AccountWindow.Designer.cs">
       <DependentUpon>AccountWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="LauncherButton.cs" />
-    <Compile Include="LauncherLabel.cs" />
-    <Compile Include="LauncherProgressBar.cs" />
-    <Compile Include="NetworkWindow.cs" />
-    <Compile Include="NetworkWindow.Designer.cs">
+    <Compile Include="GUI\Forms\DebugWindow.cs" />
+    <Compile Include="GUI\Forms\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\DirSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\DirSearch.Designer.cs">
+      <DependentUpon>DirSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\Donate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\Donate.Designer.cs">
+      <DependentUpon>Donate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\launcher2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\launcher2.Designer.cs">
+      <DependentUpon>launcher2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\LAUNCHOPTIONS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Forms\LAUNCHOPTIONS.Designer.cs">
+      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Forms\NetworkWindow.cs" />
+    <Compile Include="GUI\Forms\NetworkWindow.Designer.cs">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PatchCheckerInfoWindow.cs" />
-    <Compile Include="PatchCheckerInfoWindow.Designer.cs">
+    <Compile Include="GUI\Forms\PatchCheckerInfoWindow.cs" />
+    <Compile Include="GUI\Forms\PatchCheckerInfoWindow.Designer.cs">
       <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProgramVersion.cs" />
-    <Compile Include="StatusProcessor.cs" />
-    <Compile Include="SupportWindow.cs">
+    <Compile Include="GUI\Forms\SupportWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SupportWindow.Designer.cs">
+    <Compile Include="GUI\Forms\SupportWindow.Designer.cs">
       <DependentUpon>SupportWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\ProgramVersion.cs" />
+    <Compile Include="Model\Status\StatusProcessor.cs" />
+    <Compile Include="Model\SWGFile.cs" />
+    <Compile Include="Model\SWGFileList.cs" />
     <Compile Include="GuiController.cs" />
-    <Compile Include="launcher2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="launcher2.Designer.cs">
-      <DependentUpon>launcher2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LAUNCHOPTIONS.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LAUNCHOPTIONS.Designer.cs">
-      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
-    </Compile>
     <Compile Include="PatchChecker.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="SWGFile.cs" />
-    <Compile Include="SWGFileList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="DebugWindow.resx">
+    <EmbeddedResource Include="GUI\Forms\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DirSearch.resx">
+    <EmbeddedResource Include="GUI\Forms\DirSearch.resx">
       <DependentUpon>DirSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="launcher2.resx">
+    <EmbeddedResource Include="GUI\Forms\launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LAUNCHOPTIONS.resx">
+    <EmbeddedResource Include="GUI\Forms\LAUNCHOPTIONS.resx">
       <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NetworkWindow.resx">
+    <EmbeddedResource Include="GUI\Forms\NetworkWindow.resx">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PatchCheckerInfoWindow.resx">
+    <EmbeddedResource Include="GUI\Forms\PatchCheckerInfoWindow.resx">
       <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSWGButtons.resx" />
@@ -195,6 +195,13 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GUI\CustomElements" />
+    <Folder Include="GUI\Forms" />
+    <Folder Include="Model" />
+    <Folder Include="Model\Status" />
+    <Folder Include="GUI" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

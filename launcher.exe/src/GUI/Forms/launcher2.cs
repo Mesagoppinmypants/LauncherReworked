@@ -136,12 +136,23 @@ namespace PswgLauncher
         	
         }
         
-        private void SetNextStatus() {
+        private void SetStatus(int Status) {
         	
-        	int newstatus = StatusProcessor.GetNextStatus();
+        	if (Status == null || Status < 0) {
+        		Status = StatusProcessor.GetNextStatus();
+        	}
         	
-        	if (newstatus >= 0) {
-        		UpdateStatus(newstatus);
+        	 Controller.AddDebugMessage("Switching Status to: " + Status);
+        	 
+        	 if (!StatusProcessor.SetNewState(Status)) {
+        	 	return;
+        	 }
+        	 
+        	 Controller.AddDebugMessage("Switched Status to: " + Status);
+
+        	
+        	if (Status >= 0) {
+        		RefreshStatus(true);
         	}
         	
         }
@@ -149,12 +160,12 @@ namespace PswgLauncher
 
         private void Process() {
         	       	
-        	this.SetNextStatus();
+        	this.SetStatus(-1);
         	
         	//FIXME: well this is a bit dodgy. Maybe get rid of NoChecksum altogether.
         	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.NoChecksum) {
 
-        		this.SetNextStatus();
+        		this.SetStatus(-1);
         	}
         	
             if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingChecksum) {
@@ -172,7 +183,7 @@ namespace PswgLauncher
 				while (rv == false) {
 					
             		if (c>0) {
-						UpdateStatus((int) StatusProcessor.StatusCodes.ChecksumFailed);
+						this.SetStatus((int) StatusProcessor.StatusCodes.ChecksumFailed);
             			errorcounter++;
             			UpdateErrors();
 
@@ -184,17 +195,20 @@ namespace PswgLauncher
             			
             		}
 					
-					UpdateStatus((int) StatusProcessor.StatusCodes.UpdatingChecksum);
+					this.SetStatus((int) StatusProcessor.StatusCodes.UpdatingChecksum);
 					
 					c++;
 					rv = this.ProcessChecksums(wc);
 				}
             	
-            	UpdateStatus((int) StatusProcessor.StatusCodes.ChecksumOK);
+            	this.SetStatus((int) StatusProcessor.StatusCodes.ChecksumOK);
             	
-            	this.SetNextStatus();
 
             }
+        	
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ChecksumOK) {
+        		this.SetStatus(-1);
+        	}
             
             if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Scanning) {
             	
@@ -263,144 +277,24 @@ namespace PswgLauncher
         }
         
 
-        private void RefreshButtonState() {
+        private bool RefreshStatus(bool updating) {
+	
+       		if (updating) { 
+        		launcherProgressBar1.Text = "";
+        	}
         	
         	OptButton.Disable = !File.Exists(Controller.SwgSavePath + @"\swgclientsetup_r.exe");
-        	
+
         	if (OptionWindow != null) {
         		OptionWindow.RefreshButtonState();
         	}
         	
-        }
-        
-        private bool UpdateStatus(int newstatus) {
-        	
-        	Controller.AddDebugMessage("Switching Status to: " + newstatus);
-        	if (!StatusProcessor.SetNewState(newstatus)) {
-        		return false;
-        	}
-        	Controller.AddDebugMessage("Switched Status to: " + newstatus);
-        	
-        	switch (newstatus) {
-        		//checksums need downloading	
-        		case (int) StatusProcessor.StatusCodes.NoChecksum:
-
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Get Checksums";
-                	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = null;
-                	label1.Text = "Checksums need Checking (" + newstatus + ")";
-                	launcherProgressBar1.Text = "";
-                	ScanButton.Disable = true;
-        			break;
-        		case (int) StatusProcessor.StatusCodes.UpdatingChecksum:
-
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Get Checksums";
-                	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
-                	label1.Text = "DL'ing Checksums (" + newstatus + ")";
-                	launcherProgressBar1.Text = "";
-					ScanButton.Disable = true;
-        			break;
-
-
-        		case (int) StatusProcessor.StatusCodes.ChecksumFailed:
-        			
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Retry Checksums";
-                	label1.ForeColor = Color.Red;
-                	pictureBox2.Image = null;
-                	label1.Text = "Checksum DL failed. (" + newstatus + ")";
-                	launcherProgressBar1.Text = "";
-
-                	ScanButton.Disable = true;
-        			break;
-        			
-        		//checksums present and working
-        		case (int) StatusProcessor.StatusCodes.ChecksumOK:
-        		
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Scan";
-                	label1.ForeColor = Color.Green;
-                	pictureBox2.Image = null;
-                	label1.Text = "Checksums loaded. (" + newstatus + ")";
-                	launcherProgressBar1.Text = "";
-                	ScanButton.Disable = false;
-        			break;
-
-        		case (int) StatusProcessor.StatusCodes.Scanning:
-        		
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Scan";
-                	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
-                	label1.Text = "Scanning (" + newstatus + ")";
-					ScanButton.Disable = true;
-        			break;
-        			
-        		case (int) StatusProcessor.StatusCodes.ScanningManual:
-        		
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Scan";
-                	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
-                	label1.Text = "Scanning (" + newstatus + ")";
-					ScanButton.Disable = true;
-        			break;
-        			
-        		case (int) StatusProcessor.StatusCodes.ScanningFailed:
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Retry Scan";
-                	label1.ForeColor = Color.Red;
-                	pictureBox2.Image = null;
-                	label1.Text = "Scanning Failed (" + newstatus + ")";
-                	ScanButton.Disable = false;
-        			break;
-        		
-        		case (int) StatusProcessor.StatusCodes.ScanningOK:
-        			
-            		label1.ForeColor = Color.Blue;
-            		label1.Text = "Scanning complete! (" + newstatus + ")";
-            		pictureBox2.Image = null;
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Patch";
-					ScanButton.Disable = false;
-        			break;
-        			
-        		case (int) StatusProcessor.StatusCodes.Patching:
-        		
-        			PlayButton.Disable = true;
-        			PlayButton.Text = "Patch";
-                	label1.ForeColor = Color.Blue;
-                	pictureBox2.Image = Controller.GetResourceImage("small-loading");
-                	label1.Text = "Patching (" + newstatus + ")";
-					ScanButton.Disable = true;
-        			break;
-        		
-        		case (int) StatusProcessor.StatusCodes.PatchingFailed:
-					//FIXME: add retry button
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Retry Patch";
-                	label1.ForeColor = Color.Red;
-                	pictureBox2.Image = null;
-                	label1.Text = "Patching Failed (" + newstatus + ")";
-                	ScanButton.Disable = false;
-        			break;
-        		
-        		case (int) StatusProcessor.StatusCodes.PatchingOK:
-        			
-            		label1.ForeColor = Color.Aqua;
-            		label1.Text = "Ready to play! (" + newstatus + ")";
-            		pictureBox2.Image = null;
-        			PlayButton.Disable = false;
-        			PlayButton.Text = "Play";
-					ScanButton.Disable = false;
-        			break;
-        	}
-        	
-        	//FIXME
-        	this.launcherProgressBar1.ForeColor = ((StatusProcessor.Status == (int) StatusProcessor.StatusCodes.PatchingOK) ? System.Drawing.Color.Green : System.Drawing.Color.Red);
+        	PlayButton.Disable = StatusProcessor.GetPlayDisabled();
+        	ScanButton.Disable = StatusProcessor.GetScanDisabled();
+        	pictureBox2.Image = ((StatusProcessor.IsBusy()) ? Controller.GetResourceImage("small-loading") : null);
+        	PlayButton.Text = StatusProcessor.GetPlayText();
+        	label1.Text = StatusProcessor.GetLabelText();
+        	launcherProgressBar1.ForeColor = label1.ForeColor = StatusProcessor.GetStatusColor();
         	
         	this.Refresh();
         	
@@ -484,12 +378,12 @@ namespace PswgLauncher
         		Debug.WriteLine("Scan cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
         		this.launcherProgressBar1.Text = "";
         		
-        		UpdateStatus((int) StatusProcessor.StatusCodes.ScanningFailed);
+        		SetStatus((int) StatusProcessor.StatusCodes.ScanningFailed);
         		
         		return;
         	} 
 
-        	UpdateStatus((int) StatusProcessor.StatusCodes.ScanningOK);
+        	SetStatus((int) StatusProcessor.StatusCodes.ScanningOK);
 
         	if (checksum) {
         		Controller.SaveScanComplete();
@@ -610,10 +504,8 @@ namespace PswgLauncher
 	        	}
         	}
         	
-
-        	
         	launcherProgressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
-        	RefreshButtonState();
+        	RefreshStatus(false);
 
         }
 
@@ -624,14 +516,14 @@ namespace PswgLauncher
         		
         		Debug.WriteLine("DL cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
         		this.launcherProgressBar1.Text = "";
-        		UpdateStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
+        		SetStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
         		
         	} else {
 
         		if (Controller.SWGFiles.IsComplete()) {
-        			UpdateStatus((int) StatusProcessor.StatusCodes.PatchingOK);
+        			SetStatus((int) StatusProcessor.StatusCodes.PatchingOK);
         		} else {
-        			UpdateStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
+        			SetStatus((int) StatusProcessor.StatusCodes.PatchingFailed);
         		}
         	}
         }
@@ -964,7 +856,7 @@ namespace PswgLauncher
             Controller.PlaySound("Sound_Click");
 			
 			
-			UpdateStatus((int) StatusProcessor.StatusCodes.ScanningManual);
+			SetStatus((int) StatusProcessor.StatusCodes.ScanningManual);
 			Process();
 
         }

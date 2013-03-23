@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Drawing;
 
 namespace PswgLauncher
 {
@@ -15,6 +16,14 @@ namespace PswgLauncher
 	/// </summary>
 	public class StatusProcessor
 	{
+
+
+		
+		/* 
+		 * FIXME: the mess was moved from launcher2 to this class.
+		 * The data should probably get a proper object representation.
+		 * 
+		 */
 		
         public enum StatusCodes :int {
         	
@@ -32,6 +41,43 @@ namespace PswgLauncher
         	PatchingOK = 11
         	
         }
+		
+		
+		
+		private String[] PlayTexts = new String[] {
+			
+			"Get Checksums",
+			"Get Checksums",
+			"Getting Checksums",
+			"Retry Checksums",
+			"Scan",
+			"Scanning",
+			"Scanning",
+			"Retry Scan",
+			"Patch",
+			"Patching",
+			"Retry Patch",
+			"Play"
+			
+		};
+		
+		private String[] LabelTexts = new String[] {
+			
+			"Checksums need Checking",
+			"Checksums need Checking",
+			"DL'ing Checksums",
+			"Checksum DL failed.",
+			"Checksums loaded.",
+			"Scanning",
+			"Scanning",
+			"Scanning Failed",
+			"Scanning complete!",
+			"Patching",
+			"Patching Failed",
+			"Ready to play!"
+			
+		};
+		
 		
 		private GuiController Controller;
 		
@@ -158,6 +204,87 @@ namespace PswgLauncher
 			
 		}
 		
+		public bool GetPlayDisabled() {
+			
+			switch(_status) {
+					
+				case (int) StatusCodes.UpdatingChecksum:
+				case (int) StatusCodes.Scanning:
+				case (int) StatusCodes.ScanningManual:
+				case (int) StatusProcessor.StatusCodes.Patching:
+					return true;
+					break;
+			}
+			
+			return false;
+			
+		}
+		
+		
+		public bool GetScanDisabled() {
+			
+			switch(_status) {
+
+				case (int) StatusCodes.UpdatingChecksum:
+				case (int) StatusCodes.ChecksumFailed:
+				case (int) StatusCodes.Scanning:
+				case (int) StatusCodes.ScanningManual:
+				case (int) StatusProcessor.StatusCodes.Patching:
+					return true;
+					break;
+			}
+			
+			return false;
+		}
+		
+		
+		public bool IsBusy() {
+
+			switch(_status) {
+					
+				case (int) StatusCodes.UpdatingChecksum:
+				case (int) StatusCodes.Scanning:
+				case (int) StatusCodes.ScanningManual:
+				case (int) StatusProcessor.StatusCodes.Patching:
+					return true;
+					break;
+			}
+			
+			return false;			
+		}
+		
+		public String GetPlayText() {
+			
+			return PlayTexts[_status];
+			
+		}
+		
+		public String GetLabelText() {
+			return LabelTexts[_status] + "(" + _status + ")";
+		}
+		
+		
+		public Color GetStatusColor() {
+			
+			switch(_status) {
+					
+				case (int) StatusCodes.ChecksumFailed:
+				case (int) StatusCodes.ScanningFailed:
+				case (int) StatusCodes.PatchingFailed:
+					return Color.Red;
+					break;
+				
+				case (int) StatusCodes.PatchingOK:
+					return Color.Aqua;
+					break;
+					
+					
+			}
+			
+			return Color.Blue;
+			
+		}
 		
 	}
+	
 }

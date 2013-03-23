@@ -84,7 +84,7 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode);            
+            GuiController gc = new GuiController(RunAsMode);
             
             bool UpdateAvailable = gc.RunPatchChecker();
             
