@@ -24,6 +24,8 @@ namespace PswgLauncher
 
     	int errorcounter = 0;
         
+    	private bool InstallerAvailable=false;
+  
         public StatusProcessor StatusProcessor;
         private LAUNCHOPTIONS OptionWindow;
         private GuiController Controller;
@@ -45,6 +47,7 @@ namespace PswgLauncher
         private System.Windows.Forms.Timer timer;
         
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerUpdate;
         private System.ComponentModel.BackgroundWorker backgroundWorkerScan;
         private System.ComponentModel.BackgroundWorker backgroundWorkerScanManual;
         
@@ -85,6 +88,15 @@ namespace PswgLauncher
         	//FIXME
         	this.backgroundWorkerScanManual.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
         	this.backgroundWorkerScanManual.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerScanManual_RunWorkerCompleted);
+
+       		this.backgroundWorkerUpdate = new BackgroundWorker();
+       		this.backgroundWorkerUpdate.WorkerReportsProgress = true;
+        	this.backgroundWorkerUpdate.WorkerSupportsCancellation = true;
+        	this.backgroundWorkerUpdate.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerUpdate_DoWork);
+        	//this.backgroundWorkerUpdate.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerUpdate_ProgressChanged);
+        	//FIXME
+        	this.backgroundWorkerUpdate.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
+        	this.backgroundWorkerUpdate.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerUpdate_RunWorkerCompleted);
         	
         	// modify existing components from designer
 
@@ -128,10 +140,10 @@ namespace PswgLauncher
         	this.Controls.Add(DonateButton);
         	this.Controls.Add(PlayButton);
         	
-        	label1 = Controller.SpawnLabel("", new Point(23, 415), new Size(160, 15));
+        	label1 = Controller.SpawnLabel("", new Point(23, 415), new Size(260, 15));
         	this.Controls.Add(label1);
         	
-        	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(160, 15));
+        	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(260, 15));
         	this.Controls.Add(labelError);
         	
         }
@@ -160,17 +172,37 @@ namespace PswgLauncher
 
         private void Process() {
         	       	
+        	//this is also a bit dodgy... 
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingOK && InstallerAvailable) {
+			    String installer = Controller.SwgSavePath + @"\" + GuiController.PATCHER;
+				if (File.Exists(installer)) {
+				    try {
+				    	System.Diagnostics.Process.Start(installer);
+						Application.Exit();
+						return;
+				    } catch (Exception ex) {
+				    	//just continue running
+				    }
+			    }
+        	}
+        	
         	this.SetStatus(-1);
         	
         	//FIXME: well this is a bit dodgy. Maybe get rid of NoChecksum altogether.
-        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.NoChecksum) {
-
-        		this.SetStatus(-1);
+        	//if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingOK) {
+        	//	this.SetStatus(-1);
+        	//}
+        	
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Updating) {
+            	Controller.AddDebugMessage("Dispatching Worker for Updating.");
+            	this.DispatchUpdateWorker();        		
         	}
         	
-            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingChecksum) {
+        	
+            if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingChecksum) {        		
         		
-            	
+        		this.launcherProgressBar1.Value = 0;
+        		
             	WebClient wc = new WebClient();
             	wc.Encoding = System.Text.Encoding.UTF8;
             	wc.Credentials = Controller.GetNetworkCredential();
@@ -201,12 +233,18 @@ namespace PswgLauncher
 					rv = this.ProcessChecksums(wc);
 				}
             	
+				this.launcherProgressBar1.Value = 100;
             	this.SetStatus((int) StatusProcessor.StatusCodes.ChecksumOK);
-            	
 
             }
         	
         	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ChecksumOK) {
+        		
+        		if (!Controller.RunDirSearch()) {
+            		Application.Exit();
+            		return;
+            	}
+        		
         		this.SetStatus(-1);
         	}
             
@@ -226,10 +264,7 @@ namespace PswgLauncher
             	Controller.AddDebugMessage("Dispatching Worker for Patching.");
             	this.DispatchPatchWorker();
             }
-            
-
         }
-        
         
         private void UpdateErrors() {
         	if (errorcounter > 0) {
@@ -239,8 +274,6 @@ namespace PswgLauncher
         	}
         }
 
-
-
         private void DispatchWorker(BackgroundWorker bgworker, int targetstatus) {
         	
          	UpdateErrors();
@@ -248,32 +281,33 @@ namespace PswgLauncher
          	if (StatusProcessor.Status != targetstatus) {
         		return;
         	}
-        	        	
-        	launcherProgressBar1.Step = 100 / Controller.SWGFiles.SwgFileTable.Count;
-        	launcherProgressBar1.Value = 0;
         	
+         	if (targetstatus == (int)StatusProcessor.StatusCodes.Updating) {
+         		launcherProgressBar1.Step = 1;
+         		launcherProgressBar1.Value = 0;
+         	} else {
+        	    launcherProgressBar1.Step = 100 / Controller.SWGFiles.SwgFileTable.Count;
+        	    launcherProgressBar1.Value = 0;
+         	}
         	
         	bgworker.RunWorkerAsync();
 
         }
 
-        private void DispatchPatchWorker() {
-        	
+        private void DispatchUpdateWorker() {        	
+        	DispatchWorker(backgroundWorkerUpdate, (int)StatusProcessor.StatusCodes.Updating);
+        }        
+        
+        private void DispatchPatchWorker() {        	
         	DispatchWorker(backgroundWorker2, (int)StatusProcessor.StatusCodes.Patching);
-
         }
 
-        
         private void DispatchScanWorker() {
-        	
         	DispatchWorker(backgroundWorkerScan, (int)StatusProcessor.StatusCodes.Scanning);
-
         }
         
         private void DispatchScanManualWorker() {
-        	
         	DispatchWorker(backgroundWorkerScanManual, (int)StatusProcessor.StatusCodes.ScanningManual);
-        	
         }
         
 
@@ -312,10 +346,7 @@ namespace PswgLauncher
 
         	BackgroundWorker backgroundWorker = sender as BackgroundWorker;
   			if(backgroundWorker != null) {
-        		
 	    		backgroundWorker.ReportProgress(0);
-	    		
-	    		
 	    	}
 
 	    	if(backgroundWorker.CancellationPending) {
@@ -324,10 +355,142 @@ namespace PswgLauncher
 			else {
             		backgroundWorker.ReportProgress(100,"Scanning finished.");
 			}
-
-        	
         }
 
+        private void backgroundWorkerUpdate_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+        	if (StatusProcessor.Status != (int) StatusProcessor.StatusCodes.Updating) {
+		    	e.Cancel = true;
+		        return;        		
+        	}
+        	
+        	BackgroundWorker backgroundWorker = sender as BackgroundWorker;
+        	
+        	if (backgroundWorker != null) {
+		        			
+				String checksum = "";
+				
+				String DL = GuiController.PATCHURL + GuiController.PATCHER;
+				String ChksumDL = DL + ".md5";
+				String Local = Controller.SwgSavePath + @"\" + GuiController.PATCHER;
+				String LocalTmp =  Local + ".part";
+	
+				String lpatchsrv = "";
+				
+				WebClient wc = new WebClient();
+				
+				using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(GuiController.PATCHURL + "lpatchinst.cfg"))) {
+					
+					int i = 0;
+					while (lpatchsrv == "" && i < 20 && !backgroundWorker.CancellationPending) {
+						backgroundWorker.ReportProgress( 1, "Debug Try determine remote patcher version");
+		            	backgroundWorker.ReportProgress( 1, " Try determine remote patcher version");
+		            	lpatchsrv = upstreamVersionStreamReader.ReadToEnd();
+						i++;
+					}
+				}
+	
+				lpatchsrv = lpatchsrv.Trim();
+
+				if (lpatchsrv == "") {
+					e.Cancel = true;
+					return;
+				}
+	
+				ProgramVersion ThisVersion = new ProgramVersion(Controller.GetProgramVersion());
+				ProgramVersion ServerVersion = new ProgramVersion(lpatchsrv);
+				
+				backgroundWorker.ReportProgress(2,"Debug Local Launcher Version" + Controller.GetProgramVersion() + "|" + ThisVersion.ToCompactString() + " |" + ThisVersion.ToString());
+				backgroundWorker.ReportProgress(2,"Debug Server Launcher Version" + lpatchsrv + "|" + ServerVersion.ToCompactString() + " |" + ServerVersion.ToString());
+				
+		        if (ThisVersion.IsNewerThan(ServerVersion)) {
+					backgroundWorker.ReportProgress(99,"Debug Launcher is uptodate, updating finished.");
+	            	backgroundWorker.ReportProgress(100,"Updating finished.");
+	            	return;
+	            }
+				
+				using (StreamReader upstreamVersionStreamReader = new StreamReader(wc.OpenRead(ChksumDL))) {
+					int i = 0;
+					while (checksum == "" && i < 20 && !backgroundWorker.CancellationPending) {
+						backgroundWorker.ReportProgress( 3, "Debug Try DL updater checksums");
+		            	backgroundWorker.ReportProgress( 3, "Try DL updater Checksums");
+						checksum = Regex.Replace(upstreamVersionStreamReader.ReadToEnd(),"\n","");
+						i++;
+					}
+				}
+				
+				if (checksum == "") {
+					backgroundWorker.ReportProgress( 3, "Debug problem DL'ing updater checksums!");
+					e.Cancel = true;
+					return;
+				}
+				backgroundWorker.ReportProgress( 4, "Debug downloaded updater checksums!");
+				backgroundWorker.ReportProgress( 4, "Debug Looking for...." + Local);
+				
+				if (File.Exists(Local)) {
+					if (SWGFile.MatchChecksum(Local,checksum)){
+						backgroundWorker.ReportProgress(99,"Debug Found local file, matching.");
+						backgroundWorker.ReportProgress(100,"installer available");
+						return;
+					}
+					backgroundWorker.ReportProgress(5,"Debug Found local file, but it did not match.");
+				} else {
+					backgroundWorker.ReportProgress( 5, "Debug No luck, updater needs downloading");
+				}
+				
+				try {
+					
+					
+					backgroundWorker.ReportProgress(5,"downloading installer");
+					backgroundWorker.ReportProgress(5,"Debug downloading installer");
+					
+					wc.OpenRead(DL);
+					Int64 targetsize = Convert.ToInt64(wc.ResponseHeaders["Content-Length"]);
+					long Filesize = 0;
+					long offset = 0;
+					
+					while (Filesize < targetsize && !backgroundWorker.CancellationPending) {
+						
+						int progress = ((int) (100/targetsize * offset) );
+						
+			        	HTTPDownload(LocalTmp, DL, offset, backgroundWorker, progress, true);			
+						
+						if (File.Exists(LocalTmp)) {
+							FileInfo f = new FileInfo(LocalTmp);
+							Filesize = f.Length;
+							offset = Filesize;
+						}
+					}
+					
+		        	if (SWGFile.MatchChecksum(LocalTmp,checksum) ) {
+		        		backgroundWorker.ReportProgress(99, "Debug " + "Downloaded " + LocalTmp);
+		        		
+		        		if (File.Exists(Local)) {
+		        			File.Delete(Local);
+		        		}
+		        		
+		        		File.Move(LocalTmp, Local);
+		        		
+		        		backgroundWorker.ReportProgress(100, "installer available");
+		        		return;
+		        		
+					} else {
+						e.Cancel = true;
+						backgroundWorker.ReportProgress(99, "Debug " + "Postpatch checksum mismatch " + LocalTmp);
+					}
+	        			
+		        } catch (Exception ex) {
+					e.Cancel = true;
+		        	backgroundWorker.ReportProgress(99, "Debug " + "Error patching " + LocalTmp + " " + ex);
+	        	}				
+        	}
+
+	    	if(backgroundWorker.CancellationPending) {
+			     e.Cancel = true;
+        	}
+			else {
+            		backgroundWorker.ReportProgress(100,"Updating finished.");
+			}
+        }
         
         private void ScanWork(bool checksums, int checkstatus, object sender, System.ComponentModel.DoWorkEventArgs e) {
 
@@ -339,10 +502,8 @@ namespace PswgLauncher
 
         	BackgroundWorker backgroundWorker = sender as BackgroundWorker;
   			if(backgroundWorker != null) {
-        		
 	    		backgroundWorker.ReportProgress(0);
 	    		Controller.SWGFiles.Scan(checksums, backgroundWorker);
-	    		
 	    	}
 
 	    	if(backgroundWorker.CancellationPending) {
@@ -353,21 +514,14 @@ namespace PswgLauncher
 			}
 
         }
-        
-        
 
-        
         
         private void backgroundWorkerScan_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-
         	ScanWork(Controller.checksumOption,(int)StatusProcessor.StatusCodes.Scanning, sender, e);
-	    		
         }
 
         private void backgroundWorkerScanManual_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-
 	    	ScanWork(true,(int)StatusProcessor.StatusCodes.ScanningManual, sender, e);
-	    	
         }
         
         
@@ -388,7 +542,6 @@ namespace PswgLauncher
         	if (checksum) {
         		Controller.SaveScanComplete();
         	}
-
         	
         	if (DoContinue) {
         		Process();
@@ -396,24 +549,31 @@ namespace PswgLauncher
         	
         }
         
+        private void backgroundWorkerUpdate_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+
+        	if (e.Cancelled || e.Error != null) {
+        		Debug.WriteLine("update cancel/fail: " + (e.Cancelled ? "cancelled" : "") + (e.Error != null ? e.ToString() : ""));
+        		this.launcherProgressBar1.Text = "";
+        		
+        		SetStatus((int) StatusProcessor.StatusCodes.UpdatingFailed);
+        		
+        	} else {
+        		SetStatus((int) StatusProcessor.StatusCodes.UpdatingOK);
+        	}
+	
+			Process();
+        }
         
         //FIXME: consolidate with manual
         private void backgroundWorkerScan_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-        	
         	ScanComplete(Controller.checksumOption, true, sender, e);
-        	
         }
-
-
         
         //FIXME
         private void backgroundWorkerScanManual_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-
         	ScanComplete(true, true, sender, e);
-        	
         }        
         
-
         private void backgroundWorker2_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
         	
@@ -455,9 +615,7 @@ namespace PswgLauncher
 		            if(backgroundWorker.CancellationPending) {
 			      		e.Cancel = true;
 			      		break;
-			    	}
-		            
-		            
+		            }
 	    		}
             
 	    		if(backgroundWorker.CancellationPending) {
@@ -476,7 +634,6 @@ namespace PswgLauncher
         	if (e.UserState != null) {
 	        	
         		String s = e.UserState as String;
-	        	
 	        	//FIXME: this is a hack. got a better idea?
 	        	String[] msg = s.Split(null,2);
 	        	
@@ -500,7 +657,14 @@ namespace PswgLauncher
 	        			Controller.SWGFiles.AddGoodFile(msg[1]);
 	        			//Controller.SWGFiles.SwgFileTable.Remove(msg[1]);
 	        		}
-	        		
+	        	}
+        	
+	        	if (msg[0] == "installer") {
+	        		Controller.AddDebugMessage(msg[1]);
+	        		if (msg[1] == "available") {
+	        			Controller.AddDebugMessage("xyz");
+	        			InstallerAvailable = true;
+	        		}
 	        	}
         	}
         	
@@ -528,7 +692,6 @@ namespace PswgLauncher
         	}
         }
         
-        
         private bool MakeDirIfRequired(String filename) {
         	
         	
@@ -555,7 +718,6 @@ namespace PswgLauncher
         	return true;
         	
         }
-        
         
         private bool DownloadFile(String file, SWGFile swgfile, BackgroundWorker backgroundWorker, int progress) {
         	
@@ -664,10 +826,9 @@ namespace PswgLauncher
 				
 				long Filesize = 0;
 				
-				
-				while (Filesize < swgfile.Filesize) {
+				while (Filesize < swgfile.Filesize && !backgroundWorker.CancellationPending) {
 					
-					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress);
+					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress, false);
 					
 					if (File.Exists(path)) {
 						FileInfo f = new FileInfo(path);
@@ -676,7 +837,6 @@ namespace PswgLauncher
 					}
 					
 				}
-	        	
 				
 	        	if (swgfile.MatchChecksum(path) ) {
 	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
@@ -698,10 +858,20 @@ namespace PswgLauncher
         }
         
         
-        private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress) {
+        private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
+        	HTTPDownload(swgfile.Filename, remoteURL, offset, backgroundWorker, progress, showfileprogress);
+        }
 
+        	
+        private void HTTPDownload(String filename, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
+        	
+        	if (backgroundWorker.CancellationPending) { return; }
+        	
         	bool append = false;
         	FileMode mode;
+        	
+        	
+        	String filenameshort = filename.Split(Path.DirectorySeparatorChar).Last().ToLower();
         	
 			if (Controller.ResumeOption && offset > 0) {
         		
@@ -713,7 +883,7 @@ namespace PswgLauncher
 				mode = FileMode.Create;
 			}
         	
-        	using ( FileStream OutputStream = new FileStream(swgfile.Filename, mode) ) {
+        	using ( FileStream OutputStream = new FileStream(filename, mode) ) {
         		
         		HttpWebRequest WebReq = (HttpWebRequest) HttpWebRequest.Create(new Uri(remoteURL));
 
@@ -729,15 +899,32 @@ namespace PswgLauncher
 						long length = response.ContentLength;
 						int bufsiz = 2048;
 						byte[] buffer = new byte[bufsiz];
-										
+												
 						int readcount = webStream.Read(buffer, 0, bufsiz);
-										
-						while (readcount > 0) {
+						long totalread = offset+readcount;
+						
+						DateTime lastupdate = DateTime.Now.ToLocalTime();
+						DateTime thisupdate;
+						float displayprogress = progress;
+						
+						while (readcount > 0 && !backgroundWorker.CancellationPending) {
+							
+							thisupdate = DateTime.Now.ToLocalTime();
+							//backgroundWorker.ReportProgress(progress, "Debug " + thisupdate.Subtract(lastupdate).TotalSeconds);
+							if (thisupdate.Subtract(lastupdate).TotalSeconds > 1) {
+								backgroundWorker.ReportProgress((int) displayprogress, filenameshort + " " + totalread + "/"+length);
+								lastupdate = thisupdate;
+							}
 							
 							OutputStream.Write(buffer,0,readcount);
 							
 							readcount = webStream.Read(buffer, 0, bufsiz);
+							totalread +=readcount;
+							if (showfileprogress) {
+								displayprogress = totalread *100 / length;
+							}
 							
+
 						} 
         			}
         		}
@@ -784,8 +971,13 @@ namespace PswgLauncher
 
         private void PLAY_Click_1(object sender, EventArgs e) {
         	
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Updating) {
+        		backgroundWorkerUpdate.CancelAsync();
+        		return;
+        	}
+        	
         	//FIXME
-        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ChecksumFailed || StatusProcessor.Status == (int) StatusProcessor.StatusCodes.PatchingFailed) {
+        	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.UpdatingFailed || StatusProcessor.Status == (int) StatusProcessor.StatusCodes.ChecksumFailed || StatusProcessor.Status == (int) StatusProcessor.StatusCodes.PatchingFailed) {
         		Process();
         		return;
         	}
@@ -838,7 +1030,6 @@ namespace PswgLauncher
 
 
             return;
-        	
         	
         }
 

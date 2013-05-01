@@ -20,10 +20,9 @@ namespace PswgLauncher
         static void Main()
         {
         	
-
 			int RunAsMode = 0;        	
 
-        	RegistryKey TheKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\ProjectSWG", false);
+        	RegistryKey TheKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\ProjectSWG", false);
         	
 			if (TheKey != null) {
 				
@@ -61,8 +60,6 @@ namespace PswgLauncher
 				}
 			}
 			
-
-
         	Process[] LauncherProcesses = Process.GetProcessesByName("ProjectSWG Launcher");
 	        	
 	        foreach (Process p in LauncherProcesses) {
@@ -77,48 +74,18 @@ namespace PswgLauncher
 	        	return;
 
 	        }
-
         	
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
             GuiController gc = new GuiController(RunAsMode);
-            
-            bool UpdateAvailable = gc.RunPatchChecker();
-            
-            if (UpdateAvailable) {
-            	
-            	try {
-            		
-            		System.Diagnostics.Process.Start(GuiController.PATCHER, Application.StartupPath);
-            		
-	            	Application.Exit();
-	            	return;
-            		
-            	} catch {
-            		gc.AddDebugMessage("Error running  " +  GuiController.PATCHER);
-            	}
-            	
-            }
-            
-            
             gc.ReadConfig();
-           
-            if (!gc.RunDirSearch()) {
-            	Application.Exit();
-            	return;
-            }
-            
-
             gc.CheckScanNeeded();
             
             gc.RunLauncher();
             Application.Run();
 
         }
-        
-        
-        
         
         private static bool RunElevated(string fileName)
 		{

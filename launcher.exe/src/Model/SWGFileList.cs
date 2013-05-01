@@ -390,6 +390,14 @@ namespace PswgLauncher
 			float step = (float) 100 / (float) _swgfiletable.Count;
 			float progress = 0;
 			
+			DateTime lastupdate = DateTime.Now.ToLocalTime();
+			DateTime thisupdate;
+			
+						
+			
+							
+				
+			
 			foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
 				
 				progress += step;
@@ -406,7 +414,11 @@ namespace PswgLauncher
 					}
 				}
 				
-				bgWorker.ReportProgress( progressDisplay, file.Key);				
+				thisupdate = DateTime.Now.ToLocalTime();
+				if (thisupdate.Subtract(lastupdate).TotalSeconds > 1) {
+					bgWorker.ReportProgress( progressDisplay, file.Key);
+					lastupdate = thisupdate;
+				}
 				
 			}
 			

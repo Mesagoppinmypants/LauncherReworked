@@ -78,11 +78,6 @@ namespace PswgLauncher
 			SizeMatched = false;
 		}
 		
-		
-
-		
-		
-		
 		public bool FileExists(String PathPrefix) {
 			return File.Exists(PathPrefix + @"\" + Filename);
 		}
@@ -178,7 +173,7 @@ namespace PswgLauncher
 			                
 			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
 			
-			if (Calc == chk.ToLower()) {
+			if (Calc.TrimEnd() == chk.ToLower().TrimEnd()) {
 				return true;
 			}
 			

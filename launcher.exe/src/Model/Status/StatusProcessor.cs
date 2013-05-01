@@ -16,8 +16,6 @@ namespace PswgLauncher
 	/// </summary>
 	public class StatusProcessor
 	{
-
-
 		
 		/* 
 		 * FIXME: the mess was moved from launcher2 to this class.
@@ -28,25 +26,27 @@ namespace PswgLauncher
         public enum StatusCodes :int {
         	
 			NoStatus = 0,
-        	NoChecksum = 1,
-        	UpdatingChecksum = 2,
-        	ChecksumFailed = 3,
-        	ChecksumOK = 4,
-        	Scanning = 5,
-        	ScanningManual = 6,
-        	ScanningFailed = 7,
-        	ScanningOK = 8,
-        	Patching = 9,
-        	PatchingFailed = 10,
-        	PatchingOK = 11
+			Updating = 1,
+			UpdatingFailed = 2,
+			UpdatingOK = 3,
+        	UpdatingChecksum = 4,
+        	ChecksumFailed = 5,
+        	ChecksumOK = 6,
+        	Scanning = 7,
+        	ScanningManual = 8,
+        	ScanningFailed = 9,
+        	ScanningOK = 10,
+        	Patching = 11,
+        	PatchingFailed = 12,
+        	PatchingOK = 13
         	
         }
 		
 		
-		
 		private String[] PlayTexts = new String[] {
-			
-			"Get Checksums",
+			"updating",
+			"skip update",
+			"skip update",
 			"Get Checksums",
 			"Getting Checksums",
 			"Retry Checksums",
@@ -63,8 +63,10 @@ namespace PswgLauncher
 		
 		private String[] LabelTexts = new String[] {
 			
-			"Checksums need Checking",
-			"Checksums need Checking",
+			"launcher needs checking for updates",
+			"checking for launcher updates",
+			"launcher updating failed.",
+			"checksums need checking",
 			"DL'ing Checksums",
 			"Checksum DL failed.",
 			"Checksums loaded.",
@@ -77,7 +79,6 @@ namespace PswgLauncher
 			"Ready to play!"
 			
 		};
-		
 		
 		private GuiController Controller;
 		
@@ -133,9 +134,13 @@ namespace PswgLauncher
 			
 			switch (currentstatus) {
 				case (int) StatusCodes.NoStatus:
-					return new int[] { (int) StatusCodes.NoChecksum };
+					return new int[] { (int) StatusCodes.Updating };
 					break;
-	        	case (int) StatusCodes.NoChecksum:
+				case (int) StatusCodes.Updating:
+					return new int[] { (int) StatusCodes.UpdatingOK, (int) StatusCodes.UpdatingFailed };
+					break;
+	        	case (int) StatusCodes.UpdatingOK:
+				case (int) StatusCodes.UpdatingFailed:
 					return new int[] { (int) StatusCodes.UpdatingChecksum };
 					break;
 	        	case (int) StatusCodes.UpdatingChecksum:
@@ -178,9 +183,10 @@ namespace PswgLauncher
 
 			switch (_status) {
 				case (int) StatusCodes.NoStatus:
-					return (int) StatusCodes.NoChecksum;
+					return (int) StatusCodes.Updating;
 					break;
-	        	case (int) StatusCodes.NoChecksum:
+				case (int) StatusCodes.UpdatingFailed:
+	        	case (int) StatusCodes.UpdatingOK:
 					return (int) StatusCodes.UpdatingChecksum;
 					break;
 	        	case (int) StatusCodes.ChecksumFailed:
@@ -201,13 +207,13 @@ namespace PswgLauncher
 			}
 			
 			return -1;
-			
 		}
 		
 		public bool GetPlayDisabled() {
 			
 			switch(_status) {
-					
+				
+				//case (int) StatusCodes.Updating:					
 				case (int) StatusCodes.UpdatingChecksum:
 				case (int) StatusCodes.Scanning:
 				case (int) StatusCodes.ScanningManual:
@@ -224,7 +230,8 @@ namespace PswgLauncher
 		public bool GetScanDisabled() {
 			
 			switch(_status) {
-
+					
+				case (int) StatusCodes.Updating:
 				case (int) StatusCodes.UpdatingChecksum:
 				case (int) StatusCodes.ChecksumFailed:
 				case (int) StatusCodes.Scanning:
@@ -241,7 +248,7 @@ namespace PswgLauncher
 		public bool IsBusy() {
 
 			switch(_status) {
-					
+				case (int) StatusCodes.Updating:
 				case (int) StatusCodes.UpdatingChecksum:
 				case (int) StatusCodes.Scanning:
 				case (int) StatusCodes.ScanningManual:
@@ -267,7 +274,7 @@ namespace PswgLauncher
 		public Color GetStatusColor() {
 			
 			switch(_status) {
-					
+				case (int) StatusCodes.UpdatingFailed:	
 				case (int) StatusCodes.ChecksumFailed:
 				case (int) StatusCodes.ScanningFailed:
 				case (int) StatusCodes.PatchingFailed:

@@ -51,10 +51,6 @@ namespace PswgLauncher
 		private static string HttpAuthPass = "wvQAxc5mGgF0";
 		
 		public static string EncKey = "eKgeg75J3pTBURgh";
-
-
-		
-
 		
 		private int _runAsMode;
 
@@ -303,56 +299,7 @@ namespace PswgLauncher
 		public static void ShowErrorPermissions(String issue) {
 			MessageBox.Show(issue + "\nMake sure ProjectSWG launcher is running with sufficent permissions.\n\nRestart with admin rights if needed.", "Error writing config", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
-
-
-		public bool RunPatchChecker() {
-			
-			PatchCheckerInfoWindow pciw = new PatchCheckerInfoWindow(this);
-			pciw.Refresh();
-			System.Threading.Thread.Sleep( 1000 );
-			
-			PatchChecker patch = new PatchChecker(this);
-			bool update = false;
-			
-			try {
-				update = patch.RunCheck();
-			} catch (Exception e) {
-				AddDebugMessage("Error while checking for updates. The error is: " +e.ToString());
-			}
-			
-			if (update) {
-				AddDebugMessage("Update available!");
 				
-				pciw.ChangeText("Trying to download patcher, please wait.");
-				pciw.Refresh();
-				bool PatcherOK = false;
-				try {
-					PatcherOK = patch.DownloadPatcher(SwgSavePath, PATCHURL, PATCHER);
-				} catch (Exception e) {
-					AddDebugMessage("Error while downloading patcher. The error is: " +e.ToString());
-				}
-				
-				
-				if (PatcherOK) {
-					pciw.CloseInfo();
-					return true;
-				} else {
-					
-					AddDebugMessage("Problem Downloading Patcher.");
-				}
-
-			} else {
-			
-				AddDebugMessage("Launcher is uptodate.");
-			}
-			
-			pciw.CloseInfo();
-			return false;
-			
-		}
-
-		
-		
 		public bool RunDirSearch() {
 			
 			if (SwgDir == null || SwgDir == "" || !Directory.Exists(SwgDir)) {
@@ -467,8 +414,6 @@ namespace PswgLauncher
 			}
 			
 		}
-		
-		
 		
 		public String GetProgramVersion() {
 		

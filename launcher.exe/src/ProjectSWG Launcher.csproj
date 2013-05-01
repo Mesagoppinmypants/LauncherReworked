@@ -131,10 +131,6 @@
     <Compile Include="GUI\Forms\NetworkWindow.Designer.cs">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\PatchCheckerInfoWindow.cs" />
-    <Compile Include="GUI\Forms\PatchCheckerInfoWindow.Designer.cs">
-      <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Forms\SupportWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,7 +142,6 @@
     <Compile Include="Model\SWGFile.cs" />
     <Compile Include="Model\SWGFileList.cs" />
     <Compile Include="GuiController.cs" />
-    <Compile Include="PatchChecker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="GUI\Forms\DebugWindow.resx">
@@ -163,9 +158,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\NetworkWindow.resx">
       <DependentUpon>NetworkWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\PatchCheckerInfoWindow.resx">
-      <DependentUpon>PatchCheckerInfoWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PSWGButtons.resx" />
     <EmbeddedResource Include="PswgRes.resx" />

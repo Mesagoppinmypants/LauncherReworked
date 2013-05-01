@@ -21,7 +21,6 @@ namespace AdmSettings
 	public partial class AdmSettingsForm : Form
 	{
 		
-		
 		protected String OptRunNormal = "Run from\n " + Application.StartupPath + "\nwith no additional privileges (Default Behaviour)";
 		protected String OptRunElevate = "Run from\n " + Application.StartupPath + "\nand ask for Admin privileges (Recommended)";
 		protected String OptRunHome = "Run from\n " + Application.StartupPath + "\nwith no additional privileges and store all files and settings in\n " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PSWG" + ".\n Note: this will take up a few GB of duplicate data *per user*.";
@@ -42,17 +41,14 @@ namespace AdmSettings
 
 		}
 		
-		
-		protected void InitializeComponent2() {
-			
+		protected void InitializeComponent2() {	
 			
 			radioRunNormal.Text = OptRunNormal;
 			radioRunElevated.Text = OptRunElevate;
 			radioHome.Text = OptRunHome;
 			LocateSettingsLabel.Text = LocateSettings;
 			
-			RegistryKey TheKey = Registry.LocalMachine.OpenSubKey(RegistrySubkey, false);
-			
+			RegistryKey TheKey = Registry.CurrentUser.OpenSubKey(RegistrySubkey, false);
 			
 			bool needsset = true;
 			if (TheKey != null) {
@@ -79,15 +75,10 @@ namespace AdmSettings
 				}
 			}
 			
-			
 			if (needsset) {
 				radioNoSetting.Checked = true;
 			}
-			
 		}
-		
-		
-
 		
 		void ButtonCancelClick(object sender, EventArgs e)
 		{
@@ -114,16 +105,14 @@ namespace AdmSettings
 				
 			}
 			
-			
-			
 			if (setting >= 0) {
 				
 				try {
 					
-					RegistryKey TheKey = Registry.LocalMachine.OpenSubKey(RegistrySubkey, true);
+					RegistryKey TheKey = Registry.CurrentUser.OpenSubKey(RegistrySubkey, true);
 					
 					if (TheKey == null) {
-						TheKey = Registry.LocalMachine.CreateSubKey(RegistrySubkey);
+						TheKey = Registry.CurrentUser.CreateSubKey(RegistrySubkey);
 					}
 					
 					TheKey.SetValue(RegistryVName, setting);
@@ -134,7 +123,7 @@ namespace AdmSettings
 			} else {
 				try {
 					
-					RegistryKey TheKey = Registry.LocalMachine.OpenSubKey(RegistrySubkey, true);
+					RegistryKey TheKey = Registry.CurrentUser.OpenSubKey(RegistrySubkey, true);
 					
 					if (TheKey != null) {
 						TheKey.DeleteValue(RegistryVName);
@@ -143,9 +132,7 @@ namespace AdmSettings
 				} catch {}
 			}
 			
-			
 			Application.Exit();
-			
 		}
 	}
 }

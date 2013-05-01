@@ -44,6 +44,7 @@ namespace AdmSettings
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.LocateSettingsLabel = new System.Windows.Forms.Label();
 			this.radioNoSetting = new System.Windows.Forms.RadioButton();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// radioRunNormal
@@ -76,7 +77,7 @@ namespace AdmSettings
 			// buttonSave
 			// 
 			this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonSave.Location = new System.Drawing.Point(12, 383);
+			this.buttonSave.Location = new System.Drawing.Point(12, 439);
 			this.buttonSave.Name = "buttonSave";
 			this.buttonSave.Size = new System.Drawing.Size(75, 23);
 			this.buttonSave.TabIndex = 3;
@@ -88,7 +89,7 @@ namespace AdmSettings
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(93, 383);
+			this.buttonCancel.Location = new System.Drawing.Point(93, 439);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 4;
@@ -113,13 +114,23 @@ namespace AdmSettings
 			this.radioNoSetting.Text = "Unconfigured";
 			this.radioNoSetting.UseVisualStyleBackColor = true;
 			// 
+			// label1
+			// 
+			this.label1.ForeColor = System.Drawing.Color.Red;
+			this.label1.Location = new System.Drawing.Point(13, 410);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(313, 23);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Any changes here won\'t take effect before Launcher is restarted.";
+			// 
 			// AdmSettingsForm
 			// 
 			this.AcceptButton = this.buttonCancel;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(655, 418);
+			this.ClientSize = new System.Drawing.Size(655, 474);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.radioNoSetting);
 			this.Controls.Add(this.LocateSettingsLabel);
 			this.Controls.Add(this.buttonCancel);
@@ -132,6 +143,7 @@ namespace AdmSettings
 			this.Text = "PSWG Launcher Admin Settings";
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.RadioButton radioNoSetting;
 		private System.Windows.Forms.Label LocateSettingsLabel;
 		private System.Windows.Forms.Button buttonCancel;
