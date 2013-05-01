@@ -78,8 +78,6 @@ namespace PswgLauncher
 
 	        }
 
-			
-        	
         	
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

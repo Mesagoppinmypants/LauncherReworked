@@ -75,7 +75,7 @@ namespace PswgLauncher
 		
 		
 		//exception handling should be done in the calling method.
-		public bool DownloadPatcher(String savepath, String URL, String filepath) {
+		public bool DownloadInstaller(String savepath, String URL, String filepath) {
 			
 			String checksum = "";
 			
@@ -88,30 +88,16 @@ namespace PswgLauncher
 				checksum = Regex.Replace(upstreamVersionStreamReader.ReadToEnd(),"\n","");
 			}
 			
-			
-
 			bool IsGood = false;
 
-			if (File.Exists(Local)) {
-				IsGood = SWGFile.MatchChecksum(Local, checksum);
-			}
-			
-			
-			if (IsGood) {
-				Controller.AddDebugMessage("Reusing existing Launcher Patcher...");
-				return true;
-			}
-			
 			wc.DownloadFile(DL, LocalTmp);
 			
 			IsGood = SWGFile.MatchChecksum(LocalTmp, checksum);
 			
 			if (IsGood) {
-				
 				if (File.Exists(Local)) {
 					File.Delete(Local);
 				}				
-				
 				File.Move(LocalTmp,Local);
 			}
 					

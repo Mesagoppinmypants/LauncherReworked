@@ -37,7 +37,7 @@ namespace PswgLauncher
 		public static string MAINURL = "http://"+PatchServer+"/files/";
 		public static string PATCHURL = "http://"+PatchServer+"/launcher/";
 		public static string LAUNCHER = "ProjectSWG Launcher.exe";
-		public static string PATCHER = "Launcher Patcher.exe";
+		public static string PATCHER = "PSWGInstaller.exe";
 
 		
 		public static string ALTURL = "http://projectswg.com/download/";

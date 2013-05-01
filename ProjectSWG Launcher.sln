@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSWG Launcher", "laun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminRightsLauncher", "admin.exe\src\AdminRightsLauncher.csproj", "{437EE3E7-4969-4F7F-918E-869BAF007717}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher Patcher", "LauncherPatcher\Launcher Patcher.csproj", "{6C5F7FF1-195B-470A-84C6-39E1137FFEA5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdmSettings", "AdmSettings.exe\AdmSettings\AdmSettings.csproj", "{90A804C4-9092-499C-9FA7-9DFEAF532ADC}"
 EndProject
 Global
@@ -24,10 +22,6 @@ Global
 		{437EE3E7-4969-4F7F-918E-869BAF007717}.Debug|x86.ActiveCfg = Debug|x86
 		{437EE3E7-4969-4F7F-918E-869BAF007717}.Release|x86.Build.0 = Release|x86
 		{437EE3E7-4969-4F7F-918E-869BAF007717}.Release|x86.ActiveCfg = Release|x86
-		{6C5F7FF1-195B-470A-84C6-39E1137FFEA5}.Debug|x86.Build.0 = Debug|x86
-		{6C5F7FF1-195B-470A-84C6-39E1137FFEA5}.Debug|x86.ActiveCfg = Debug|x86
-		{6C5F7FF1-195B-470A-84C6-39E1137FFEA5}.Release|x86.Build.0 = Release|x86
-		{6C5F7FF1-195B-470A-84C6-39E1137FFEA5}.Release|x86.ActiveCfg = Release|x86
 		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Debug|x86.Build.0 = Debug|x86
 		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Debug|x86.ActiveCfg = Debug|x86
 		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Release|x86.Build.0 = Release|x86
