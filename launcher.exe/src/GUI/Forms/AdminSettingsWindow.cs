@@ -142,8 +142,8 @@ namespace PswgLauncher.GUI.Forms
 			} else {
 				buttonSaveAndRestart.Text = "Save and Restart";
 			}
-			buttonSave.Enabled = true;
-			buttonSaveAndRestart.Enabled = true;
+			buttonSave.Enabled = (controller.RunAsMode != -1);
+			buttonSaveAndRestart.Enabled =  (controller.RunAsMode != -1);
 			Refresh();
 		}
 		

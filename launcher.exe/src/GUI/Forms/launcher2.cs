@@ -710,6 +710,7 @@ namespace PswgLauncher
         		backgroundWorker.ReportProgress( progress, "Debug " + "Couldnt create dir for file " + file);
         		return false;
         	}
+        	swgfile.TouchFileIfRequired();
 
 	        backgroundWorker.ReportProgress(progress, "Checking " + file);
 

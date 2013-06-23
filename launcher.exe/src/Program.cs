@@ -20,14 +20,11 @@ namespace PswgLauncher
         static void Main()
         {
         	
-			int RunAsMode = 0;
-			int rv = GetRegistrySetting();
+			int RunAsMode = GetRegistrySetting();
 			bool RegNeedsSetting = false;
-			if (rv < 0) {
+			if (RunAsMode < 0) {
 				RegNeedsSetting = true;
-			} else {
-				RunAsMode = rv;
-			}
+			} 
         	
         	WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 			bool hasAdministrativeRight = principal.IsInRole(WindowsBuiltInRole.Administrator);

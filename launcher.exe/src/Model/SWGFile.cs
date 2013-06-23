@@ -101,7 +101,7 @@ namespace PswgLauncher
 			}
 			
 			//Empty files are always good, they just need their dir created.
-			if ((Filesize <=0) && (File.Exists(Controller.SwgSavePath + @"\" + this.Filename))) {
+			if (( this.Filesize <=0) && (File.Exists(Controller.SwgSavePath + @"\" + this.Filename))) {
 				return true;
 			}
 			
@@ -171,6 +171,9 @@ namespace PswgLauncher
 		}
 		
 		public bool IsGood() {
+			if (Filesize <= 0) {
+				return true;
+			}
 			return (SavepathStatusLevel >= StrictnessLevel);
 		}
 
@@ -202,6 +205,13 @@ namespace PswgLauncher
         	
         	return true;
 			
+		}
+		
+		public void TouchFileIfRequired() {
+			if (File.Exists(Controller.SwgSavePath + @"\" + Filename)) {
+				return;
+			}
+			File.Create(Controller.SwgSavePath + @"\" + Filename);
 		}
 		
 		//FIXME: hack for re-usability. should be in a helper class.
