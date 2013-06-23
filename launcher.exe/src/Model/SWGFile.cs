@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace PswgLauncher
@@ -121,13 +122,13 @@ namespace PswgLauncher
 			return FileMatchesSize(Controller.SwgDir);
 		}
 		
-		public bool SavePathMatchesSize() {
+		public bool SavePathMatchesSize(bool ForceCheck) {
 			
-			if (!Strict) {
-				return FileExists(Controller.SwgSavePath);
+			if (ForceCheck || Strict) {
+				return FileMatchesSize(Controller.SwgSavePath);
 			}
 			
-			return FileMatchesSize(Controller.SwgSavePath);
+			return FileExists(Controller.SwgSavePath);
 		}
 
 		public bool AppPathMatchesSize() {
@@ -137,30 +138,29 @@ namespace PswgLauncher
 		
 		public bool SetSizeMatch() {
 			Exists = SavePathHasFile();
-			SizeMatched = SavePathMatchesSize();
+			SizeMatched = SavePathMatchesSize(true);
 			return SizeMatched;
 		}
-
 		
 		public bool MatchChecksum(string PathPrefix) {
-
+		
 			if (!FileExists(PathPrefix)) {
+				//Controller.AddDebugMessage("File does not exist." + PathPrefix + " , fn:" + Filename);
 				return false;
 			}
 			
 			// skip the expensive scan if sizes don't match.
 			if (!FileMatchesSize(PathPrefix)) {
+				//Controller.AddDebugMessage("size mismatch on file." + PathPrefix + " , fn:" + Filename);
 				return false;
 			}
 			
-			String Filepath = PathPrefix + @"\" + Filename;
-			
-			return SWGFile.MatchChecksum(Filepath, Checksum);
+			return SWGFile.MatchChecksum(Path.Combine(PathPrefix, Filename), Checksum, Controller);
 			
 		}
 		
 		//FIXME: hack for re-usability. should be in a helper class.
-        public static bool MatchChecksum(string Path, string chk) {
+        public static bool MatchChecksum(string Path, string chk, GuiController controller) {
 
 			if (!File.Exists(Path)) {
 				return false;
@@ -172,7 +172,7 @@ namespace PswgLauncher
 			FileCheck.Close();
 			                
 			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
-			
+			//controller.AddDebugMessage("path" + Path + "Calc:" +Calc + "| chk:" +chk );
 			if (Calc.TrimEnd() == chk.ToLower().TrimEnd()) {
 				return true;
 			}
@@ -206,7 +206,7 @@ namespace PswgLauncher
 		//FIXME: this is a bit dodgy. for a checksum check, file existence is checked three times.
 		public bool SetChecksumMatch() {
 			Exists = SavePathHasFile();
-			SizeMatched = SavePathMatchesSize();
+			SizeMatched = SavePathMatchesSize(true);
 			CheckSummed = SavePathMatchesChecksum();
 			return CheckSummed;
 		}

@@ -427,7 +427,7 @@ namespace PswgLauncher
 				backgroundWorker.ReportProgress( 4, "Debug Looking for...." + Local);
 				
 				if (File.Exists(Local)) {
-					if (SWGFile.MatchChecksum(Local,checksum)){
+					if (SWGFile.MatchChecksum(Local,checksum, Controller)){
 						backgroundWorker.ReportProgress(99,"Debug Found local file, matching.");
 						backgroundWorker.ReportProgress(100,"installer available");
 						return;
@@ -461,7 +461,7 @@ namespace PswgLauncher
 						}
 					}
 					
-		        	if (SWGFile.MatchChecksum(LocalTmp,checksum) ) {
+		        	if (SWGFile.MatchChecksum(LocalTmp,checksum, Controller) ) {
 		        		backgroundWorker.ReportProgress(99, "Debug " + "Downloaded " + LocalTmp);
 		        		
 		        		if (File.Exists(Local)) {
@@ -515,7 +515,6 @@ namespace PswgLauncher
 
         }
 
-        
         private void backgroundWorkerScan_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
         	ScanWork(Controller.checksumOption,(int)StatusProcessor.StatusCodes.Scanning, sender, e);
         }
@@ -523,7 +522,6 @@ namespace PswgLauncher
         private void backgroundWorkerScanManual_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
 	    	ScanWork(true,(int)StatusProcessor.StatusCodes.ScanningManual, sender, e);
         }
-        
         
         private void ScanComplete(bool checksum, bool DoContinue, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
 
@@ -610,6 +608,8 @@ namespace PswgLauncher
 					
 					while (dlstatus == false && !backgroundWorker.CancellationPending) {
 		            	dlstatus = DownloadFile(file.Key, file.Value, backgroundWorker, progress);
+		            	//add some breathing room upon failures so launcher stays reactive
+		            	if (!dlstatus) { System.Threading.Thread.Sleep(50); }
 					}
 		            
 		            if(backgroundWorker.CancellationPending) {
@@ -721,8 +721,11 @@ namespace PswgLauncher
         
         private bool DownloadFile(String file, SWGFile swgfile, BackgroundWorker backgroundWorker, int progress) {
         	
-        	String path = Controller.SwgSavePath + @"\" + file;
-        	String localsrc = Controller.SwgDir + @"\" + file;
+        	String path = Controller.SwgSavePath;
+        	String Fullsavepath = path + @"\" + file;
+        	//String localsrc = Controller.SwgDir + @"\" + file;
+        	String localsrc = Controller.SwgDir;
+        	String Fulllocalsrc = localsrc + @"\" + file;
         	String remotesrc = GuiController.MAINURL + "/" + file;
         	long offset = 0;
         	
@@ -739,10 +742,8 @@ namespace PswgLauncher
 	        
 	        // empty files just need to have their dir created.
 	        if (swgfile.Filesize <= 0) {
-	        	
 		        backgroundWorker.ReportProgress( progress, "Debug " + "empty file is good: " + file);
 		        backgroundWorker.ReportProgress(progress, "OK " + file);
-    	
 	        	return true;
 	        }
 
@@ -754,16 +755,14 @@ namespace PswgLauncher
 		        	return true;
 		        }
 		        
-		        if (File.Exists(path)) {
+	        	if (swgfile.SavePathHasFile()) {
 		        	if (!swgfile.Strict) {
 			        	backgroundWorker.ReportProgress( progress, "Debug " + "file exists and is not strict, skipping checksum for " + file);
 			        	backgroundWorker.ReportProgress(progress, "OK " + file);
 			        	return true;
 		        	}
 		        	
-		        	FileInfo f = new FileInfo(path);
-		        	
-		        	if (f.Length == swgfile.Filesize) {
+	        		if (swgfile.SavePathMatchesSize(false)) {
 		        		
 		        		//if (!Controller.checksumOption && !this.ForceChecksums) {
 		        		if (!Controller.checksumOption ) {
@@ -771,9 +770,8 @@ namespace PswgLauncher
 			        		backgroundWorker.ReportProgress(progress, "OK " + file);		        			
 		        			return true;
 		        		}
-		        		
 
-			        	if (swgfile.MatchChecksum(path)) {
+		        		if (swgfile.SavePathMatchesChecksum()) {
 			        		backgroundWorker.ReportProgress( progress, "Debug " + "is good: " + file);
 			        		backgroundWorker.ReportProgress(progress, "OK " + file);
 			        		return true;
@@ -782,10 +780,13 @@ namespace PswgLauncher
 		        		}
 		        		
 		        		
-		        	} else if (f.Length < swgfile.Filesize) {
-		        		if (Controller.ResumeOption) {
-		        			offset = f.Length;
-		        		}
+	        		} else {
+	        			FileInfo f = new FileInfo(Fullsavepath);
+	        			if (f.Length < swgfile.Filesize) {
+		        			if (Controller.ResumeOption) {
+		        				offset = f.Length;
+			        		}
+	        			}
 		        	}
 		        	
 		        }
@@ -796,18 +797,17 @@ namespace PswgLauncher
 	        		
 	        		backgroundWorker.ReportProgress(progress, "Checking SWGDir for " + file);
 	        		
-	        		if (File.Exists(localsrc)) {
+	        		if (swgfile.SwgDirHasFile()) {
 	        		
-		        		if (swgfile.MatchChecksum(localsrc)) {
+	        			if (swgfile.SwgDirMatchesChecksum()) {
 	
 		        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
 		        			backgroundWorker.ReportProgress(progress, "Reading " + file);
 		        			
 							//File.Copy(localsrc, swgdirsave);
-							File.Copy(@localsrc, @path, true);
+							File.Copy(@Fulllocalsrc, @Fullsavepath, true);
 		        			
-		        			
-		        			if (swgfile.MatchChecksum(path)) {
+							if (swgfile.SavePathMatchesChecksum()) {
 		        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
 		        				backgroundWorker.ReportProgress(progress, "Read " + file);
 		        				return true;
@@ -830,7 +830,7 @@ namespace PswgLauncher
 					
 					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress, false);
 					
-					if (File.Exists(path)) {
+					if (swgfile.SavePathHasFile()) {
 						FileInfo f = new FileInfo(path);
 						Filesize = f.Length;
 						offset = Filesize;
@@ -838,7 +838,7 @@ namespace PswgLauncher
 					
 				}
 				
-	        	if (swgfile.MatchChecksum(path) ) {
+				if (swgfile.SavePathMatchesChecksum() ) {
 	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
 	        		backgroundWorker.ReportProgress(progress, "Patched " + file);
 	        		return true;
