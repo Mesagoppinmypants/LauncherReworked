@@ -9,6 +9,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace PswgLauncher
 {
@@ -17,12 +18,35 @@ namespace PswgLauncher
 	/// </summary>
 	public class SWGFile
 	{
-		public String Filename {
-			get; private set; 
+	
+		public enum Strictness :int {
+			DeleteFile = -1,
+			AlwaysOK = 0,
+			ScanIfRequired = 1,
+			AlwaysScan = 2
 		}
 		
-		public bool Strict {
+		public enum FileStatus :int {
+			Unknown = -1,
+			Exists = 0,
+			FilesizeOK = 1,
+			ChecksumOK = 2
+		}
+		
+		public int StrictnessLevel {
 			get; private set;
+		}
+		
+		public int SwgdirStatusLevel {
+			get; private set;
+		}
+		
+		public int SavepathStatusLevel {
+			get; private set;
+		}
+		
+		public String Filename {
+			get; private set; 
 		}
 		
 		public String Checksum {
@@ -32,135 +56,156 @@ namespace PswgLauncher
 		public int Filesize {
 			get; private set;
 		}
-		
-		public bool Exists {
-			get; private set;
-		}
-		
-		public bool SizeMatched {
-			get; private set;
-		}
-		
-		public bool CheckSummed {
-			get; private set;
-		}
-		
-		public bool IsGood {
-			get; private set;
-		}
-		
+
 		private GuiController Controller;
 		
-		public SWGFile(String File, bool IsStrict, String MDFiveSum, int Size, GuiController ctrl)
+		public SWGFile(String File, int Strict, String MDFiveSum, int Size, GuiController ctrl)
 		{
 			Filename = File;
-			Strict = IsStrict;
+			StrictnessLevel = Strict;			
 			Checksum = MDFiveSum;
 			Filesize = Size;
 			
-			IsGood = false;
-			Exists = false;
-			SizeMatched = false;
-			CheckSummed = false;
+			SwgdirStatusLevel = -1;
+			SavepathStatusLevel = -1;
 			
 			this.Controller = ctrl;
 			
 		}
 		
 		public override String ToString() {
-			return ((Strict) ? "1" : "0") + " " + Checksum + " " + Filesize.ToString() + " " + Filename;
+			return StrictnessLevel + " " + Checksum + " " + Filesize.ToString() + " " + Filename;
 		}
 
 
 		public void Reset() {
-			IsGood = false;
-			Exists = false; 
-			CheckSummed = false;
-			SizeMatched = false;
+			SwgdirStatusLevel = -1;
+			SavepathStatusLevel = -1;
 		}
 		
-		public bool FileExists(String PathPrefix) {
-			return File.Exists(PathPrefix + @"\" + Filename);
+		public FileInfo GetFileInfo() {
+			String path = Controller.SwgSavePath + @"\" + this.Filename;
+			if (!File.Exists(path)) {
+				return null;
+			}
+			return new FileInfo(path);
 		}
 		
-		public bool SwgDirHasFile() {
-			return FileExists(Controller.SwgDir);
+		public bool UpdateSavepath(int RequiredLevel, bool overrideAlwaysOK, bool forceScan) {
+			//int rl = Math.Max(RequiredLevel, StrictnessLevel);			
+			int rl = Math.Min(RequiredLevel, StrictnessLevel);
+			if (overrideAlwaysOK && StrictnessLevel == (int) Strictness.AlwaysOK) {
+				rl = 2;
+			} else if ( (forceScan || Controller.checksumOption) && StrictnessLevel == (int) Strictness.ScanIfRequired) {
+				rl = 2;
+			}
+			
+			//Empty files are always good, they just need their dir created.
+			if ((Filesize <=0) && (File.Exists(Controller.SwgSavePath + @"\" + this.Filename))) {
+				return true;
+			}
+			
+			if (SavepathStatusLevel == (int)FileStatus.Unknown) {
+				if (File.Exists(Controller.SwgSavePath + @"\" + this.Filename)) {
+					SavepathStatusLevel++;
+					if (rl == 0) { return true; }
+				} else {
+					return false;
+				}				
+			}
+			
+			if (SavepathStatusLevel == (int)FileStatus.Exists) {
+				FileInfo f = new FileInfo(Controller.SwgSavePath + @"\" + this.Filename);
+				if (f.Length == this.Filesize) {
+					SavepathStatusLevel++;
+					if (rl == 1) { return true; }
+				} else {
+					return false;
+				}
+			}
+			
+			if (SavepathStatusLevel == (int)FileStatus.FilesizeOK) {
+				if (SWGFile.MatchChecksum(Controller.SwgSavePath + @"\" + this.Filename, this.Checksum)) {
+					SavepathStatusLevel++;					
+					return true;
+				}
+			}
+			
+			return false;
 		}
 		
-		public bool SavePathHasFile() {
-			return FileExists(Controller.SwgSavePath);
+		public bool UpdateSwgpath(int RequiredLevel) {
+			
+			int rl = RequiredLevel;
+			
+			if (SwgdirStatusLevel >= rl) { return true; }
+			
+			if (SwgdirStatusLevel == (int) FileStatus.Unknown) {
+				if (File.Exists(Controller.SwgDir + @"\" + this.Filename)) {
+					SwgdirStatusLevel++;
+					if (SwgdirStatusLevel >= rl) { return true; }
+				} else {
+					return false;
+				}				
+			}
+			
+			if (SwgdirStatusLevel == (int) FileStatus.Exists) {
+				FileInfo f = new FileInfo(Controller.SwgDir + @"\" + this.Filename);
+				if (f.Length == this.Filesize) {
+					SwgdirStatusLevel++;
+					if (SwgdirStatusLevel >= rl) { return true; }
+				} else {
+					return false;
+				}
+			}
+			
+			if (SwgdirStatusLevel == (int) FileStatus.FilesizeOK) {
+				if (SWGFile.MatchChecksum(Controller.SwgDir + @"\" + this.Filename, this.Checksum)) {
+					SwgdirStatusLevel++;					
+					if (SwgdirStatusLevel >= rl) { return true; }
+				}
+			}
+			
+			return false;
+			
 		}
 		
-		public bool AppPathHasFile() {
-			return FileExists(GuiController.AppPath);
+		public bool IsGood() {
+			return (SavepathStatusLevel >= StrictnessLevel);
 		}
-		
-		public bool SetExists() {
-			Exists = SavePathHasFile();
-			return Exists;
-		}
-		
-		public void SetGood() {
-			IsGood = true;
-		}
-		
 
-		public bool FileMatchesSize(String PathPrefix) {
-			
-			if (!FileExists(PathPrefix)) {
-				return false;
-			}
-			
-			String __filename = PathPrefix + @"\" + Filename;
-			FileInfo fi = new FileInfo(__filename);
-			
-			return (fi.Length == this.Filesize);
-			
+		public bool SrcIsGood() {
+			return (SwgdirStatusLevel >= (int)FileStatus.ChecksumOK);
 		}
 		
-		public bool SwgDirMatchesSize() {
-			return FileMatchesSize(Controller.SwgDir);
-		}
-		
-		public bool SavePathMatchesSize(bool ForceCheck) {
-			
-			if (ForceCheck || Strict) {
-				return FileMatchesSize(Controller.SwgSavePath);
-			}
-			
-			return FileExists(Controller.SwgSavePath);
-		}
-
-		public bool AppPathMatchesSize() {
-			return FileMatchesSize(GuiController.AppPath);
-		}
-		
-		
-		public bool SetSizeMatch() {
-			Exists = SavePathHasFile();
-			SizeMatched = SavePathMatchesSize(true);
-			return SizeMatched;
-		}
-		
-		public bool MatchChecksum(string PathPrefix) {
-		
-			if (!FileExists(PathPrefix)) {
-				//Controller.AddDebugMessage("File does not exist." + PathPrefix + " , fn:" + Filename);
-				return false;
-			}
-			
-			// skip the expensive scan if sizes don't match.
-			if (!FileMatchesSize(PathPrefix)) {
-				//Controller.AddDebugMessage("size mismatch on file." + PathPrefix + " , fn:" + Filename);
-				return false;
-			}
-			
-			return SWGFile.MatchChecksum(Path.Combine(PathPrefix, Filename), Checksum, Controller);
+		public bool MakeDirIfRequired() {
+        	
+        	if (!Filename.Contains("/")) {
+        		return true;
+        	}
+        	
+        	// split on last /
+        	Regex r = new Regex(@"^(.+)\/([^/]+)$");
+        	
+        	Match m1 = r.Match(Filename);
+        	
+        	if (!m1.Success) {
+        		return true;
+        	}
+	
+        	try {
+        		Directory.CreateDirectory(Controller.SwgSavePath + @"\" + m1.Groups[1].Value);
+        	} catch (Exception e) {
+        		
+        		return false;
+        	}
+        	
+        	return true;
 			
 		}
 		
 		//FIXME: hack for re-usability. should be in a helper class.
-        public static bool MatchChecksum(string Path, string chk, GuiController controller) {
+        public static bool MatchChecksum(string Path, string chk) {
 
 			if (!File.Exists(Path)) {
 				return false;
@@ -172,7 +217,6 @@ namespace PswgLauncher
 			FileCheck.Close();
 			                
 			string Calc =   BitConverter.ToString(md5Hash).Replace("-", "").ToLower();
-			//controller.AddDebugMessage("path" + Path + "Calc:" +Calc + "| chk:" +chk );
 			if (Calc.TrimEnd() == chk.ToLower().TrimEnd()) {
 				return true;
 			}
@@ -180,36 +224,6 @@ namespace PswgLauncher
 			return false;
 		}
 		
-		public bool SwgDirMatchesChecksum() {
-			return MatchChecksum(Controller.SwgDir);
-		}
-		
-		
-		public bool SavePathMatchesChecksum() {
-
-			if (!Strict) {
-				return FileExists(Controller.SwgSavePath);
-			}
-			
-			return MatchChecksum(Controller.SwgSavePath);
-		}
-		
-		// this is specifically for verifying a copy, even if file is marked non-Strict
-		public bool Verify() {
-			return MatchChecksum(Controller.SwgSavePath);
-		}
-
-		public bool AppPathMatchesChecksum() {
-			return MatchChecksum(GuiController.AppPath);
-		}
-		
-		//FIXME: this is a bit dodgy. for a checksum check, file existence is checked three times.
-		public bool SetChecksumMatch() {
-			Exists = SavePathHasFile();
-			SizeMatched = SavePathMatchesSize(true);
-			CheckSummed = SavePathMatchesChecksum();
-			return CheckSummed;
-		}
 		
 		
 		

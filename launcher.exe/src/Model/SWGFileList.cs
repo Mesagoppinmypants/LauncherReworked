@@ -157,7 +157,7 @@ namespace PswgLauncher
         			if (match.Success) {
         				//Debug.WriteLine("Found " + match.Groups[2].Value + ":" + match.Groups[1].Value);
         				
-        				SWGFile swgfile = new SWGFile(match.Groups[4].Value, (! match.Groups[1].Value.Equals("0") ) , match.Groups[2].Value, int.Parse(match.Groups[3].Value), Controller);
+        				SWGFile swgfile = new SWGFile(match.Groups[4].Value, int.Parse(match.Groups[1].Value) , match.Groups[2].Value, int.Parse(match.Groups[3].Value), Controller);
         				
         				NewChecksums.Add(match.Groups[4].Value, swgfile);
         				
@@ -314,28 +314,6 @@ namespace PswgLauncher
 
 		}
 		
-		// FIXME: should be obsolete after launcher2 refactor
-		public void AddGoodFile(String filename) {
-			if (filename == null) {
-				return;
-			}
-			
-			if (! _swgfiletable.ContainsKey(filename)) {
-				return;
-			}
-			
-			SWGFile swgfile;
-			_swgfiletable.TryGetValue(filename, out swgfile);
-			
-			if (swgfile == null) {
-				return;
-			}
-			
-			//well this is a hack :p
-			swgfile.SetGood();
-			
-		}
-		
 		public bool IsGood(String filename) {
 			if (filename == null) {
 				return false;
@@ -352,7 +330,7 @@ namespace PswgLauncher
 				return false;
 			}
 			
-			return swgfile.IsGood;
+			return swgfile.IsGood();
 		}
 
 
@@ -360,7 +338,7 @@ namespace PswgLauncher
         	
         	foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
         		
-        		if (file.Value.IsGood) {
+				if (file.Value.IsGood()) {
 		           	continue;
 		        }
 
@@ -393,26 +371,12 @@ namespace PswgLauncher
 			DateTime lastupdate = DateTime.Now.ToLocalTime();
 			DateTime thisupdate;
 			
-						
-			
-							
-				
-			
 			foreach (KeyValuePair<String,SWGFile> file in _swgfiletable) {
 				
 				progress += step;
 				int progressDisplay = Convert.ToInt32(progress);
-				
-				if (WithChecksums) {
-					if (file.Value.SetChecksumMatch()) {
-						file.Value.SetGood();
-					}
-					
-				} else {
-					if (file.Value.SetSizeMatch()) {
-						file.Value.SetGood();
-					}
-				}
+
+				file.Value.UpdateSavepath(2, false, WithChecksums);
 				
 				thisupdate = DateTime.Now.ToLocalTime();
 				if (thisupdate.Subtract(lastupdate).TotalSeconds > 1) {

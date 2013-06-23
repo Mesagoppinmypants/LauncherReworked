@@ -427,7 +427,7 @@ namespace PswgLauncher
 				backgroundWorker.ReportProgress( 4, "Debug Looking for...." + Local);
 				
 				if (File.Exists(Local)) {
-					if (SWGFile.MatchChecksum(Local,checksum, Controller)){
+					if (SWGFile.MatchChecksum(Local,checksum)){
 						backgroundWorker.ReportProgress(99,"Debug Found local file, matching.");
 						backgroundWorker.ReportProgress(100,"installer available");
 						return;
@@ -461,7 +461,7 @@ namespace PswgLauncher
 						}
 					}
 					
-		        	if (SWGFile.MatchChecksum(LocalTmp,checksum, Controller) ) {
+		        	if (SWGFile.MatchChecksum(LocalTmp,checksum) ) {
 		        		backgroundWorker.ReportProgress(99, "Debug " + "Downloaded " + LocalTmp);
 		        		
 		        		if (File.Exists(Local)) {
@@ -654,7 +654,7 @@ namespace PswgLauncher
 	        		
 	        		if (Controller.SWGFiles.SwgFileTable.ContainsKey(msg[1])) {
 
-	        			Controller.SWGFiles.AddGoodFile(msg[1]);
+	        			//Controller.SWGFiles.AddGoodFile(msg[1]);
 	        			//Controller.SWGFiles.SwgFileTable.Remove(msg[1]);
 	        		}
 	        	}
@@ -692,32 +692,7 @@ namespace PswgLauncher
         	}
         }
         
-        private bool MakeDirIfRequired(String filename) {
-        	
-        	
-        	if (!filename.Contains("/")) {
-        		return true;
-        	}
-        	
-        	// split on last /
-        	Regex r = new Regex(@"^(.+)\/([^/]+)$");
-        	
-        	Match m1 = r.Match(filename);
-        	
-        	if (!m1.Success) {
-        		return true;
-        	}
-	
-        	try {
-        		Directory.CreateDirectory(Controller.SwgSavePath + @"\" + m1.Groups[1].Value);
-        	} catch (Exception e) {
-        		
-        		return false;
-        	}
-        	
-        	return true;
-        	
-        }
+
         
         private bool DownloadFile(String file, SWGFile swgfile, BackgroundWorker backgroundWorker, int progress) {
         	
@@ -731,114 +706,74 @@ namespace PswgLauncher
         	
         	String checksum = swgfile.Checksum;
         	
-        	if (file.Contains("/")) {
-	        	if (!this.MakeDirIfRequired(file)) {
-	        		backgroundWorker.ReportProgress( progress, "Debug " + "Couldnt create dir for file " + file);
-	        		return false;
-	        	}
+        	if (!swgfile.MakeDirIfRequired()) {
+        		backgroundWorker.ReportProgress( progress, "Debug " + "Couldnt create dir for file " + file);
+        		return false;
         	}
 
 	        backgroundWorker.ReportProgress(progress, "Checking " + file);
-	        
-	        // empty files just need to have their dir created.
-	        if (swgfile.Filesize <= 0) {
-		        backgroundWorker.ReportProgress( progress, "Debug " + "empty file is good: " + file);
-		        backgroundWorker.ReportProgress(progress, "OK " + file);
-	        	return true;
-	        }
 
         	try {
-	        
-		        if (Controller.SWGFiles.IsGood(file)) {
+	        	
+	        	if (swgfile.UpdateSavepath(2, false, false)) {
 		        	backgroundWorker.ReportProgress( progress, "Debug " + "was already good: " + file);
 		        	backgroundWorker.ReportProgress(progress, "OK " + file);
 		        	return true;
-		        }
-		        
-	        	if (swgfile.SavePathHasFile()) {
-		        	if (!swgfile.Strict) {
-			        	backgroundWorker.ReportProgress( progress, "Debug " + "file exists and is not strict, skipping checksum for " + file);
-			        	backgroundWorker.ReportProgress(progress, "OK " + file);
-			        	return true;
-		        	}
-		        	
-	        		if (swgfile.SavePathMatchesSize(false)) {
-		        		
-		        		//if (!Controller.checksumOption && !this.ForceChecksums) {
-		        		if (!Controller.checksumOption ) {
-			        		backgroundWorker.ReportProgress( progress, "Debug " + "file exists, skipping checksum for " + file);
-			        		backgroundWorker.ReportProgress(progress, "OK " + file);		        			
-		        			return true;
-		        		}
-
-		        		if (swgfile.SavePathMatchesChecksum()) {
-			        		backgroundWorker.ReportProgress( progress, "Debug " + "is good: " + file);
-			        		backgroundWorker.ReportProgress(progress, "OK " + file);
-			        		return true;
-		        		} else {
-		        			backgroundWorker.ReportProgress( progress, "Debug " + "checksum check failed for " + file);
-		        		}
-		        		
-		        		
-	        		} else {
-	        			FileInfo f = new FileInfo(Fullsavepath);
-	        			if (f.Length < swgfile.Filesize) {
-		        			if (Controller.ResumeOption) {
-		        				offset = f.Length;
-			        		}
-	        			}
-		        	}
-		        	
-		        }
-	        
-	        	
+	        	}
 	        	// only get tre files from local storage
 	        	if (Regex.IsMatch(file, @"\.tre$", RegexOptions.IgnoreCase)) {
 	        		
 	        		backgroundWorker.ReportProgress(progress, "Checking SWGDir for " + file);
 	        		
-	        		if (swgfile.SwgDirHasFile()) {
+	        		if (swgfile.UpdateSwgpath(2)) {
 	        		
-	        			if (swgfile.SwgDirMatchesChecksum()) {
-	
-		        			backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
-		        			backgroundWorker.ReportProgress(progress, "Reading " + file);
+		        		backgroundWorker.ReportProgress(progress, "Debug " + "Reading " + file);
+		        		backgroundWorker.ReportProgress(progress, "Reading " + file);
 		        			
-							//File.Copy(localsrc, swgdirsave);
-							File.Copy(@Fulllocalsrc, @Fullsavepath, true);
+						//File.Copy(localsrc, swgdirsave);
+						File.Copy(@Fulllocalsrc, @Fullsavepath, true);
 		        			
-							if (swgfile.SavePathMatchesChecksum()) {
-		        				backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
-		        				backgroundWorker.ReportProgress(progress, "Read " + file);
-		        				return true;
-		        			}
-		        			
-							backgroundWorker.ReportProgress(progress, "Debug " + "Postcopy checksum mismatch (rare!) " + file);
-		        			return false;
-		        		} else {
-		        			backgroundWorker.ReportProgress(progress, "Debug " + "found locally but checksum mismatch. " + file);
+						if (swgfile.UpdateSavepath(2, true, true)) {
+		        			backgroundWorker.ReportProgress(progress, "Debug " + "Read " + file);
+		        			backgroundWorker.ReportProgress(progress, "Read " + file);
+		        			return true;
 		        		}
+		        			
+						backgroundWorker.ReportProgress(progress, "Debug " + "Postcopy checksum mismatch (rare!) " + file);
+		        		return false;
+		        	} else {
+		        		backgroundWorker.ReportProgress(progress, "Debug " + " SWGdir did not qualify for " + file);
 	        		}
 	        	}
-	        	
 	        	backgroundWorker.ReportProgress(progress, "Debug " + "Patching " + file);
 				backgroundWorker.ReportProgress(progress, "Patching " + file);
 				
 				long Filesize = 0;
 				
+				FileInfo f = swgfile.GetFileInfo();
+				
+		        if (f != null && f.Length < swgfile.Filesize) {
+			    	if (Controller.ResumeOption) {
+			        	offset = f.Length;
+			        }
+			    }
+				
 				while (Filesize < swgfile.Filesize && !backgroundWorker.CancellationPending) {
-					
 					HTTPDownload(swgfile, remotesrc, offset, backgroundWorker, progress, false);
-					
-					if (swgfile.SavePathHasFile()) {
-						FileInfo f = new FileInfo(path);
-						Filesize = f.Length;
+					System.Threading.Thread.Sleep(50);
+					swgfile.UpdateSavepath(1,false,false);
+
+					FileInfo fi = swgfile.GetFileInfo();
+
+					if (fi != null) {
+						Filesize = fi.Length;
 						offset = Filesize;
 					}
 					
 				}
-				
-				if (swgfile.SavePathMatchesChecksum() ) {
+	        	swgfile.Reset();
+	        	
+	        	if (swgfile.UpdateSavepath(2,true,true) ) {
 	        		backgroundWorker.ReportProgress(progress, "Debug " + "Patched " + file);
 	        		backgroundWorker.ReportProgress(progress, "Patched " + file);
 	        		return true;
@@ -861,7 +796,6 @@ namespace PswgLauncher
         private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
         	HTTPDownload(swgfile.Filename, remoteURL, offset, backgroundWorker, progress, showfileprogress);
         }
-
         	
         private void HTTPDownload(String filename, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
         	
@@ -930,9 +864,6 @@ namespace PswgLauncher
         		}
         	}
         }
-        
-        
-
         
         
         //FIXME: this might as well go in the Controller.
