@@ -877,6 +877,7 @@ namespace PswgLauncher
 				
         			read = Controller.SWGFiles.CreateFileList(sr,true);
         		}
+        		
 
         		
         	} catch {}
@@ -886,11 +887,10 @@ namespace PswgLauncher
         	}
         	
         	if (!Controller.SWGFiles.HasFileList) {
+        		
         		Controller.AddDebugMessage("can't use local checksums");
         		return false;
         	}
-        	
-        	Controller.AddDebugMessage("using local checksums");
 
         	Controller.SWGFiles.WriteConfig(Controller.LocalFilelist);
         	

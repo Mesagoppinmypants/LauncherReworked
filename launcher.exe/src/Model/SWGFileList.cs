@@ -48,7 +48,9 @@ namespace PswgLauncher
 			}
 		}
 		
-		
+		public bool ChecksumsDirty {
+			get; private set;
+		}
 		
 		public SWGFileList(GuiController gc)
 		{
@@ -219,6 +221,10 @@ namespace PswgLauncher
 			this._swgfiletable = NewDictionary;
 			this._timestamp = MasterTimestamp;
 			this._hasFileList = true;
+			
+			if (isDownload) {
+				ChecksumsDirty = true;
+			}
 			Controller.AddDebugMessage("Successfully read file list from " + ((isDownload) ? "server" : "disk"));
 			return true;
 			
@@ -376,7 +382,7 @@ namespace PswgLauncher
 				progress += step;
 				int progressDisplay = Convert.ToInt32(progress);
 
-				file.Value.UpdateSavepath(2, false, WithChecksums);
+				file.Value.UpdateSavepath(2, false, (WithChecksums || ChecksumsDirty));
 				
 				thisupdate = DateTime.Now.ToLocalTime();
 				if (thisupdate.Subtract(lastupdate).TotalSeconds > 1) {
@@ -386,8 +392,10 @@ namespace PswgLauncher
 				
 			}
 			
+			//FIXME: this might not be pretty if stuff is interrupted.
+			ChecksumsDirty = false;
+			
 		}
-		
 		
 		
 		//FIXME: move to utility class...
