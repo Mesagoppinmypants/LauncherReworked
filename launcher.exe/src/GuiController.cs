@@ -566,6 +566,9 @@ namespace PswgLauncher
 		public LauncherButton SpawnPlayButton(String text, Point p) {
 
 			LauncherButton lb = SpawnBaseButton(text,p);
+			                                    
+			lb.Smaller1 = 9;
+			lb.Smaller2 = 12;
 			
 			lb.ImageClick = GetResource2Image("RedClick");
         	lb.ImageHover = GetResource2Image("RedHighlight");

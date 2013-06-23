@@ -38,8 +38,9 @@ namespace PswgLauncher
 		private Color _TextColorClick;
 		private Color _TextColorDisable;
 
-		
-		
+		//FIXME: This is a little hackish
+		public int Smaller1 { get; set; }
+		public int Smaller2 { get; set; }
 		
 		public bool Disable {
 			get { return _disabled; }
@@ -174,14 +175,9 @@ namespace PswgLauncher
 		
 		public LauncherButton() 
 		{
-			
-		
-
-			
-			
+			Smaller1 = 11;
+			Smaller2 = 14;
 		}
-		
-		
 		
 		//implementing interface
 		private DialogResult _DialogResult;
@@ -230,9 +226,9 @@ namespace PswgLauncher
 			strf.LineAlignment = StringAlignment.Center;
 			GraphicsPath path = new GraphicsPath();
 			
-			if (Text.Length > 14) {
+			if (Text.Length > Smaller2) {
 				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 8.0f, DrawPoint, strf);
-			} else if (Text.Length > 11) {
+			} else if (Text.Length > Smaller1) {
 				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 10.0f, DrawPoint, strf);
 			} else {
 				path.AddString(Text, fontFamily, (int) FontStyle.Regular, 12.0f, DrawPoint, strf);
@@ -242,8 +238,6 @@ namespace PswgLauncher
 			Pen pen = new Pen(Color.FromArgb(90, 90, 90), 3);
 			pe.Graphics.DrawPath(pen,path);
 			pe.Graphics.FillPath(Brush,path);
-
-
 			
 			//pe.Graphics.DrawString(base.Text, base.Font, Brush, DrawPoint);
 			

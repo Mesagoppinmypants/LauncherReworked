@@ -48,7 +48,7 @@ namespace PswgLauncher
 			"skip update",
 			"skip update",
 			"Get Checksums",
-			"Getting Checksums",
+			"DL Checksums",
 			"Retry Checksums",
 			"Scan",
 			"Scanning",
