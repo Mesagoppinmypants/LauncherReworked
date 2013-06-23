@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,6 +20,9 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+
+using Microsoft.Win32;
+using PswgLauncher.GUI.Forms;
 
 namespace PswgLauncher
 {
@@ -52,8 +56,14 @@ namespace PswgLauncher
 		
 		public static string EncKey = "eKgeg75J3pTBURgh";
 		
-		private int _runAsMode;
-
+		public int RunAsMode {
+			get; private set;
+		}
+		
+		public int NextRunAsMode {
+			get; set;
+		}
+		
 		public bool CrashFiles {
 			get; private set;
 		}
@@ -151,7 +161,6 @@ namespace PswgLauncher
 		private DebugWindow _debug;
 		private NetworkWindow _network;
 		
-		
 		private ResourceManager PswgResourcesManager;
 		private ResourceManager PswgResources2Manager;		
 		
@@ -160,10 +169,11 @@ namespace PswgLauncher
 
 			_DebugMessages = new List<String>();
 			
-			_runAsMode = runmode;
+			RunAsMode = runmode;
+			NextRunAsMode = runmode;
 			
-			
-			SwgSavePath = ((_runAsMode == 2) ? GuiController.HomePath : GuiController.AppPath);
+			//SwgSavePath = ((_runAsMode == 2) ? GuiController.HomePath : GuiController.AppPath);
+			SwgSavePath = GuiController.AppPath;
 			LocalFilelist = SwgSavePath + @"\launcherS.dl.dat";
 			FileTrefix = SwgSavePath + @"\TREFix.exe";
 			FileAdmSettings = SwgSavePath + @"\AdmSettings.exe";
@@ -190,7 +200,6 @@ namespace PswgLauncher
 			_resumeOption = true;
 			
 			SWGFiles = new SWGFileList(this);
-			SetAppPath();
 			
 			PswgResourcesManager = new ResourceManager("PswgLauncher.PswgRes", Assembly.GetExecutingAssembly());
 			PswgResources2Manager = new ResourceManager("PswgLauncher.PSWGButtons", Assembly.GetExecutingAssembly());
@@ -200,23 +209,6 @@ namespace PswgLauncher
 			LoadFont();
 			
 		}
-		
-		
-		private void SetAppPath() {
-			if (_runAsMode != 2) {
-				return;
-			}
-			
-			try {
-				using (StreamWriter w = File.CreateText(SwgSavePath + @"\pswgpath")) {
-					w.WriteLine(GuiController.AppPath);
-				}
-			} catch {
-				AddDebugMessage("Error writing path file.");
-			}
-		}
-		
-		
 		
 		private void LoadFont() {
 			
@@ -346,6 +338,35 @@ namespace PswgLauncher
 			
 		}
 		
+		public bool LaunchAdmSettings() {
+			
+			AdminSettingsWindow adm = new AdminSettingsWindow(this);
+			DialogResult result = adm.ShowDialog();
+			if (result == DialogResult.OK) {
+				return true;
+			} else if (result == DialogResult.Yes) {
+				ProcessStartInfo processInfo = new ProcessStartInfo();
+				if (NextRunAsMode == 1) { processInfo.Verb =  "runas"; }		
+				processInfo.FileName = Application.ExecutablePath;
+				try
+				{
+					if (RunAsMode == 0 || NextRunAsMode == 1) {
+						Process.Start(processInfo);
+					}
+					Application.Exit();
+				    return true;
+				}
+				catch (Win32Exception)
+				{
+					//Do nothing. Probably the user canceled the UAC window
+				}
+					
+				return true;
+			}
+		
+			return false;
+		}
+		
 		public void LaunchNetwork() {
 			if (_network == null || _network.IsDisposed) {
 				_network = new NetworkWindow(this);
@@ -370,7 +391,6 @@ namespace PswgLauncher
 			
 		}
 		
-
 		public void CheckScanNeeded() {
 			
 			System.IO.FileInfo LastScan = new System.IO.FileInfo(LocalLastScan);

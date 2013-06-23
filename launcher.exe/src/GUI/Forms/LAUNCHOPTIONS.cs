@@ -189,17 +189,7 @@ namespace PswgLauncher
         }
         
         private void Admin_Click(object sender, EventArgs e) {
-        	
-        	if (File.Exists(Controller.FileAdmSettings)) {
-        		
-        		try {
-        			System.Diagnostics.Process.Start(Controller.FileAdmSettings);
-        		} catch {
-        			Controller.AddDebugMessage("Could not start " + Controller.FileAdmSettings + " with elevated privs.");
-        		}
-        		
-        	}
-        	
+        	Controller.LaunchAdmSettings();
         }
         
         private void SwgDir_Click(object sender, EventArgs e) { 

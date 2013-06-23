@@ -99,6 +99,10 @@
     <Compile Include="GUI\Forms\AccountWindow.Designer.cs">
       <DependentUpon>AccountWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\AdminSettingsWindow.cs" />
+    <Compile Include="GUI\Forms\AdminSettingsWindow.Designer.cs">
+      <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\DebugWindow.cs" />
     <Compile Include="GUI\Forms\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
@@ -144,6 +148,9 @@
     <Compile Include="GuiController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\Forms\AdminSettingsWindow.resx">
+      <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>

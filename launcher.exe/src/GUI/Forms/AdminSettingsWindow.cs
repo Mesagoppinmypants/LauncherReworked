@@ -1,24 +1,24 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: rdo
- * Date: 16.03.2013
- * Time: 10:01
+ * Date: 23.06.2013
+ * Time: 17:58
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 using Microsoft.Win32;
+using PswgLauncher;
 
-namespace AdmSettings
+namespace PswgLauncher.GUI.Forms
 {
 	/// <summary>
 	/// Description of MainForm.
 	/// </summary>
-	public partial class AdmSettingsForm : Form
+	public partial class AdminSettingsWindow : Form
 	{
 		
 		protected String OptRunNormal = "Run from\n " + Application.StartupPath + "\nwith no additional privileges (Default Behaviour)";
@@ -30,12 +30,14 @@ namespace AdmSettings
 		protected String RegistrySubkey = "SOFTWARE\\ProjectSWG";
 		protected String RegistryVName = "RunAsBehaviour";
 		
+		protected GuiController controller;
 		
-		public AdmSettingsForm()
+		public AdminSettingsWindow(GuiController Controller)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
+			this.controller = Controller;
 			InitializeComponent();
 			InitializeComponent2();
 
@@ -45,8 +47,9 @@ namespace AdmSettings
 			
 			radioRunNormal.Text = OptRunNormal;
 			radioRunElevated.Text = OptRunElevate;
-			radioHome.Text = OptRunHome;
 			LocateSettingsLabel.Text = LocateSettings;
+			
+			this.Icon= controller.GetAppIcon();
 			
 			RegistryKey TheKey = Registry.CurrentUser.OpenSubKey(RegistrySubkey, false);
 			
@@ -66,10 +69,6 @@ namespace AdmSettings
 							radioRunElevated.Checked = true;
 							needsset = false;
 							break;
-						case 2:
-							radioHome.Checked = true;
-							needsset = false;
-							break;
 					}
 					
 				}
@@ -83,30 +82,30 @@ namespace AdmSettings
 		void ButtonCancelClick(object sender, EventArgs e)
 		{
 			this.DialogResult = DialogResult.Cancel;
-			Application.Exit();
 		}
 		
 		void ButtonSaveClick(object sender, EventArgs e)
 		{
-			
+			SaveSettings();
+			this.DialogResult = DialogResult.OK;
+		}
+		
+		void ButtonSaveAndRestartClick(object sender, EventArgs e)
+		{
+			SaveSettings();			
+			this.DialogResult = DialogResult.Yes;
+		}
+		
+		protected void SaveSettings() {
 			int setting = -1;
 			
 			if (radioRunNormal.Checked) {
-				
 				setting = 0;
-				
 			} else if (radioRunElevated.Checked) {
-				
 				setting = 1;
-				
-			} else if (radioHome.Checked) {
-				
-				setting = 2;
-				
-			}
+			} 
 			
 			if (setting >= 0) {
-				
 				try {
 					
 					RegistryKey TheKey = Registry.CurrentUser.OpenSubKey(RegistrySubkey, true);
@@ -132,7 +131,40 @@ namespace AdmSettings
 				} catch {}
 			}
 			
-			Application.Exit();
+			controller.NextRunAsMode = setting;
+			
+		}
+		
+		void RadioNoSettingClick(object sender, EventArgs e)
+		{
+			if (controller.RunAsMode == 1) {
+				buttonSaveAndRestart.Text = "Save and Exit";
+			} else {
+				buttonSaveAndRestart.Text = "Save and Restart";
+			}
+			buttonSave.Enabled = true;
+			buttonSaveAndRestart.Enabled = true;
+			Refresh();
+		}
+		
+		void RadioRunNormalClick(object sender, EventArgs e)
+		{
+			if (controller.RunAsMode == 1) {
+				buttonSaveAndRestart.Text = "Save and Exit";
+			} else {
+				buttonSaveAndRestart.Text = "Save and Restart";
+			}
+			buttonSave.Enabled = (controller.RunAsMode != 0);
+			buttonSaveAndRestart.Enabled = (controller.RunAsMode != 0);			
+			Refresh();
+		}
+		
+		void RadioRunElevatedClick(object sender, EventArgs e)
+		{
+			buttonSaveAndRestart.Text = "Save and Restart";
+			buttonSave.Enabled = (controller.RunAsMode != 1);
+			buttonSaveAndRestart.Enabled = (controller.RunAsMode != 1);
+			Refresh();			
 		}
 	}
 }

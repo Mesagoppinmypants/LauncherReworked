@@ -20,27 +20,14 @@ namespace PswgLauncher
         static void Main()
         {
         	
-			int RunAsMode = 0;        	
-
-        	RegistryKey TheKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\ProjectSWG", false);
-        	
-			if (TheKey != null) {
-				
-				object TheSetting = TheKey.GetValue("RunAsBehaviour");
-				
-				if (TheSetting != null) {
-	
-					switch ((int) TheSetting) {
-						case 1:
-							RunAsMode = 1;
-							break;
-						case 2:
-							RunAsMode = 2;
-							break;
-					}
-					
-				}
-			}        	
+			int RunAsMode = 0;
+			int rv = GetRegistrySetting();
+			bool RegNeedsSetting = false;
+			if (rv < 0) {
+				RegNeedsSetting = true;
+			} else {
+				RunAsMode = rv;
+			}
         	
         	WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 			bool hasAdministrativeRight = principal.IsInRole(WindowsBuiltInRole.Administrator);
@@ -81,12 +68,33 @@ namespace PswgLauncher
             GuiController gc = new GuiController(RunAsMode);
             gc.ReadConfig();
             gc.CheckScanNeeded();
-            
             gc.RunLauncher();
+            if (RegNeedsSetting) {
+            	gc.LaunchAdmSettings();
+            }            
             Application.Run();
 
         }
-        
+
+		public static int GetRegistrySetting() {
+			
+        	RegistryKey TheKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\ProjectSWG", false);
+			if (TheKey != null) {
+				object TheSetting = TheKey.GetValue("RunAsBehaviour");
+				if (TheSetting != null) {
+					switch ((int) TheSetting) {
+						case 0:
+							return 0;
+							break;
+						case 1:
+							return 1;
+							break;
+					}
+				}
+			}
+			return -1;
+		}
+
         private static bool RunElevated(string fileName)
 		{
 		    ProcessStartInfo processInfo = new ProcessStartInfo();

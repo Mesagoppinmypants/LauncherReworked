@@ -4,8 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # SharpDevelop 4.2.2.8818
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSWG Launcher", "launcher.exe\src\ProjectSWG Launcher.csproj", "{43B3C06F-BEC9-4251-B9B1-9023A16382A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdmSettings", "AdmSettings.exe\AdmSettings\AdmSettings.csproj", "{90A804C4-9092-499C-9FA7-9DFEAF532ADC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -18,10 +16,6 @@ Global
 		{43B3C06F-BEC9-4251-B9B1-9023A16382A4}.Debug|x86.Build.0 = Debug|x86
 		{43B3C06F-BEC9-4251-B9B1-9023A16382A4}.Release|x86.ActiveCfg = Release|x86
 		{43B3C06F-BEC9-4251-B9B1-9023A16382A4}.Release|x86.Build.0 = Release|x86
-		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Debug|x86.Build.0 = Debug|x86
-		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Debug|x86.ActiveCfg = Debug|x86
-		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Release|x86.Build.0 = Release|x86
-		{90A804C4-9092-499C-9FA7-9DFEAF532ADC}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
