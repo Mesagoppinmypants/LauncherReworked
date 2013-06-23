@@ -19,6 +19,7 @@ using System.Net;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 using Microsoft.Win32;
@@ -346,7 +347,8 @@ namespace PswgLauncher
 				return true;
 			} else if (result == DialogResult.Yes) {
 				ProcessStartInfo processInfo = new ProcessStartInfo();
-				if (NextRunAsMode == 1) { processInfo.Verb =  "runas"; }		
+				WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+				if ((NextRunAsMode == 1) && (!principal.IsInRole(WindowsBuiltInRole.Administrator))) { processInfo.Verb =  "runas"; }
 				processInfo.FileName = Application.ExecutablePath;
 				try
 				{
