@@ -10,6 +10,22 @@
   !include "MUI2.nsh"
   !include "DotNetSearch.nsh" ; Custom, See http://nsis.sourceforge.net/How_to_insure_a_required_version_of_.NETFramework_is_installed
   !include "VersionComplete.nsh" ; Custom, See http://nsis.sourceforge.net/VersionCompleteXXXX
+  !include "nsDialogs.nsh"
+  !include "winmessages.nsh"
+  !include "logiclib.nsh"
+
+;--- macro stuff
+!macro NSD_SetUserData hwnd data
+  nsDialogs::SetUserData ${hwnd} ${data}
+!macroend
+!define NSD_SetUserData `!insertmacro NSD_SetUserData`
+ 
+!macro NSD_GetUserData hwnd outvar
+  nsDialogs::GetUserData ${hwnd}
+  Pop ${outvar}
+!macroend
+!define NSD_GetUserData `!insertmacro NSD_GetUserData`
+
 ;--------------------------------
 ;General
  
@@ -35,9 +51,9 @@
   !define MUI_ABORTWARNING
   !define MUI_WELCOMEFINISHPAGE_BITMAP "projectswg_wf.bmp"
  
-  !define MUI_FINISHPAGE_RUN
-  !define MUI_FINISHPAGE_RUN_TEXT "Run ProjectSWG Launcher after closing"
-  !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLauncher"
+;  !define MUI_FINISHPAGE_RUN
+;  !define MUI_FINISHPAGE_RUN_TEXT "Run ProjectSWG Launcher after closing"
+;  !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLauncher"
  
 ;--------------------------------
 ;Version Settings & Build Details
@@ -71,6 +87,10 @@ VIAddVersionKey ProductVersion ${VERSION_1}
  
 VIAddVersionKey ProductName "PSWGLauncher Installer"
 VIAddVersionKey FileDescription "PSWGLauncher Installer"
+
+var dialog
+var hwnd
+var admin
  
 ;--------------------------------
 ;Pages
@@ -78,6 +98,8 @@ VIAddVersionKey FileDescription "PSWGLauncher Installer"
   !insertmacro MUI_PAGE_WELCOME
   !insertmacro MUI_PAGE_LICENSE "License.txt"
   !insertmacro MUI_PAGE_COMPONENTS
+;  Page Custom DialogAdmin DialogAdminContinue
+  Page Custom DialogAdmin
   !insertmacro MUI_PAGE_DIRECTORY
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_PAGE_FINISH
@@ -91,7 +113,7 @@ VIAddVersionKey FileDescription "PSWGLauncher Installer"
 ;Languages
  
   !insertmacro MUI_LANGUAGE "English"
- 
+
 ;--------------------------------
 ;Installer - Required
  
@@ -103,12 +125,24 @@ Section "ProjectSWG Launcher" SecPSWGInstall
  
   ;Store installation folder
   WriteRegStr HKCU "Software\ProjectSWG" "" $INSTDIR
+  WriteRegDWord HKCU "Software\ProjectSWG" "RunAsBehaviour" $admin
  
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
- 
 SectionEnd
- 
+
+SectionGroup /e "Create Shortcuts"
+  Section "on Desktop" SectionX
+    SetShellVarContext current
+    CreateShortCut "$DESKTOP\ProjectSWG Launcher.lnk" "$INSTDIR\ProjectSWG Launcher.exe"
+  SectionEnd
+  Section "in Start Menu" SectionY
+    CreateDirectory "$SMPROGRAMS\Project SWG"
+    CreateShortCut "$SMPROGRAMS\Project SWG\ProjectSWG Launcher.lnk" "$INSTDIR\ProjectSWG Launcher.exe"
+    CreateShortCut "$SMPROGRAMS\Project SWG\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  SectionEnd
+SectionGroupEnd
+
 ;--------------------------------
 ;Installer - Skins  << For when skins are implemented, this will only write text string to Registry for now >>
  
@@ -151,13 +185,16 @@ SectionEnd
 Section "Uninstall"
  
   Delete "$INSTDIR\ProjectSWG Launcher.exe"
-  Delete "$INSTDIR\AdmSettings.exe"
- 
   Delete "$INSTDIR\Uninstall.exe"
+
+  Delete "$DESKTOP\ProjectSWG Launcher.lnk"
+  Delete "$SMPROGRAMS\Project SWG\ProjectSWG Launcher.lnk"
+  Delete "$SMPROGRAMS\Project SWG\Uninstall.lnk"
+  RMDir  "$SMPROGRAMS\Project SWG"
  
   ;RMDir /r "$INSTDIR"
  
-  DeleteRegKey /ifempty HKCU "Software\ProjectSWG"
+  DeleteRegKey HKCU "Software\ProjectSWG"
  
 SectionEnd
  
@@ -165,13 +202,15 @@ SectionEnd
 ; Functions ( Keep custom functions on bottom, otherwise error on compile (functions that don't have "." before them) )
  
 Function .onInit
-	SetRegView 64
+  SetRegView 64
  
-        SectionSetFlags ${SecPSWGInstall} 17 ; Make the launcher install option read only (16) and selected (1)
-        ;SectionSetFlags ${SecGroupSkins} 34 ; Make skin group unchecked by default (2) and group expanded (32)
+  SectionSetFlags ${SecPSWGInstall} 17 ; Make the launcher install option read only (16) and selected (1)
+  ;SectionSetFlags ${SecGroupSkins} 34 ; Make skin group unchecked by default (2) and group expanded (32)
        
-        !insertmacro DotNetSearch 4 0 "" "ABORT" "" ; Checks to make sure the user has .NET 4.0 before installing.
-       
+  !insertmacro DotNetSearch 4 0 "" "ABORT" "" ; Checks to make sure the user has .NET 4.0 before installing.
+
+  ReadRegDWord $admin HKCU "Software\ProjectSWG" "RunAsBehaviour"
+
 FunctionEnd
  
 Function .onVerifyInstDir
@@ -187,12 +226,42 @@ Function .onVerifyInstDir
         ${EndIf}
 FunctionEnd
  
-Function .onInstSuccess
-        MessageBox MB_OK|MB_USERICON "Launcher installed successfuly! The Launcher will now open if you have selected it to."
+;Function .onInstSuccess
+;        MessageBox MB_OK|MB_USERICON "Launcher installed successfully!"
+;FunctionEnd
+ 
+
+Function DialogAdmin
+	nsDialogs::Create 1018
+		Pop $dialog
+	${NSD_CreateRadioButton} 0 0 80% 12% "Do not request admin privileges. (Default)"
+	  Pop $hwnd
+	  ${NSD_AddStyle} $hwnd ${WS_GROUP}
+	  ${NSD_SetUserData} $hwnd 0
+	  ${NSD_OnClick} $hwnd RadioClick
+          ${If} $admin != 1
+            ${NSD_Check} $hwnd
+          ${EndIf}
+	${NSD_CreateRadioButton} 0 12% 80% 12% "Request admin privileges."
+	  Pop $hwnd
+	  ${NSD_SetUserData} $hwnd 1
+	  ${NSD_OnClick} $hwnd RadioClick
+          ${If} $admin == 1
+            ${NSD_Check} $hwnd
+          ${EndIf}
+	nsDialogs::Show
+FunctionEnd
+
+Function RadioClick
+	Pop $hwnd
+	${NSD_GetUserData} $hwnd $admin
 FunctionEnd
  
-Function LaunchLauncher ; Open launcher when installed if selected
-        ExecShell "" "$INSTDIR\ProjectSWG Launcher.exe"
-FunctionEnd
- 
+;Function DialogAdminContinue
+;	${If} $admin == ""
+;	    MessageBox MB_OK "Please choose."
+;	    Abort
+;	${EndIf}
+;FunctionEnd
+
 
