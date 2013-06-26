@@ -943,6 +943,13 @@ namespace PswgLauncher
         		address = "127.0.0.1";
         		port = "44453";
         	}
+        	
+        	
+        	//FIXME: use file list
+        	//FIXME: unhandled exception
+        	if (File.Exists(Controller.SwgSavePath + @"\login.cfg")) {
+        		File.Delete(Controller.SwgSavePath + @"\login.cfg");
+        	}
 
         	String args = String.Format("-- -s Station subscriptionFeatures=1 gameFeatures=34374193 -s ClientGame loginServerPort0={0} loginServerAddress0={1}", port, address);
         	
