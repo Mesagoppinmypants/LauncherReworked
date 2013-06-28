@@ -429,7 +429,7 @@ namespace PswgLauncher
 					File.Create(LocalLastScan);
 				}
 				
-				File.SetCreationTimeUtc(LocalLastScan, DateTime.UtcNow);
+				File.SetLastWriteTimeUtc(LocalLastScan, DateTime.UtcNow);
 				
 			} catch {
 				
