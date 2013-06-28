@@ -947,8 +947,9 @@ namespace PswgLauncher
         	
         	//FIXME: use file list
         	//FIXME: unhandled exception
-        	if (File.Exists(Controller.SwgSavePath + @"\login.cfg")) {
-        		File.Delete(Controller.SwgSavePath + @"\login.cfg");
+        	String logincfg = Controller.SwgSavePath + @"\login.cfg";
+        	if (File.Exists(logincfg)) {
+        		File.Delete(logincfg);
         	}
 
         	String args = String.Format("-- -s Station subscriptionFeatures=1 gameFeatures=34374193 -s ClientGame loginServerPort0={0} loginServerAddress0={1}", port, address);

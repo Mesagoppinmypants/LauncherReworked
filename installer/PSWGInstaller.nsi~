@@ -121,6 +121,7 @@ Section "ProjectSWG Launcher" SecPSWGInstall
  
   SetOutPath "$INSTDIR"
   File "ProjectSWG Launcher.exe"
+  File "AdmSettings.exe"
  
   ;Store installation folder
   WriteRegStr HKCU "Software\ProjectSWG" "" $INSTDIR

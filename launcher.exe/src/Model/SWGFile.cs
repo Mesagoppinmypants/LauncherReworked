@@ -211,7 +211,8 @@ namespace PswgLauncher
 			if (File.Exists(Controller.SwgSavePath + @"\" + Filename)) {
 				return;
 			}
-			File.Create(Controller.SwgSavePath + @"\" + Filename);
+			FileStream x = File.Create(Controller.SwgSavePath + @"\" + Filename);
+			x.Close();
 		}
 		
 		//FIXME: hack for re-usability. should be in a helper class.

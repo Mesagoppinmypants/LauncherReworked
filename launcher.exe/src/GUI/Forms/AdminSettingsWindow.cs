@@ -21,8 +21,8 @@ namespace PswgLauncher.GUI.Forms
 	public partial class AdminSettingsWindow : Form
 	{
 		
-		protected String OptRunNormal = "Run from\n " + Application.StartupPath + "\nwith no additional privileges (Default Behaviour)";
-		protected String OptRunElevate = "Run from\n " + Application.StartupPath + "\nand ask for Admin privileges (Recommended)";
+		protected String OptRunNormal = "Run from\n " + Application.StartupPath + "\nwith no additional privileges (Default Behaviour, Recommended on WinXP)";
+		protected String OptRunElevate = "Run from\n " + Application.StartupPath + "\nand ask for Admin privileges (Recommended on Win Vista, 7, 8 and newer)";
 		protected String OptRunHome = "Run from\n " + Application.StartupPath + "\nwith no additional privileges and store all files and settings in\n " + Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PSWG" + ".\n Note: this will take up a few GB of duplicate data *per user*.";
 		
 		protected String LocateSettings = "Note, to change PSWG Launcher's behaviour, you can always start \n" + Application.ExecutablePath + "\n manually or use the Launcher Options button in PSWG Launcher.";
