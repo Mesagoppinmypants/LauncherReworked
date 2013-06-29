@@ -44,7 +44,7 @@ namespace PswgLauncher
 		public static string LAUNCHER = "ProjectSWG Launcher.exe";
 		public static string PATCHER = "PSWGInstaller.exe";
 
-		
+		public static string UPDATENOTES = "http://www.projectswg.com/update_notes.php";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
 		public static string AppPath = Application.StartupPath;
@@ -149,8 +149,6 @@ namespace PswgLauncher
 				SetAppSetting("SwgDir", _SwgDir);
 			}
 		}
-		
-		
 		
 		private Configuration config;
 		

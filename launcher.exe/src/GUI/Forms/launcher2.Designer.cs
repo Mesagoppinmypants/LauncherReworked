@@ -49,7 +49,6 @@
         	this.webBrowser1.Name = "webBrowser1";
         	this.webBrowser1.Size = new System.Drawing.Size(208, 298);
         	this.webBrowser1.TabIndex = 0;
-        	this.webBrowser1.Url = new System.Uri("http://www.projectswg.com/forums/update_notes.php", System.UriKind.Absolute);
         	// 
         	// imageList1
         	// 

@@ -71,6 +71,8 @@ namespace PswgLauncher
         
         public void InitializeComponent2() {
         	
+        	this.webBrowser1.Url = new System.Uri(GuiController.UPDATENOTES, System.UriKind.Absolute);
+        	
         	this.backgroundWorkerScan = new BackgroundWorker();
        		this.backgroundWorkerScan.WorkerReportsProgress = true;
         	this.backgroundWorkerScan.WorkerSupportsCancellation = true;
@@ -145,6 +147,8 @@ namespace PswgLauncher
         	
         	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(260, 15));
         	this.Controls.Add(labelError);
+        	
+        	
         	
         }
         
