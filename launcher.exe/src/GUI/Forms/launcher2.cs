@@ -799,7 +799,7 @@ namespace PswgLauncher
         
         
         private void HTTPDownload(SWGFile swgfile, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
-        	HTTPDownload(swgfile.Filename, remoteURL, offset, backgroundWorker, progress, showfileprogress);
+        	HTTPDownload(swgfile.GetWorkdirFilename(), remoteURL, offset, backgroundWorker, progress, showfileprogress);
         }
         	
         private void HTTPDownload(String filename, String remoteURL, long offset, BackgroundWorker backgroundWorker, int progress, bool showfileprogress) {
@@ -904,7 +904,7 @@ namespace PswgLauncher
         }
         
 
-
+		//FIXME maybe use state events
         private void PLAY_Click_1(object sender, EventArgs e) {
         	
         	if (StatusProcessor.Status == (int) StatusProcessor.StatusCodes.Updating) {

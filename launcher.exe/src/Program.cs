@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Windows.Forms;
 
 using Microsoft.Win32;
+using PswgLauncher.Model;
 
 namespace PswgLauncher
 {
@@ -17,14 +18,23 @@ namespace PswgLauncher
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
         	
-			int RunAsMode = GetRegistrySetting();
+        	
+        	//FIXME: add better argument handling
+        	
+        	CommandLineOptions opts = new CommandLineOptions();
+        	opts.Parse(args);
+        	String ArgString = opts.Arguments;
+        	
+        	String Workdir = GetRegistryWorkdirSetting(opts.WorkdirSetting);
+        	
+			int RunAsMode = GetRegistryRunAsSetting(opts.RunAsSetting);
 			bool RegNeedsSetting = false;
 			if (RunAsMode < 0) {
 				RegNeedsSetting = true;
-			} 
+			}
         	
         	WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 			bool hasAdministrativeRight = principal.IsInRole(WindowsBuiltInRole.Administrator);
@@ -32,7 +42,7 @@ namespace PswgLauncher
 			if (RunAsMode == 1)  {
 			    if (!hasAdministrativeRight) {
 					
-					if (RunElevated(Application.ExecutablePath)) {
+					if (RunElevated(Application.ExecutablePath, ArgString)) {
 
 					    Application.Exit();
 					    return;
@@ -62,7 +72,7 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode);
+            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString);
             gc.ReadConfig();
             gc.CheckScanNeeded();
             gc.RunLauncher();
@@ -73,30 +83,61 @@ namespace PswgLauncher
 
         }
 
-		public static int GetRegistrySetting() {
+		public static int GetRegistryRunAsSetting(int RunasOverride) {
 			
+        	Debug.WriteLine(RunasOverride);
+        	
+        	if ((RunasOverride != null) && RunasOverride >=0 && RunasOverride <= 1) {
+        		return RunasOverride;
+        	}
+        	
         	RegistryKey TheKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\ProjectSWG", false);
-			if (TheKey != null) {
-				object TheSetting = TheKey.GetValue("RunAsBehaviour");
-				if (TheSetting != null) {
-					switch ((int) TheSetting) {
-						case 0:
-							return 0;
-							break;
-						case 1:
-							return 1;
-							break;
-					}
-				}
+        	if (TheKey == null) { return -1; }
+			
+			object TheSetting = TheKey.GetValue("RunAsBehaviour");
+			if (TheSetting == null) { return -1; }
+			switch ((int) TheSetting) {
+				case 0:
+					return 0;
+					break;
+				case 1:
+					return 1;
+					break;
 			}
+			
 			return -1;
 		}
+        
+		public static string GetRegistryWorkdirSetting(String WorkdirOverride) {
+        	
+        	if ((WorkdirOverride != null) && Directory.Exists(WorkdirOverride)) {
+        		return WorkdirOverride;
+        	}
+        	
+        	RegistryKey TheKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\ProjectSWG", false);
+        	if (TheKey == null) {
+        		return Application.StartupPath;
+        	}
+			
+			object TheSetting = TheKey.GetValue("Location");
+			if (TheSetting == null) {
+				return Application.StartupPath;
+			}
+			
+			if (!Directory.Exists((string) TheSetting)) {
+				return Application.StartupPath;
+			}
+			
+			return (string) TheSetting;
+			
+		}        
 
-        private static bool RunElevated(string fileName)
+        private static bool RunElevated(string fileName, string args)
 		{
 		    ProcessStartInfo processInfo = new ProcessStartInfo();
 		    processInfo.Verb = "runas";
 		    processInfo.FileName = fileName;
+		    processInfo.Arguments = args;
 		    try
 		    {
 		        Process.Start(processInfo);
@@ -107,8 +148,7 @@ namespace PswgLauncher
 		        //Do nothing. Probably the user canceled the UAC window
 		    }
 		    return false;
-		}
-        
+		}        
 
     }
 }

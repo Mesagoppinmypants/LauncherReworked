@@ -37,7 +37,7 @@
   InstallDir "$PROGRAMFILES\ProjectSWG"
  
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\ProjectSWG" ""
+  InstallDirRegKey HKCU "Software\ProjectSWG" "Location"
  
   ;Request application privileges for Windows Vista
   RequestExecutionLevel highest
@@ -123,7 +123,7 @@ Section "ProjectSWG Launcher" SecPSWGInstall
   File "ProjectSWG Launcher.exe"
  
   ;Store installation folder
-  WriteRegStr HKCU "Software\ProjectSWG" "" $INSTDIR
+  WriteRegStr HKCU "Software\ProjectSWG" "Location" $INSTDIR
   WriteRegDWord HKCU "Software\ProjectSWG" "RunAsBehaviour" $admin
  
   ;Create uninstaller

@@ -47,9 +47,6 @@ namespace PswgLauncher
 		public static string UPDATENOTES = "http://www.projectswg.com/update_notes.php";
 		public static string ALTURL = "http://projectswg.com/download/";
 		
-		public static string AppPath = Application.StartupPath;
-		public static string HomePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\PSWG";
-		
 		public string LocalLastScan;
 		
 		private static string HttpAuthUser = "pswglaunch";
@@ -78,6 +75,7 @@ namespace PswgLauncher
 		public String ConfigPath { get; private set; }
 		public String FileSWGClient { get; private set; }
 
+		public String ApplicationArgs { get; private set; }
 		
 		public PrivateFontCollection pfc {
 			get; private set;
@@ -163,27 +161,29 @@ namespace PswgLauncher
 		private ResourceManager PswgResourcesManager;
 		private ResourceManager PswgResources2Manager;		
 		
-		public GuiController(int runmode)
+		public GuiController(int runmode, string Workdir, string args)
 		{
 
 			_DebugMessages = new List<String>();
 			
 			RunAsMode = runmode;
 			NextRunAsMode = runmode;
+						
+			SwgSavePath = Workdir;
+			AddDebugMessage("Workdir is " + Workdir);
 			
-			//SwgSavePath = ((_runAsMode == 2) ? GuiController.HomePath : GuiController.AppPath);
-			SwgSavePath = GuiController.AppPath;
+			ApplicationArgs = args;
+			if (args != "") { AddDebugMessage("Command line args: " + args); }
+			
 			LocalFilelist = SwgSavePath + @"\launcherS.dl.dat";
 			FileTrefix = SwgSavePath + @"\TREFix.exe";
-			FileAdmSettings = SwgSavePath + @"\AdmSettings.exe";
-			ConfigPath = SwgSavePath + @"\ProjectSWG Launcher.exe";
+			ConfigPath = SwgSavePath + @"\ProjectSWG Launcher.exe.config";
 			FileSWGClient = SwgSavePath + @"\swgclient_r.exe";
 
 			LocalLastScan = SwgSavePath + @"\LastScan";
 		
-			
 			ExeConfigurationFileMap fileMap = new ExeConfigurationFileMap();
-			fileMap.ExeConfigFilename = SwgSavePath + @"\ProjectSWG Launcher.exe.config";
+			fileMap.ExeConfigFilename = ConfigPath;
 			
 			config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
 			if (config != null && config.FilePath != null) {
@@ -248,7 +248,7 @@ namespace PswgLauncher
 		
 		public void ReadConfig() {
 			
-			AddDebugMessage("Using " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+			//AddDebugMessage("Using " + AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
 			_soundOption = ( ( GetAppSetting("SoundEnable")  == "true") ? true : false);
 			_checksumOption = ( ( GetAppSetting("ChecksumEnable")  == "true") ? true : false);
@@ -348,6 +348,7 @@ namespace PswgLauncher
 				WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 				if ((NextRunAsMode == 1) && (!principal.IsInRole(WindowsBuiltInRole.Administrator))) { processInfo.Verb =  "runas"; }
 				processInfo.FileName = Application.ExecutablePath;
+				processInfo.Arguments = this.ApplicationArgs;
 				try
 				{
 					if (RunAsMode == 0 || NextRunAsMode == 1) {

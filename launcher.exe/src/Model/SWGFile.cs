@@ -91,6 +91,10 @@ namespace PswgLauncher
 			return new FileInfo(path);
 		}
 		
+		public String GetWorkdirFilename() {
+			return Controller.SwgSavePath + @"\" + this.Filename;
+		}
+		
 		public bool UpdateSavepath(int RequiredLevel, bool overrideAlwaysOK, bool forceScan) {
 			//int rl = Math.Max(RequiredLevel, StrictnessLevel);			
 			int rl = Math.Min(RequiredLevel, StrictnessLevel);

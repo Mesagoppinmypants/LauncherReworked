@@ -85,7 +85,6 @@ namespace PswgLauncher
         	
         	AdminButton = Controller.SpawnStandardButton("Admin Settings", new Point(125, 172));
         	AdminButton.Click += Admin_Click;
-        	AdminButton.Disable = true;
         	this.Controls.Add(AdminButton);
 
         	SwgDirButton = Controller.SpawnStandardButton("open PSWGDir", new Point(300, 172));
@@ -100,7 +99,7 @@ namespace PswgLauncher
         public void RefreshButtonState() {
 
         	TrefixButton.Disable = !File.Exists(Controller.FileTrefix);
-        	AdminButton.Disable = !File.Exists(Controller.FileAdmSettings);
+        	//AdminButton.Disable = !File.Exists(Controller.FileAdmSettings);
 
         }
         

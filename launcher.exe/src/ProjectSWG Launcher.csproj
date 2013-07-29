@@ -38,6 +38,7 @@
     <RunSourceAnalysis>False</RunSourceAnalysis>
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <BaseIntermediateOutputPath>..\..\obj\</BaseIntermediateOutputPath>
+    <NoWin32Manifest>False</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -66,6 +67,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <StartAction>Project</StartAction>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <StartArguments>--Workdir d:\pswgtest --runas 0</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <RegisterForComInterop>False</RegisterForComInterop>
@@ -141,6 +143,7 @@
     <Compile Include="GUI\Forms\SupportWindow.Designer.cs">
       <DependentUpon>SupportWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\CommandLineOptions.cs" />
     <Compile Include="Model\ProgramVersion.cs" />
     <Compile Include="Model\Status\StatusProcessor.cs" />
     <Compile Include="Model\SWGFile.cs" />
