@@ -66,9 +66,9 @@
         	this.soundControl.FlatAppearance.CheckedBackColor = System.Drawing.Color.Transparent;
         	this.soundControl.Location = new System.Drawing.Point(126, 228);
         	this.soundControl.Name = "soundControl";
-        	this.soundControl.Size = new System.Drawing.Size(104, 24);
+        	this.soundControl.Size = new System.Drawing.Size(212, 24);
         	this.soundControl.TabIndex = 18;
-        	this.soundControl.Text = "Enable Sound";
+        	this.soundControl.Text = "Enable Launcher Sound Effects";
         	this.soundControl.UseVisualStyleBackColor = false;
         	this.soundControl.CheckedChanged += new System.EventHandler(this.SoundControlCheckedChanged);
         	// 

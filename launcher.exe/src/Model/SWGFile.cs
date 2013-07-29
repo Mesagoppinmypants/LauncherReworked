@@ -7,6 +7,8 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -33,15 +35,13 @@ namespace PswgLauncher
 			ChecksumOK = 2
 		}
 		
+		[Browsable(false)]
 		public int StrictnessLevel {
 			get; private set;
 		}
 		
+		[Browsable(false)]
 		public int SwgdirStatusLevel {
-			get; private set;
-		}
-		
-		public int SavepathStatusLevel {
 			get; private set;
 		}
 		
@@ -49,14 +49,54 @@ namespace PswgLauncher
 			get; private set; 
 		}
 		
-		public String Checksum {
-			get; private set;
+		
+		[DisplayName("Filename")]
+		public String DisplayFilename {
+			get {
+				String rv;
+				rv = Filename.Replace("_", " ").ToLower();
+				return rv;
+			}
+			private set {}
 		}
 		
 		public int Filesize {
 			get; private set;
 		}
+		
+		[Browsable(false)]
+		public int SavepathStatusLevel {
+			get; private set;
+		}
+		
+		[DisplayName("Status")]
+		public String SavepathStatus {
+			get {
+				switch (SavepathStatusLevel) {
+					case 0: 
+						return "Exists";
+					case 1:
+						return "Filesize OK";
+					case 2:
+						return "Checksum OK";
+				}
+				return "Unknown";
+			}
+			private set { }
+		}
+		
+		[Browsable(false)]
+		public String Checksum {
+			get; private set;
+		}
 
+		public bool Complete {
+			get {
+				return this.IsGood();
+			}
+			private set { }
+		}
+		
 		private GuiController Controller;
 		
 		public SWGFile(String File, int Strict, String MDFiveSum, int Size, GuiController ctrl)
@@ -81,6 +121,7 @@ namespace PswgLauncher
 		public void Reset() {
 			SwgdirStatusLevel = -1;
 			SavepathStatusLevel = -1;
+			Controller.RefreshFileList();
 		}
 		
 		public FileInfo GetFileInfo() {
@@ -112,6 +153,7 @@ namespace PswgLauncher
 			if (SavepathStatusLevel == (int)FileStatus.Unknown) {
 				if (File.Exists(Controller.SwgSavePath + @"\" + this.Filename)) {
 					SavepathStatusLevel++;
+					Controller.RefreshFileList();
 					if (rl == 0) { return true; }
 				} else {
 					return false;
@@ -121,6 +163,7 @@ namespace PswgLauncher
 			if (SavepathStatusLevel == (int)FileStatus.Exists) {
 				FileInfo f = new FileInfo(Controller.SwgSavePath + @"\" + this.Filename);
 				if (f.Length == this.Filesize) {
+					Controller.RefreshFileList();
 					SavepathStatusLevel++;
 					if (rl == 1) { return true; }
 				} else {
@@ -130,6 +173,7 @@ namespace PswgLauncher
 			
 			if (SavepathStatusLevel == (int)FileStatus.FilesizeOK) {
 				if (SWGFile.MatchChecksum(Controller.SwgSavePath + @"\" + this.Filename, this.Checksum)) {
+					Controller.RefreshFileList();
 					SavepathStatusLevel++;					
 					return true;
 				}

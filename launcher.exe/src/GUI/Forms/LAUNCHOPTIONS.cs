@@ -250,6 +250,9 @@ namespace PswgLauncher
         
         void LinkMissingFilesClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+        	
+        	Controller.LaunchFileList();
+        	/*
         	String missing = "Missing Files " + Environment.NewLine;
         	
         	
@@ -266,7 +269,7 @@ namespace PswgLauncher
         	
         	MessageBox.Show(missing, "Missing Files", MessageBoxButtons.OK);
 
-        	
+        	*/
         	
         }
         

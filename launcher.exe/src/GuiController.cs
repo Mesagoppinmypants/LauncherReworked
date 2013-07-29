@@ -157,6 +157,7 @@ namespace PswgLauncher
 		
 		private DebugWindow _debug;
 		private NetworkWindow _network;
+		private FileListForm _filelist;
 		
 		private ResourceManager PswgResourcesManager;
 		private ResourceManager PswgResources2Manager;		
@@ -337,7 +338,29 @@ namespace PswgLauncher
 			
 		}
 		
-		public bool LaunchAdmSettings() {
+		public void LaunchFileList() {
+			if (_filelist == null || _filelist.IsDisposed) {
+				_filelist = new FileListForm(this);
+				
+			}
+			
+			if (_filelist.Visible == false) {
+				_filelist.Visible = true;
+			}
+			
+			
+		}
+		
+		public void RefreshFileList() {
+			if (_filelist == null || _filelist.IsDisposed) {
+				return;
+			}
+			
+			_filelist.Refresh();
+			
+		}
+		
+		public bool LaunchAdmSettings() {			
 			
 			AdminSettingsWindow adm = new AdminSettingsWindow(this);
 			DialogResult result = adm.ShowDialog();

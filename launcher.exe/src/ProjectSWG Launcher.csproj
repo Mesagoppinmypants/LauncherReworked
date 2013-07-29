@@ -121,6 +121,10 @@
     <Compile Include="GUI\Forms\Donate.Designer.cs">
       <DependentUpon>Donate.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Forms\FileListForm.cs" />
+    <Compile Include="GUI\Forms\FileListForm.Designer.cs">
+      <DependentUpon>FileListForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Forms\launcher2.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -159,6 +163,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\DirSearch.resx">
       <DependentUpon>DirSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\FileListForm.resx">
+      <DependentUpon>FileListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
