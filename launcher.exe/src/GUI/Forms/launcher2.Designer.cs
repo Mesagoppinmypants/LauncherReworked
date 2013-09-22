@@ -32,7 +32,6 @@
         	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
         	this.imageList1 = new System.Windows.Forms.ImageList(this.components);
         	this.splitter1 = new System.Windows.Forms.Splitter();
-        	this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
         	this.pictureBox2 = new System.Windows.Forms.PictureBox();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
         	this.SuspendLayout();
@@ -64,14 +63,6 @@
         	this.splitter1.Size = new System.Drawing.Size(2, 488);
         	this.splitter1.TabIndex = 7;
         	this.splitter1.TabStop = false;
-        	// 
-        	// backgroundWorker2
-        	// 
-        	this.backgroundWorker2.WorkerReportsProgress = true;
-        	this.backgroundWorker2.WorkerSupportsCancellation = true;
-        	this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
-        	this.backgroundWorker2.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker2_ProgressChanged);
-        	this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
         	// 
         	// pictureBox2
         	// 

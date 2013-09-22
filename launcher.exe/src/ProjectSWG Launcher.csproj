@@ -148,13 +148,17 @@
       <DependentUpon>SupportWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\CommandLineOptions.cs" />
+    <Compile Include="Model\LauncherTask.cs" />
     <Compile Include="Model\ProgramVersion.cs" />
-    <Compile Include="Model\Status\StatusProcessor.cs" />
     <Compile Include="Model\SWGFile.cs" />
     <Compile Include="Model\SWGFileList.cs" />
     <Compile Include="GuiController.cs" />
+    <Compile Include="Model\Tasks\DNSTask.cs" />
+    <Compile Include="Model\Tasks\ReadyTask.cs" />
+    <Compile Include="Model\Tasks\RunTask.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\DNSQuery.cs" />
     <EmbeddedResource Include="GUI\Forms\AdminSettingsWindow.resx">
       <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -209,8 +213,9 @@
     <Folder Include="GUI\CustomElements" />
     <Folder Include="GUI\Forms" />
     <Folder Include="Model" />
-    <Folder Include="Model\Status" />
+    <Folder Include="Model\Tasks" />
     <Folder Include="GUI" />
+    <Folder Include="Util" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

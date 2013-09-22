@@ -118,15 +118,6 @@ namespace PswgLauncher
 		}
 
 		
-
-			
-
-			
-		
-		
-	
-
-		
 		private void DrawText(PaintEventArgs pe) {
 			
 			if (base.Text == null || base.Text.Trim() == "" || pe == null || base.Font == null || _textcolor == null) {

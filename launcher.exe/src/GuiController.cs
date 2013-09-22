@@ -160,7 +160,8 @@ namespace PswgLauncher
 		private FileListForm _filelist;
 		
 		private ResourceManager PswgResourcesManager;
-		private ResourceManager PswgResources2Manager;		
+		private ResourceManager PswgResources2Manager;
+		private launcher2 LauncherWindow;		
 		
 		public GuiController(int runmode, string Workdir, string args)
 		{
@@ -317,7 +318,7 @@ namespace PswgLauncher
 			
 			launcher2 lt = new launcher2(this);
 			lt.Show();
-			
+			LauncherWindow = lt;
 			return true;
 		}
 		
@@ -651,6 +652,14 @@ namespace PswgLauncher
 		);
 
 		
+		
+		public void RefreshStatus(bool updating)
+		{
+			if (LauncherWindow == null) { return; }
+			
+			LauncherWindow.RefreshStatus(updating);
+			
+		}
 	}
 	
 	
