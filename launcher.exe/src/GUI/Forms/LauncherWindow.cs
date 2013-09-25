@@ -22,14 +22,14 @@ using PswgLauncher.Model.Tasks;
 namespace PswgLauncher
 {
 
-    public partial class launcher2 : Form
+    public partial class LauncherWindow : Form
     {
 
     	int errorcounter = 0;
         
     	private bool InstallerAvailable=false;
   
-        private LAUNCHOPTIONS OptionWindow;
+        private OptionsWindow Options;
         private GuiController Controller;
 
         private LauncherProgressBar launcherProgressBar1;
@@ -51,7 +51,7 @@ namespace PswgLauncher
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private LauncherTask CurrentTask;
         
-        public launcher2(GuiController gc)
+        public LauncherWindow(GuiController gc)
         {
         	
         	this.Controller = gc;
@@ -226,8 +226,8 @@ namespace PswgLauncher
         	
         	OptButton.Disable = !File.Exists(Controller.SwgSavePath + @"\swgclientsetup_r.exe");
 
-        	if (OptionWindow != null) {
-        		OptionWindow.RefreshButtonState();
+        	if (Options != null) {
+        		Options.RefreshButtonState();
         	}
         	
         	PlayButton.Disable = CurrentTask.GetPlayDisabled();
@@ -276,16 +276,16 @@ namespace PswgLauncher
         	
         	Controller.PlaySound("Sound_Click");
 			
-        	if (OptionWindow != null) {
-        		OptionWindow.RefreshButtonState();
-        		OptionWindow.Show();
-        		OptionWindow.BringToFront();
+        	if (Options != null) {
+        		Options.RefreshButtonState();
+        		Options.Show();
+        		Options.BringToFront();
         		return;
         	}
         	
-            LAUNCHOPTIONS launchoptions = new LAUNCHOPTIONS(Controller);
+            OptionsWindow launchoptions = new OptionsWindow(Controller);
             launchoptions.Show();
-            OptionWindow = launchoptions;
+            Options = launchoptions;
         }
 
 
@@ -320,7 +320,7 @@ namespace PswgLauncher
         private void Donate_Click(object sender, EventArgs e)
         {
         	Controller.PlaySound("Sound_Click");
-            Donate donate = new Donate(Controller);
+            DonateWindow donate = new DonateWindow(Controller);
             donate.Show();
         }
         

@@ -1,6 +1,6 @@
 ﻿namespace PswgLauncher
 {
-    partial class DirSearch
+    partial class DirSearchWindow
     {
         /// <summary>
         /// Required designer variable.

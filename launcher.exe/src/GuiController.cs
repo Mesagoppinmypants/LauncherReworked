@@ -157,11 +157,11 @@ namespace PswgLauncher
 		
 		private DebugWindow _debug;
 		private NetworkWindow _network;
-		private FileListForm _filelist;
+		private FileListWindow _filelist;
 		
 		private ResourceManager PswgResourcesManager;
 		private ResourceManager PswgResources2Manager;
-		private launcher2 LauncherWindow;		
+		private LauncherWindow LauncherWindow;		
 		
 		public GuiController(int runmode, string Workdir, string args)
 		{
@@ -297,7 +297,7 @@ namespace PswgLauncher
 			
 			if (SwgDir == null || SwgDir == "" || !Directory.Exists(SwgDir)) {
 			
-				DirSearch ds = new DirSearch(this);
+				DirSearchWindow ds = new DirSearchWindow(this);
 	            DialogResult result = ds.ShowDialog();
 	            
 	            if (result == DialogResult.OK) {
@@ -316,7 +316,7 @@ namespace PswgLauncher
 		
 		public bool RunLauncher() {
 			
-			launcher2 lt = new launcher2(this);
+			LauncherWindow lt = new LauncherWindow(this);
 			lt.Show();
 			LauncherWindow = lt;
 			return true;
@@ -341,7 +341,7 @@ namespace PswgLauncher
 		
 		public void LaunchFileList() {
 			if (_filelist == null || _filelist.IsDisposed) {
-				_filelist = new FileListForm(this);
+				_filelist = new FileListWindow(this);
 				
 			}
 			

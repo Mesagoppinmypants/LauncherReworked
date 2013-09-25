@@ -8,7 +8,7 @@
  */
 namespace PswgLauncher.GUI.Forms
 {
-	partial class FileListForm
+	partial class FileListWindow
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.

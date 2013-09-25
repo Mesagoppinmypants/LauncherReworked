@@ -1,6 +1,6 @@
 ﻿namespace PswgLauncher
 {
-    partial class Donate
+    partial class DonateWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Donate));
+        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DonateWindow));
         	this.webBrowser1 = new System.Windows.Forms.WebBrowser();
         	this.SuspendLayout();
         	// 

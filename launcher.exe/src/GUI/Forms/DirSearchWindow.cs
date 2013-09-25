@@ -15,7 +15,7 @@ using System.Media;
 namespace PswgLauncher
 {
 
-    public partial class DirSearch : Form
+    public partial class DirSearchWindow : Form
     {
     	private GuiController Controller;
     	private String SwgDir;
@@ -29,7 +29,7 @@ namespace PswgLauncher
     	
     	Point mouseDownPoint = Point.Empty;
     	
-        public DirSearch(GuiController gc)
+        public DirSearchWindow(GuiController gc)
         {
         	
         	this.Controller = gc;

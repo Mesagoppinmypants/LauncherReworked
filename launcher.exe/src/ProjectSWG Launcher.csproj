@@ -109,33 +109,33 @@
     <Compile Include="GUI\Forms\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\DirSearch.cs">
+    <Compile Include="GUI\Forms\DirSearchWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\DirSearch.Designer.cs">
-      <DependentUpon>DirSearch.cs</DependentUpon>
+    <Compile Include="GUI\Forms\DirSearchWindow.Designer.cs">
+      <DependentUpon>DirSearchWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\Donate.cs">
+    <Compile Include="GUI\Forms\DonateWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\Donate.Designer.cs">
-      <DependentUpon>Donate.cs</DependentUpon>
+    <Compile Include="GUI\Forms\DonateWindow.Designer.cs">
+      <DependentUpon>DonateWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\FileListForm.cs" />
-    <Compile Include="GUI\Forms\FileListForm.Designer.cs">
-      <DependentUpon>FileListForm.cs</DependentUpon>
+    <Compile Include="GUI\Forms\FileListWindow.cs" />
+    <Compile Include="GUI\Forms\FileListWindow.Designer.cs">
+      <DependentUpon>FileListWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\launcher2.cs">
+    <Compile Include="GUI\Forms\LauncherWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\launcher2.Designer.cs">
-      <DependentUpon>launcher2.cs</DependentUpon>
+    <Compile Include="GUI\Forms\LauncherWindow.Designer.cs">
+      <DependentUpon>LauncherWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\LAUNCHOPTIONS.cs">
+    <Compile Include="GUI\Forms\OptionsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\Forms\LAUNCHOPTIONS.Designer.cs">
-      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
+    <Compile Include="GUI\Forms\OptionsWindow.Designer.cs">
+      <DependentUpon>OptionsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\Forms\NetworkWindow.cs" />
     <Compile Include="GUI\Forms\NetworkWindow.Designer.cs">
@@ -165,17 +165,17 @@
     <EmbeddedResource Include="GUI\Forms\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\DirSearch.resx">
-      <DependentUpon>DirSearch.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\DirSearchWindow.resx">
+      <DependentUpon>DirSearchWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\FileListForm.resx">
-      <DependentUpon>FileListForm.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\FileListWindow.resx">
+      <DependentUpon>FileListWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\launcher2.resx">
-      <DependentUpon>launcher2.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\LauncherWindow.resx">
+      <DependentUpon>LauncherWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Forms\LAUNCHOPTIONS.resx">
-      <DependentUpon>LAUNCHOPTIONS.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\Forms\OptionsWindow.resx">
+      <DependentUpon>OptionsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\NetworkWindow.resx">
       <DependentUpon>NetworkWindow.cs</DependentUpon>

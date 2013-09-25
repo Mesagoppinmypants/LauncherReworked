@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace PswgLauncher
 {
-    public partial class LAUNCHOPTIONS : Form
+    public partial class OptionsWindow : Form
     {
     	
     	private GuiController Controller;
@@ -31,7 +31,7 @@ namespace PswgLauncher
     	
     	private bool init = false;
     	
-        public LAUNCHOPTIONS(GuiController gc)
+        public OptionsWindow(GuiController gc)
         {
         	
         	this.Controller = gc;

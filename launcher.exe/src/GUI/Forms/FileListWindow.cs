@@ -18,14 +18,14 @@ namespace PswgLauncher.GUI.Forms
 	/// <summary>
 	/// Description of FileListForm.
 	/// </summary>
-	public partial class FileListForm : Form
+	public partial class FileListWindow : Form
 	{
 		
 		GuiController controller;
 		private Font StdFont;
 		private Font SWFont;
 		
-		public FileListForm(GuiController gc)
+		public FileListWindow(GuiController gc)
 		{
 			
 			controller = gc;

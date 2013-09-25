@@ -1,6 +1,6 @@
 ﻿namespace PswgLauncher
 {
-    partial class launcher2
+    partial class LauncherWindow
     {
         /// <summary>
         /// Required designer variable.

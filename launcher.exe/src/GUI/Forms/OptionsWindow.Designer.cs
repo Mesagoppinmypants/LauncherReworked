@@ -1,6 +1,6 @@
 ﻿namespace PswgLauncher
 {
-    partial class LAUNCHOPTIONS
+    partial class OptionsWindow
     {
         /// <summary>
         /// Required designer variable.
