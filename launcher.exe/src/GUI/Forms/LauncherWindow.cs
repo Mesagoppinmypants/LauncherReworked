@@ -133,7 +133,12 @@ namespace PswgLauncher
 
         public void Process() {
 
-        	if ((CurrentTask == null) || (CurrentTask.GetBusy())) { return; }
+        	if (CurrentTask == null) {
+        		Application.Exit();
+        		return;
+        	}
+        	
+        	if (CurrentTask.GetBusy()) { return; }
         	
         	CurrentTask.Init(backgroundWorker, Controller);
         	backgroundWorker.RunWorkerAsync();
@@ -150,7 +155,6 @@ namespace PswgLauncher
         	}
         	
         }
-        
         	
         private void BWProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
         	
@@ -205,8 +209,8 @@ namespace PswgLauncher
         
         private void BWDoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
         	if (CurrentTask != null) {
-        		CurrentTask.Work(backgroundWorker, Controller, sender, e);
-        	}        	
+        		CurrentTask.Work(backgroundWorker, Controller, sender, e);        		
+        	}
         }
         
         public void UpdateErrors() {
@@ -243,9 +247,6 @@ namespace PswgLauncher
         	
         }
 
-        
-
-		//FIXME maybe use state events
         private void PLAY_Click_1(object sender, EventArgs e) {
 
 			int rv = CurrentTask.PlayClick(Controller);

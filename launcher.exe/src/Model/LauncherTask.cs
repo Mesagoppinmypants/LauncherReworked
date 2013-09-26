@@ -30,13 +30,12 @@ namespace PswgLauncher.Model.Status
 			return true;
 		}
 		
-		public virtual bool Work(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.DoWorkEventArgs e)
+		public virtual void Work(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.DoWorkEventArgs e)
 		{
 			Controller.AddDebugMessage(TaskName + " Work()");
 			busy = true;
 			worker.ReportProgress(0, "Running");
 			worker.ReportProgress(100, "Done");
-			return true;
 		}
 		
 		public virtual bool Complete(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)

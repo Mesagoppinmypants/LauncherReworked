@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-# SharpDevelop 4.2.2.8818
+# SharpDevelop 4.3
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectSWG Launcher", "launcher.exe\src\ProjectSWG Launcher.csproj", "{43B3C06F-BEC9-4251-B9B1-9023A16382A4}"
 EndProject
 Global

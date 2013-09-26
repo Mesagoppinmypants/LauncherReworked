@@ -33,7 +33,11 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
+		public static string LookupDomain = "projectswg.com";
 		
+		public static string PatchRecord = "fsrvx." + LookupDomain;
+		public static string FileRecord = "lsrv." + LookupDomain;
+		public static string LoginRecord = "login." + LookupDomain;
 		
 		public static string PatchServer = "patch1.projectswg.com";
 		public static string LoginServer = "login1.projectswg.com";
@@ -45,7 +49,6 @@ namespace PswgLauncher
 		public static string PATCHER = "PSWGInstaller.exe";
 
 		public static string UPDATENOTES = "http://www.projectswg.com/update_notes.php";
-		public static string ALTURL = "http://projectswg.com/download/";
 		
 		public string LocalLastScan;
 		
@@ -348,7 +351,6 @@ namespace PswgLauncher
 			if (_filelist.Visible == false) {
 				_filelist.Visible = true;
 			}
-			
 			
 		}
 		
@@ -659,6 +661,11 @@ namespace PswgLauncher
 			
 			LauncherWindow.RefreshStatus(updating);
 			
+		}
+		
+		public void SetPatchServers(object result)
+		{
+			AddDebugMessage((string) result);
 		}
 	}
 	

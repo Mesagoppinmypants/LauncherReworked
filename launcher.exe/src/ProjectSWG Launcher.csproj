@@ -153,7 +153,9 @@
     <Compile Include="Model\SWGFile.cs" />
     <Compile Include="Model\SWGFileList.cs" />
     <Compile Include="GuiController.cs" />
-    <Compile Include="Model\Tasks\DNSTask.cs" />
+    <Compile Include="Model\Tasks\DNSFileserverTask.cs" />
+    <Compile Include="Model\Tasks\DNSPatchserverTask.cs" />
+    <Compile Include="Model\Tasks\LauncherPatchTask.cs" />
     <Compile Include="Model\Tasks\ReadyTask.cs" />
     <Compile Include="Model\Tasks\RunTask.cs" />
     <Compile Include="Program.cs" />
