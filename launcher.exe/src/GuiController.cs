@@ -118,7 +118,6 @@ namespace PswgLauncher
 		
 
 		private String _SwgDir;
-		
 		public String SwgDir {
 			get {
 				
@@ -131,9 +130,11 @@ namespace PswgLauncher
 			}
 		}
 		
+		public string[] PatchServers { get; private set; }
+		
 		private Configuration config;
 		
-		public SWGFileList SWGFiles {get; set;}
+		public SWGFileList SWGFiles { get; set;}
 		
 		private List<String> _DebugMessages;
 		private List<String> _DebugMessages2;
@@ -454,7 +455,6 @@ namespace PswgLauncher
 			
 		}
 		
-		
 		public System.Drawing.Image GetResourceImage(String filename) {
 
 	        return ((System.Drawing.Image) PswgResourcesManager.GetObject(filename));
@@ -465,15 +465,11 @@ namespace PswgLauncher
 	        return ((System.Drawing.Image) PswgResources2Manager.GetObject(filename));
 		}
 
-		
-		
 		public System.Drawing.Icon GetAppIcon() {
-
         	
 	        return ((System.Drawing.Icon) PswgResourcesManager.GetObject("ProjectSWG Launcher"));
 			
 		}
-
 		
 		public Stream GetSound(String filename) {
 			
@@ -492,7 +488,6 @@ namespace PswgLauncher
 			
 		}
 		
-		
 		public LauncherLabel SpawnLabel(String Text, System.Drawing.Point Location , System.Drawing.Size Size) {
 			LauncherLabel Label = new LauncherLabel();
 			
@@ -508,7 +503,6 @@ namespace PswgLauncher
 			
 			return Label;
 		}
-		
 		
 		public LauncherProgressBar SpawnProgressBar(System.Drawing.Point Location , System.Drawing.Size Size) {
 		
@@ -645,7 +639,17 @@ namespace PswgLauncher
 		
 		public void SetPatchServers(object result)
 		{
-			AddDebugMessage((string) result);
+			if (!(result is string)) { return; }
+			string[] servers = ((string) result).Split();
+			if (servers.Length < 1) { return; }
+			
+			PatchServers = new String[servers.Length];
+			
+			for (int i = 0; i < servers.Length; i++) {
+				AddDebugMessage("Adding patch server " + servers[i] + "." + ProgramConstants.LookupDomain);
+				PatchServers[i] = servers[i] + "." + ProgramConstants.LookupDomain;
+			}
+			
 		}
 	}
 	

@@ -36,7 +36,7 @@ namespace PswgLauncher.Model.Tasks
 			String PatchServers;
 			// in case of error, exception is thrown
 			PatchServers = DNSQuery.DnsGetTxtRecord(ProgramConstants.PatchRecord);
-			Debug.WriteLine("x" + PatchServers + "x");
+			//Debug.WriteLine("Found " + PatchServers + ";");
 						
 			if (PatchServers == null || PatchServers.Equals("")) {
 				throw new Exception("Empty DNS response");

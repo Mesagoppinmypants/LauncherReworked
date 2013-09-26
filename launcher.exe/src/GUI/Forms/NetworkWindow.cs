@@ -57,7 +57,13 @@ namespace PswgLauncher
 			
 			richTextBox1.Clear();
 			
-			RunPingTest(richTextBox1 , ProgramConstants.PatchServer, "Patch Server");
+			if (Controller.PatchServers.Length < 1) {
+				richTextBox1.AppendText("Don't know any patch servers at this time.");
+			} else { 
+				foreach (String ps in Controller.PatchServers) {
+					RunPingTest(richTextBox1 , ps, "Patch Server " + ps);
+				}
+			}
 			RunPingTest(richTextBox1 , ProgramConstants.LoginServer, "Login Server");
 			
 			richTextBox1.AppendText("More tests to follow soon.");

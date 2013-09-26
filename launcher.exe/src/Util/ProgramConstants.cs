@@ -21,18 +21,16 @@ namespace PswgLauncher.Util
 		
 		public static string LookupDomain = "projectswg.com";
 		
-		public static string PatchRecord = "fsrvx." + LookupDomain;
+		public static string PatchRecord = "fsrv." + LookupDomain;
 		public static string FileRecord = "lsrv." + LookupDomain;
 		public static string LoginRecord = "login." + LookupDomain;
 		
-		public static string PatchServer = "patch1.projectswg.com";
 		public static string LoginServer = "login1.projectswg.com";
 		public static string WebServer = "www.projectswg.com";
 		
-		public static string MAINURL = "http://"+PatchServer+"/files/";
-		public static string PATCHURL = "http://"+PatchServer+"/launcher/";
-		public static string LAUNCHER = "ProjectSWG Launcher.exe";
-		public static string PATCHER = "PSWGInstaller.exe";
+		//public static string MAINURL = "http://"+PatchServer+"/files/";
+		public static string PatchInstallerUrl = "/launcher/PSWGInstaller.exe";
+		public static string PatchInstallerVersionUrl = "/launcher/lpatchinst.cfg";
 
 		public static string UPDATENOTES = "http://www.projectswg.com/update_notes.php";
 		

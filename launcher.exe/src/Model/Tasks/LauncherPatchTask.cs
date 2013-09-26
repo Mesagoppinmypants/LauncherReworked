@@ -25,5 +25,10 @@ namespace PswgLauncher.Model.Tasks
 		{
 			return new ReadyTask();
 		}
+
+		public override void Work(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.DoWorkEventArgs e)
+		{
+		
+		}
 	}
 }
