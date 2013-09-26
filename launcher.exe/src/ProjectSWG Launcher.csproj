@@ -161,6 +161,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\DNSQuery.cs" />
+    <Compile Include="Util\ProgramConstants.cs" />
     <EmbeddedResource Include="GUI\Forms\AdminSettingsWindow.resx">
       <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
     </EmbeddedResource>

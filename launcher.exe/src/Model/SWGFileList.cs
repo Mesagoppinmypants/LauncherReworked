@@ -17,6 +17,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using PswgLauncher.Util;
+
 namespace PswgLauncher
 {
 	/// <summary>
@@ -237,7 +239,7 @@ namespace PswgLauncher
 			}
 			
 			RijndaelManaged aes = new RijndaelManaged();
-			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(ProgramConstants.EncKey);
 			
 			try {
 				
@@ -276,7 +278,7 @@ namespace PswgLauncher
 			}
 			
 			RijndaelManaged aes = new RijndaelManaged();
-			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(ProgramConstants.EncKey);			
 			
 			try {
 				Controller.AddDebugMessage("Reading " + Controller.LocalFilelist);
@@ -302,7 +304,7 @@ namespace PswgLauncher
 			}
 			
 			RijndaelManaged aes = new RijndaelManaged();
-			byte[] key = ASCIIEncoding.UTF8.GetBytes(GuiController.EncKey);			
+			byte[] key = ASCIIEncoding.UTF8.GetBytes(ProgramConstants.EncKey);			
 			
 			try {
 				Controller.AddDebugMessage("Reading " + Controller.LocalFilelist);

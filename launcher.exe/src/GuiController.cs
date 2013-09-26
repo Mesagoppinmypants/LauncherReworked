@@ -24,6 +24,7 @@ using System.Windows.Forms;
 
 using Microsoft.Win32;
 using PswgLauncher.GUI.Forms;
+using PswgLauncher.Util;
 
 namespace PswgLauncher
 {
@@ -33,29 +34,8 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
-		public static string LookupDomain = "projectswg.com";
-		
-		public static string PatchRecord = "fsrvx." + LookupDomain;
-		public static string FileRecord = "lsrv." + LookupDomain;
-		public static string LoginRecord = "login." + LookupDomain;
-		
-		public static string PatchServer = "patch1.projectswg.com";
-		public static string LoginServer = "login1.projectswg.com";
-		public static string WebServer = "www.projectswg.com";
-		
-		public static string MAINURL = "http://"+PatchServer+"/files/";
-		public static string PATCHURL = "http://"+PatchServer+"/launcher/";
-		public static string LAUNCHER = "ProjectSWG Launcher.exe";
-		public static string PATCHER = "PSWGInstaller.exe";
 
-		public static string UPDATENOTES = "http://www.projectswg.com/update_notes.php";
-		
 		public string LocalLastScan;
-		
-		private static string HttpAuthUser = "pswglaunch";
-		private static string HttpAuthPass = "wvQAxc5mGgF0";
-		
-		public static string EncKey = "eKgeg75J3pTBURgh";
 		
 		public int RunAsMode {
 			get; private set;
@@ -470,7 +450,7 @@ namespace PswgLauncher
 		
 		public NetworkCredential GetNetworkCredential() {
 			
-			return new NetworkCredential(HttpAuthUser, HttpAuthPass);
+			return new NetworkCredential(ProgramConstants.HttpAuthUser, ProgramConstants.HttpAuthPass);
 			
 		}
 		

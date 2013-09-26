@@ -18,6 +18,7 @@ using System.Windows.Forms;
 
 using PswgLauncher.Model.Status;
 using PswgLauncher.Model.Tasks;
+using PswgLauncher.Util;
 
 namespace PswgLauncher
 {
@@ -70,7 +71,7 @@ namespace PswgLauncher
         
         public void InitializeComponent2() {
         	
-        	this.webBrowser1.Url = new System.Uri(GuiController.UPDATENOTES, System.UriKind.Absolute);
+        	this.webBrowser1.Url = new System.Uri(ProgramConstants.UPDATENOTES, System.UriKind.Absolute);
         	
        		this.backgroundWorker = new BackgroundWorker();
        		this.backgroundWorker.WorkerReportsProgress = true;

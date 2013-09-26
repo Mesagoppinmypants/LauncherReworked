@@ -11,6 +11,8 @@ using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Windows.Forms;
 
+using PswgLauncher.Util;
+
 namespace PswgLauncher
 {
 
@@ -55,8 +57,8 @@ namespace PswgLauncher
 			
 			richTextBox1.Clear();
 			
-			RunPingTest(richTextBox1 , GuiController.PatchServer, "Patch Server");
-			RunPingTest(richTextBox1 , GuiController.LoginServer, "Login Server");
+			RunPingTest(richTextBox1 , ProgramConstants.PatchServer, "Patch Server");
+			RunPingTest(richTextBox1 , ProgramConstants.LoginServer, "Login Server");
 			
 			richTextBox1.AppendText("More tests to follow soon.");
 			

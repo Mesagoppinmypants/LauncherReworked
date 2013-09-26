@@ -35,7 +35,7 @@ namespace PswgLauncher.Model.Tasks
 			
 			String PatchServers;
 			// in case of error, exception is thrown
-			PatchServers = DNSQuery.DnsGetTxtRecord(GuiController.PatchRecord);
+			PatchServers = DNSQuery.DnsGetTxtRecord(ProgramConstants.PatchRecord);
 			Debug.WriteLine("x" + PatchServers + "x");
 						
 			if (PatchServers == null || PatchServers.Equals("")) {
