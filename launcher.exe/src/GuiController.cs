@@ -132,6 +132,7 @@ namespace PswgLauncher
 		
 		public string[] PatchServers { get; private set; }
 		
+		private string _VersionOverride;
 		private Configuration config;
 		
 		public SWGFileList SWGFiles { get; set;}
@@ -147,7 +148,7 @@ namespace PswgLauncher
 		private ResourceManager PswgResources2Manager;
 		private LauncherWindow LauncherWindow;		
 		
-		public GuiController(int runmode, string Workdir, string args)
+		public GuiController(int runmode, string Workdir, string args, string version)
 		{
 
 			_DebugMessages = new List<String>();
@@ -157,6 +158,9 @@ namespace PswgLauncher
 						
 			SwgSavePath = Workdir;
 			AddDebugMessage("Workdir is " + Workdir);
+			
+			_VersionOverride = version;
+			if (version != null) { AddDebugMessage("Version override: " + version); }
 			
 			ApplicationArgs = args;
 			if (args != "") { AddDebugMessage("Command line args: " + args); }
@@ -445,6 +449,9 @@ namespace PswgLauncher
 		
 		public String GetProgramVersion() {
 		
+			if (_VersionOverride != null) {
+				return _VersionOverride.Trim();
+			}
 			return Application.ProductVersion.ToString().Trim();
 		
 		}
@@ -466,9 +473,7 @@ namespace PswgLauncher
 		}
 
 		public System.Drawing.Icon GetAppIcon() {
-        	
 	        return ((System.Drawing.Icon) PswgResourcesManager.GetObject("ProjectSWG Launcher"));
-			
 		}
 		
 		public Stream GetSound(String filename) {

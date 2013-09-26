@@ -11,7 +11,7 @@ using System;
 namespace PswgLauncher
 {
 	/// <summary>
-	/// Description of ProgramVersion.
+	/// Compare program version with remote.
 	/// </summary>
 	public class ProgramVersion
 	{
@@ -117,9 +117,5 @@ namespace PswgLauncher
 				
 		}
 			
-			
-			
-		
-		
 	}
 }

@@ -25,7 +25,11 @@ namespace PswgLauncher
         	//FIXME: add better argument handling
         	
         	CommandLineOptions opts = new CommandLineOptions();
-        	opts.Parse(args);
+        	bool rv = opts.Parse(args);
+        	if (!rv) {
+        		Application.Exit();
+        		return;
+        	}
         	String ArgString = opts.Arguments;
         	
         	String Workdir = GetRegistryWorkdirSetting(opts.WorkdirSetting);
@@ -72,7 +76,7 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString);
+            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString, opts.VersionOverride);
             gc.ReadConfig();
             gc.CheckScanNeeded();
             gc.RunLauncher();

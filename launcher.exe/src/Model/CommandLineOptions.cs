@@ -8,7 +8,10 @@
  */
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace PswgLauncher.Model
 {
@@ -26,6 +29,10 @@ namespace PswgLauncher.Model
 			get; private set;
 		}
 		
+		public String VersionOverride {
+			get; private set;
+		}
+		
 		public String Arguments {
 			get; private set;
 		}
@@ -36,7 +43,8 @@ namespace PswgLauncher.Model
 		}
 		
 		//FIXME: produce somewhat more feedback.
-		public void Parse(String[] args) {
+		//FIXME: Fail on errors
+		public bool Parse(String[] args) {
 			StringBuilder sb = new StringBuilder();
 			
 			for (int i = 0; i< args.Length; i++) {
@@ -44,15 +52,22 @@ namespace PswgLauncher.Model
 				switch(args[i].ToLower()) {
 					case "--workdir":
 						if (i+1 >= args.Length) {
-							return;
+							ShowError("No Workdir given to --workdir");
+							return false;
 						}
+						if (!Directory.Exists(args[i+1])) {
+							ShowError("Workdir override doesn't exist!");
+							return false;
+						}
+						
 						WorkdirSetting = args[i+1];
 						sb.Append(args[i] + " " + args[i+1]);
 						i++;
 						break;
 					case "--runas":
 						if (i+1 >= args.Length) {
-							return;
+							ShowError("No Username given with --runas");
+							return false;
 						}
 						int x;
 						if (Int32.TryParse(args[i+1], out x)) {
@@ -61,12 +76,32 @@ namespace PswgLauncher.Model
 							i++;
 						}
 						break;
+					case "--versionoverride":
+						if (i+1 >= args.Length) {
+							ShowError("No Version given to --versionoverride");
+							return false;
+						}
+						if (!Regex.IsMatch(args[i+1], @"[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")) {
+							ShowError("Override Version wrong format.");
+							return false;
+						}
+						sb.Append(args[i] + " " + args[i+1]);
+						VersionOverride = args[i+1];
+						i++;
+						break;
 				}
 				
-				Arguments = sb.ToString();
 				
 			}
+
+			Arguments = sb.ToString();
+			return true;
 			
+		}
+		
+		void ShowError(string err)
+		{
+			MessageBox.Show(err + "\n\nExiting.", "Command line argument error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 				
 	}
