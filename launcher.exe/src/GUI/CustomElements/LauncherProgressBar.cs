@@ -32,7 +32,7 @@ namespace PswgLauncher
 			get { return base.Text; }
 			set {
 				
-				base.Text = value;
+				base.Text = value.ToLower();
 				
 			}
 		}

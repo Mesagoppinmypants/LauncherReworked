@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-using PswgLauncher.Model.Status;
 using PswgLauncher.Util;
 
 namespace PswgLauncher.Model.Tasks
@@ -19,58 +18,15 @@ namespace PswgLauncher.Model.Tasks
 	/// <summary>
 	/// Description of DNSTask.
 	/// </summary>
-	public class DNSPatchserverTask : LauncherTask
+	public class DNSPatchserverTask : DNSTXTTask
 	{
 		
 		public DNSPatchserverTask()
 		{
 			TaskName = "Patch Server Lookup";
 		}
-
-		public override void Work(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.DoWorkEventArgs e)
-		{
-			Controller.AddDebugMessage(TaskName + " Work()");
-			run = false;
-			busy = true;
-			
-			String PatchServers;
-			// in case of error, exception is thrown
-			PatchServers = DNSQuery.DnsGetTxtRecord(ProgramConstants.PatchRecord);
-			//Debug.WriteLine("Found " + PatchServers + ";");
-						
-			if (PatchServers == null || PatchServers.Equals("")) {
-				throw new Exception("Empty DNS response");
-			}
-			
-			e.Result = PatchServers;
-			
-		}
-				
-		public override bool Complete(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
-		{
-			
-			run = true;
-			busy = false;
-			
-			if (e.Cancelled || e.Error != null) {
-				Controller.AddDebugMessage(TaskName + " Complete() (no success)");
-				if (e.Error != null) { Controller.AddDebugMessage(e.Error.ToString()); }
-				
-				success = false;
-				Controller.RefreshStatus(false);
-				
-				return false;
-			}
-			Controller.AddDebugMessage(TaskName + " Complete()");
-			
-			Controller.SetPatchServers(e.Result);
-			
-			success = true;
-			Controller.RefreshStatus(false);
-			return true;			
-		}
-				
-		public override LauncherTask GetNextTask()
+		
+		public override LauncherTask GetNextTask(GuiController Controller)
 		{
 			if (busy) { return this; }
 			if (run && !success) {
@@ -81,28 +37,25 @@ namespace PswgLauncher.Model.Tasks
 			}
 			return new LauncherPatchTask();
 		}
-				
-		public override string GetLabelText()
-		{
-			if (busy) { return "Reading DNS Info"; }
-			return base.GetLabelText();
+		
+		public override int GetTotalProgress() {
+			return 10;
 		}
 		
-		public override string GetPlayText()
+		public override string GetLookupString(GuiController Controller)
 		{
-			if (busy) { return "Working"; }
-			if (!run) { return "Start"; }
-			if (!success) { return "Next..."; }
-			return "Continue"; 
-		}
-
-		
-		public override int PlayClick(GuiController Controller)
-		{
-			if (busy) { return -1; }
-			if (!run) { return 0; }
-			return 1;
+			return Controller.PatchRecord;
 		}
 		
+		public override void SetServers(GuiController Controller, object Servers)
+		{
+			Controller.SetPatchServers(Servers);
+		}
+		
+		public override bool SkipLookup(GuiController Controller)
+		{
+			if (Controller.PatchServers.Count > 0) { return true; }
+			return false;
+		}
 	}
 }

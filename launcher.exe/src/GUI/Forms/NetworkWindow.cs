@@ -57,7 +57,7 @@ namespace PswgLauncher
 			
 			richTextBox1.Clear();
 			
-			if (Controller.PatchServers.Length < 1) {
+			if (Controller.PatchServers.Count < 1) {
 				richTextBox1.AppendText("Don't know any patch servers at this time.");
 			} else { 
 				foreach (String ps in Controller.PatchServers) {

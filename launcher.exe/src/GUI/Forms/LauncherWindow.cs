@@ -16,11 +16,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
-using PswgLauncher.Model.Status;
 using PswgLauncher.Model.Tasks;
 using PswgLauncher.Util;
 
-namespace PswgLauncher
+namespace PswgLauncher.GUI.Forms
 {
 
     public partial class LauncherWindow : Form
@@ -33,7 +32,9 @@ namespace PswgLauncher
         private OptionsWindow Options;
         private GuiController Controller;
 
-        private LauncherProgressBar launcherProgressBar1;
+        private LauncherProgressBar launcherProgressBarFile;
+        private LauncherProgressBar launcherProgressBarTask;
+        private LauncherProgressBar launcherProgressBarTotal;
 
         private LauncherButton MinimizeButton;
         private LauncherButton CloseButton;        
@@ -43,9 +44,6 @@ namespace PswgLauncher
         private LauncherButton LOptButton;
         private LauncherButton DonateButton;
         private LauncherButton PlayButton;
-        
-        private LauncherLabel label1;
-        private LauncherLabel labelError;
         
         private System.Windows.Forms.Timer timer;
         
@@ -96,9 +94,12 @@ namespace PswgLauncher
         	this.Controls.Add(CloseButton);
         	
         	//add new components
-        	
-        	launcherProgressBar1 = Controller.SpawnProgressBar(new System.Drawing.Point(23, 452), new System.Drawing.Size(441, 17));
-        	this.Controls.Add(launcherProgressBar1);
+        	launcherProgressBarFile = Controller.SpawnProgressBar(new System.Drawing.Point(23, 421), new System.Drawing.Size(441, 17));
+        	launcherProgressBarTask = Controller.SpawnProgressBar(new System.Drawing.Point(23, 439), new System.Drawing.Size(441, 17));        	
+        	launcherProgressBarTotal = Controller.SpawnProgressBar(new System.Drawing.Point(23, 457), new System.Drawing.Size(441, 17));
+        	this.Controls.Add(launcherProgressBarFile);
+        	this.Controls.Add(launcherProgressBarTask);
+        	this.Controls.Add(launcherProgressBarTotal);
         	
         	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
         	OptButton = Controller.SpawnStandardButton("Game options", new Point(126, 365 ));
@@ -121,13 +122,7 @@ namespace PswgLauncher
         	this.Controls.Add(LOptButton);
         	this.Controls.Add(DonateButton);
         	this.Controls.Add(PlayButton);
-        	
-        	label1 = Controller.SpawnLabel("", new Point(23, 415), new Size(260, 15));
-        	this.Controls.Add(label1);
-        	
-        	labelError = Controller.SpawnLabel("", new Point(23, 430), new Size(260, 15));
-        	this.Controls.Add(labelError);
-        	
+        	        	        	
         	CurrentTask = new RunTask();
         	
         }        
@@ -150,7 +145,7 @@ namespace PswgLauncher
         	
         	if (CurrentTask.Complete(backgroundWorker, Controller, sender, e)) {
         		
-        		CurrentTask = CurrentTask.GetNextTask();
+        		CurrentTask = CurrentTask.GetNextTask(Controller);
         		Process();
         		
         	}
@@ -176,13 +171,8 @@ namespace PswgLauncher
 	        		return;
 	        	}
 	        	
-	        	this.launcherProgressBar1.Text = s;
-	        	this.launcherProgressBar1.Refresh();
-
-	        	if (msg[0] == "Error") {
-	        		errorcounter++;
-	        		UpdateErrors();
-	        	}
+	        	this.launcherProgressBarTotal.Text = s;
+	        	this.launcherProgressBarTotal.Refresh();
 	        	
 	        	if (msg[0] == "Patched" || msg[0] == "Read" || msg[0] == "OK") {
 	        		
@@ -202,7 +192,7 @@ namespace PswgLauncher
 	        	}
         	}
         	
-        	launcherProgressBar1.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
+        	launcherProgressBarTask.Value = ((e.ProgressPercentage > 100) ? 100 : e.ProgressPercentage );
         	RefreshStatus(false);
         
         }
@@ -213,21 +203,12 @@ namespace PswgLauncher
         		CurrentTask.Work(backgroundWorker, Controller, sender, e);        		
         	}
         }
-        
-        public void UpdateErrors() {
-               if (errorcounter > 0) {
-                       labelError.Text = "Download Errors: " + errorcounter;
-               } else {
-                       labelError.Text = "";
-               }
-        }
-
-        
+                
         public bool RefreshStatus(bool updating) {
 	
-       		if (updating) { 
-        		launcherProgressBar1.Text = "";
-        	}
+       		/*if (updating) {
+        		launcherProgressBarTask.Text = "";
+        	}*/
         	
         	OptButton.Disable = !File.Exists(Controller.SwgSavePath + @"\swgclientsetup_r.exe");
 
@@ -239,9 +220,15 @@ namespace PswgLauncher
         	ScanButton.Disable = CurrentTask.GetScanDisabled();
         	pictureBox2.Image = ((CurrentTask.GetBusy()) ? Controller.GetResourceImage("small-loading") : null);
         	PlayButton.Text = CurrentTask.GetPlayText();
-        	label1.Text = CurrentTask.GetLabelText();
-        	launcherProgressBar1.ForeColor = label1.ForeColor = CurrentTask.GetStatusColor();
-        	
+        	launcherProgressBarFile.Text = CurrentTask.GetFileText();
+        	launcherProgressBarFile.Value = CurrentTask.GetFileProgress();
+        	launcherProgressBarFile.ForeColor = CurrentTask.GetFileColor();
+        	launcherProgressBarTask.Text = CurrentTask.GetTaskText();
+        	launcherProgressBarTask.Value = CurrentTask.GetTaskProgress();
+        	launcherProgressBarTask.ForeColor = CurrentTask.GetTaskColor();
+        	launcherProgressBarTotal.Text = CurrentTask.GetTotalText();
+        	launcherProgressBarTotal.Value = CurrentTask.GetTotalProgress();
+        	launcherProgressBarTotal.ForeColor = CurrentTask.GetTotalColor();        	
         	this.Refresh();
         	
         	return true;
@@ -256,7 +243,7 @@ namespace PswgLauncher
 			}
 			
 			if (rv > 0) {
-				CurrentTask = CurrentTask.GetNextTask();
+				CurrentTask = CurrentTask.GetNextTask(Controller);
 				
 			}
         	

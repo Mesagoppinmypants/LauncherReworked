@@ -20,8 +20,6 @@ namespace PswgLauncher
         [STAThread]
         static void Main(string[] args)
         {
-        	
-        	
         	//FIXME: add better argument handling
         	
         	CommandLineOptions opts = new CommandLineOptions();
@@ -30,8 +28,15 @@ namespace PswgLauncher
         		Application.Exit();
         		return;
         	}
-        	String ArgString = opts.Arguments;
         	
+        	//this is hackish, but need it to pass args to next instance for runas
+        	for (int i = 0; i<args.Length;i++) {
+        		if (args[i].Contains(" ")) {
+        			args[i] = "\"" + args[i] +  "\"";
+        		}
+        	}
+        	
+        	String ArgString = string.Join(" ", args);
         	String Workdir = GetRegistryWorkdirSetting(opts.WorkdirSetting);
         	
 			int RunAsMode = GetRegistryRunAsSetting(opts.RunAsSetting);
@@ -76,7 +81,7 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString, opts.VersionOverride);
+            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString, opts.VersionOverride, opts.DNSPatchRecord, opts.DNSPatchRecordContents, opts.DNSFileRecord, opts.DNSFileRecordContents);
             gc.ReadConfig();
             gc.CheckScanNeeded();
             gc.RunLauncher();

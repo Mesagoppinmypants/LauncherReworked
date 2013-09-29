@@ -34,7 +34,6 @@ namespace PswgLauncher
 	public class GuiController
 	{
 		
-
 		public string LocalLastScan;
 		
 		public int RunAsMode {
@@ -57,7 +56,6 @@ namespace PswgLauncher
 		public String FileAdmSettings { get; private set; }
 		public String ConfigPath { get; private set; }
 		public String FileSWGClient { get; private set; }
-
 		public String ApplicationArgs { get; private set; }
 		
 		public PrivateFontCollection pfc {
@@ -130,9 +128,12 @@ namespace PswgLauncher
 			}
 		}
 		
-		public string[] PatchServers { get; private set; }
-		
+		public List<String> PatchServers { get; private set; }
+		public List<String> FileServers { get; private set; }
 		private string _VersionOverride;
+		public string PatchRecord = "lsrv." + ProgramConstants.LookupDomain;
+		public string FileRecord = "fsrv." + ProgramConstants.LookupDomain;
+		
 		private Configuration config;
 		
 		public SWGFileList SWGFiles { get; set;}
@@ -148,7 +149,7 @@ namespace PswgLauncher
 		private ResourceManager PswgResources2Manager;
 		private LauncherWindow LauncherWindow;		
 		
-		public GuiController(int runmode, string Workdir, string args, string version)
+		public GuiController(int runmode, string Workdir, string args, string version, string dnspatchoverride, string dnspatchcontoverride, string dnsfileoverride, string dnsfilecontoverride)
 		{
 
 			_DebugMessages = new List<String>();
@@ -160,6 +161,13 @@ namespace PswgLauncher
 			AddDebugMessage("Workdir is " + Workdir);
 			
 			_VersionOverride = version;
+			if (dnspatchoverride !=null) { PatchRecord = dnspatchoverride + "." + ProgramConstants.LookupDomain; }
+			if (dnspatchcontoverride != null) { SetPatchServers(dnspatchcontoverride); }
+			else { SetPatchServers(""); }
+			if (dnsfileoverride !=null) { FileRecord = dnsfileoverride + "." + ProgramConstants.LookupDomain; }
+			if (dnsfilecontoverride != null) { SetFileServers(dnsfilecontoverride); }
+			else { SetFileServers(""); }
+
 			if (version != null) { AddDebugMessage("Version override: " + version); }
 			
 			ApplicationArgs = args;
@@ -642,20 +650,34 @@ namespace PswgLauncher
 			
 		}
 		
-		public void SetPatchServers(object result)
-		{
-			if (!(result is string)) { return; }
-			string[] servers = ((string) result).Split();
-			if (servers.Length < 1) { return; }
+		protected List<String> ReadServers(object result, String type) {
 			
-			PatchServers = new String[servers.Length];
+			List<String> target = new List<String>();
+			
+			if (!(result is string)) { return target; }
+			String rs = ((String) result).Trim();
+			if (rs.Equals("")) { return target; }
+			
+			string[] servers = ((string) result).Split();			
+			if (servers.Length < 1) { return target; }
 			
 			for (int i = 0; i < servers.Length; i++) {
-				AddDebugMessage("Adding patch server " + servers[i] + "." + ProgramConstants.LookupDomain);
-				PatchServers[i] = servers[i] + "." + ProgramConstants.LookupDomain;
+				AddDebugMessage("Adding "+ type +" server " + servers[i] + "." + ProgramConstants.LookupDomain);
+				target.Add(servers[i] + "." + ProgramConstants.LookupDomain);
 			}
-			
+			return target;
 		}
+		
+		public void SetPatchServers(object result)
+		{
+			PatchServers = ReadServers(result, "Patch");
+		}
+
+		public void SetFileServers(object result)
+		{
+			FileServers = ReadServers(result, "File");
+		}
+				
 	}
 	
 	

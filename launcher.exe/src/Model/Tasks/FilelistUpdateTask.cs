@@ -1,31 +1,28 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: rdo
- * Date: 20.09.2013
- * Time: 17:00
+ * Date: 27.09.2013
+ * Time: 10:57
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Drawing;
 
 namespace PswgLauncher.Model.Tasks
 {
 	/// <summary>
-	/// Startup Task for the Launcher.
+	/// Description of FilelistTask.
 	/// </summary>
-	public class RunTask : LauncherTask
+	public class FilelistUpdateTask : LauncherTask
 	{
-		public RunTask()
+		public FilelistUpdateTask()
 		{
-			TaskName = "Startup";
-		}
-
-		public override LauncherTask GetNextTask(GuiController Controller)
-		{
-			return new DNSPatchserverTask();
+			TaskName = "Update Filelist";
 		}
 		
-
+		public override LauncherTask GetNextTask(GuiController Controller)
+		{
+			return new PswgPatchTask();
+		}
 	}
 }

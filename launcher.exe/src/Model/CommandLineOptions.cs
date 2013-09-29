@@ -21,6 +21,22 @@ namespace PswgLauncher.Model
 	public class CommandLineOptions
 	{
 		
+		public string DNSFileRecord {
+			get; private set;			
+		}
+		
+		public string DNSFileRecordContents {
+			get; private set;			
+		}
+
+		public string DNSPatchRecord {
+			get; private set;			
+		}
+		
+		public string DNSPatchRecordContents {
+			get; private set;			
+		}
+		
 		public string WorkdirSetting {
 			get; private set;
 		}
@@ -30,10 +46,6 @@ namespace PswgLauncher.Model
 		}
 		
 		public String VersionOverride {
-			get; private set;
-		}
-		
-		public String Arguments {
 			get; private set;
 		}
 		
@@ -50,18 +62,52 @@ namespace PswgLauncher.Model
 			for (int i = 0; i< args.Length; i++) {
 				//Debug.WriteLine(args[i].ToLower());
 				switch(args[i].ToLower()) {
-					case "--workdir":
+					case "--dnsfilerecord":
 						if (i+1 >= args.Length) {
-							ShowError("No Workdir given to --workdir");
+							ShowError("No DNS record given with --dnsfilerecord");
 							return false;
 						}
-						if (!Directory.Exists(args[i+1])) {
-							ShowError("Workdir override doesn't exist!");
+						if (!Regex.IsMatch(args[i+1], @"[-\.A-Za-z0-9]+")) {
+							ShowError("dnsfilerecord wrong format.");
 							return false;
 						}
-						
-						WorkdirSetting = args[i+1];
-						sb.Append(args[i] + " " + args[i+1]);
+						DNSFileRecord = args[i+1];
+						i++;
+						break;
+					case "--dnsfilerecordcontent":
+						if (i+1 >= args.Length) {
+							ShowError("No TXT record given with --dnsfilerecordcontent");
+							return false;
+						}
+						if (!Regex.IsMatch(args[i+1], @"[-\s\.A-Za-z0-9]+")) {
+							ShowError("dnsfilerecord wrong format.");
+							return false;
+						}
+						DNSFileRecordContents = args[i+1];
+						i++;
+						break;						
+					case "--dnspatchrecord":
+						if (i+1 >= args.Length) {
+							ShowError("No DNS record given with --dnspatchrecord");
+							return false;
+						}
+						if (!Regex.IsMatch(args[i+1], @"[-\.A-Za-z0-9]+")) {
+							ShowError("dnspatchrecord wrong format.");
+							return false;
+						}
+						DNSPatchRecord = args[i+1];
+						i++;
+						break;
+					case "--dnspatchrecordcontent":
+						if (i+1 >= args.Length) {
+							ShowError("No TXT record given with --dnspatchrecordcontent");
+							return false;
+						}
+						if (!Regex.IsMatch(args[i+1], @"[-\s\.A-Za-z0-9]+")) {
+							ShowError("dnspatchrecord wrong format.");
+							return false;
+						}
+						DNSPatchRecordContents = args[i+1];
 						i++;
 						break;
 					case "--runas":
@@ -72,7 +118,6 @@ namespace PswgLauncher.Model
 						int x;
 						if (Int32.TryParse(args[i+1], out x)) {
 							RunAsSetting = x;
-							sb.Append(args[i] + " " + args[i+1]);
 							i++;
 						}
 						break;
@@ -85,16 +130,31 @@ namespace PswgLauncher.Model
 							ShowError("Override Version wrong format.");
 							return false;
 						}
-						sb.Append(args[i] + " " + args[i+1]);
 						VersionOverride = args[i+1];
 						i++;
+						break;
+					case "--workdir":
+						if (i+1 >= args.Length) {
+							ShowError("No Workdir given to --workdir");
+							return false;
+						}
+						if (!Directory.Exists(args[i+1])) {
+							ShowError("Workdir override doesn't exist!");
+							return false;
+						}
+						
+						WorkdirSetting = args[i+1];
+						i++;
+						break;
+					default:
+						ShowError("Unknown parameter " + args[i]);
+						return false;
 						break;
 				}
 				
 				
 			}
 
-			Arguments = sb.ToString();
 			return true;
 			
 		}

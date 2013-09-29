@@ -10,7 +10,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace PswgLauncher.Model.Status
+namespace PswgLauncher.Model.Tasks
 {
 	/// <summary>
 	/// Description of Interface1.
@@ -60,7 +60,7 @@ namespace PswgLauncher.Model.Status
 			return false;
 		}
 		
-		public abstract LauncherTask GetNextTask();
+		public abstract LauncherTask GetNextTask(GuiController Controller);
 	
 		public virtual bool GetPlayDisabled()
 		{
@@ -84,21 +84,62 @@ namespace PswgLauncher.Model.Status
 			if (!success) { return "Retry"; }
 			return "Continue";
 		}
-		
-		public virtual String GetLabelText()
+
+		public virtual String GetFileText()
 		{
-			if (busy) { return TaskName + " Running"; }
-			if (!run) { return TaskName +  " Waiting to start"; }
-			if (!success) { return TaskName +  " Failed"; }
-			return TaskName + " Success";
+			return "";
 		}
 		
-		public virtual System.Drawing.Color GetStatusColor()
+		public virtual String GetTaskText()
+		{
+			if (busy) { return "Running"; }
+			if (!run) { return "Waiting to start"; }
+			if (!success) { return "Failed"; }
+			return "Success";
+		}
+
+		public virtual String GetTotalText()
+		{
+			return TaskName;
+		}
+		
+		public virtual int GetFileProgress() {
+			if (busy) { return 50; }
+			if (!run) { return 0; }
+			if (!success) { return 0; }
+			return 100;
+		}
+		
+		public virtual int GetTaskProgress() {
+			if (busy) { return 50; }
+			if (!run) { return 0; }
+			if (!success) { return 0; }
+			return 100;			
+		}
+		
+		public virtual int GetTotalProgress() {
+			return 0;
+		}
+
+		public virtual System.Drawing.Color GetFileColor()
 		{
 			if (busy) { return Color.Blue; }
 			if (!run) { return Color.Orange; }
 			if (!success) { return Color.Red; }
 			return Color.Green;
+		}
+
+		public virtual System.Drawing.Color GetTaskColor()
+		{
+			if (busy) { return Color.Blue; }
+			if (!run) { return Color.Orange; }
+			if (!success) { return Color.Red; }
+			return Color.Green;
+		}
+
+		public virtual System.Drawing.Color GetTotalColor()
+		{
+			return Color.Blue;
 		}
 		
 		public virtual bool IsPausable()

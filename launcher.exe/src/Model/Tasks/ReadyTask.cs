@@ -7,7 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using PswgLauncher.Model.Status;
+using System.Drawing;
 
 namespace PswgLauncher.Model.Tasks
 {
@@ -21,7 +21,7 @@ namespace PswgLauncher.Model.Tasks
 			TaskName = "Final";
 		}
 		
-		public override LauncherTask GetNextTask()
+		public override LauncherTask GetNextTask(GuiController Controller)
 		{
 			return this;
 		}
@@ -30,15 +30,30 @@ namespace PswgLauncher.Model.Tasks
 			if (busy) { return base.GetPlayText(); }
 			return "Play!";
 		}
+				
+		public override string GetTaskText()
+		{
+			 if (busy) { return base.GetPlayText(); }
+			 return "";
+		}
+
 		
-		public override String GetLabelText() {
-			if (busy) { return base.GetPlayText(); }
+		public override string GetTotalText() {
 			return "Ready To Play!";			
 		}
 		
 		public override bool Complete(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
 			base.Complete(worker, Controller, sender, e);
 			return false;
+		}
+		
+		public override int GetTotalProgress() {
+			return 100;
+		}
+		
+		public override System.Drawing.Color GetTaskColor()
+		{
+			return Color.Green;
 		}
 		
 	}
