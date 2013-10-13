@@ -1,6 +1,6 @@
-﻿namespace PswgLauncher
+﻿namespace PswgLauncher.GUI.Forms
 {
-    partial class LauncherWindow
+	partial class LauncherWindow
     {
         /// <summary>
         /// Required designer variable.
