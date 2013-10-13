@@ -81,7 +81,8 @@ namespace PswgLauncher
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString, opts.VersionOverride, opts.DNSPatchRecord, opts.DNSPatchRecordContents, opts.DNSFileRecord, opts.DNSFileRecordContents);
+            //FIXME: pass opts object instead of the fields
+            GuiController gc = new GuiController(RunAsMode, Workdir, ArgString, opts.VersionOverride, opts.DNSPatchRecord, opts.DNSPatchRecordContents, opts.DNSFileRecord, opts.DNSFileRecordContents, opts.FileListName);
             gc.ReadConfig();
             gc.CheckScanNeeded();
             gc.RunLauncher();

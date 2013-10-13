@@ -52,6 +52,7 @@ namespace PswgLauncher
 
 		public String SwgSavePath { get; private set; }
 		public String LocalFilelist { get; private set; }
+		public String RemoteFilelist { get; private set; }
 		public String FileTrefix { get; private set; }
 		public String FileAdmSettings { get; private set; }
 		public String ConfigPath { get; private set; }
@@ -149,7 +150,7 @@ namespace PswgLauncher
 		private ResourceManager PswgResources2Manager;
 		private LauncherWindow LauncherWindow;		
 		
-		public GuiController(int runmode, string Workdir, string args, string version, string dnspatchoverride, string dnspatchcontoverride, string dnsfileoverride, string dnsfilecontoverride)
+		public GuiController(int runmode, string Workdir, string args, string version, string dnspatchoverride, string dnspatchcontoverride, string dnsfileoverride, string dnsfilecontoverride, string FileListName)
 		{
 
 			_DebugMessages = new List<String>();
@@ -168,6 +169,9 @@ namespace PswgLauncher
 			if (dnsfilecontoverride != null) { SetFileServers(dnsfilecontoverride); }
 			else { SetFileServers(""); }
 
+			if (FileListName != null) { RemoteFilelist = FileListName; }
+			else { RemoteFilelist = "launcherS.dl.dat"; }
+			
 			if (version != null) { AddDebugMessage("Version override: " + version); }
 			
 			ApplicationArgs = args;

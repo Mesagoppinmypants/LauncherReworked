@@ -37,6 +37,10 @@ namespace PswgLauncher.Model
 			get; private set;			
 		}
 		
+		public string FileListName {
+			get; private set;
+		}
+		
 		public string WorkdirSetting {
 			get; private set;
 		}
@@ -54,6 +58,7 @@ namespace PswgLauncher.Model
 			RunAsSetting = -1;
 		}
 		
+		//FIXME: provide some sort of class implementation, maybe.
 		//FIXME: produce somewhat more feedback.
 		//FIXME: Fail on errors
 		public bool Parse(String[] args) {
@@ -110,6 +115,18 @@ namespace PswgLauncher.Model
 						DNSPatchRecordContents = args[i+1];
 						i++;
 						break;
+					case "--filelist":
+						if (i+1 >= args.Length) {
+							ShowError("No filelist name given with --runas");
+							return false;							
+						}
+						if (!Regex.IsMatch(args[i+1], @"[-\.A-Za-z0-9]+")) {
+							ShowError("filelist wrong format.");
+							return false;
+						}
+						FileListName = args[i+1];
+						i++;
+						break;						
 					case "--runas":
 						if (i+1 >= args.Length) {
 							ShowError("No Username given with --runas");
@@ -159,10 +176,16 @@ namespace PswgLauncher.Model
 			
 		}
 		
+		
+		
+				
 		void ShowError(string err)
 		{
 			MessageBox.Show(err + "\n\nExiting.", "Command line argument error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
+		
+		
+		
 				
 	}
 }
