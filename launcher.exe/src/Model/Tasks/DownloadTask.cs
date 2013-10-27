@@ -17,11 +17,14 @@ namespace PswgLauncher.Model.Tasks
 	{
 		
 		public override int GetFileProgress() {
-			return 10;
+			
 		}
 
 		public override bool ReportProgress(System.ComponentModel.BackgroundWorker worker, GuiController Controller,  object sender, System.ComponentModel.ProgressChangedEventArgs e)
 		{
+			
+			
+			
 			return false;
 		}
 

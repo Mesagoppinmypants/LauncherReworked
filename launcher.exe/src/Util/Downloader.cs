@@ -79,7 +79,7 @@ namespace PswgLauncher.Util
 			        	thisupdate = DateTime.Now.ToLocalTime();
               			//backgroundWorker.ReportProgress(progress, "Debug " + thisupdate.Subtract(lastupdate).TotalSeconds);
               			if (thisupdate.Subtract(lastupdate).TotalSeconds > 1) {
-                			backgroundWorker.ReportProgress((int) displayprogress, filenameshort + " " + totalread + "/"+length);
+                			backgroundWorker.ReportProgress((int) displayprogress, "DL|" + filenameshort + " " + totalread + "/"+length);
                 			lastupdate = thisupdate;
               			}
               

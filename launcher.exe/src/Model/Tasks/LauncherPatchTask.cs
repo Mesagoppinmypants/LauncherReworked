@@ -9,9 +9,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 using PswgLauncher.Util;
 
@@ -22,6 +24,7 @@ namespace PswgLauncher.Model.Tasks
 	/// </summary>
 	public class LauncherPatchTask : DownloadTask
 	{
+		
 		public LauncherPatchTask()
 		{
 			TaskName = "Launcher Patch";
@@ -29,7 +32,6 @@ namespace PswgLauncher.Model.Tasks
 		
 		public override LauncherTask GetNextTask(GuiController Controller)
 		{
-			
 			
 			return new DNSFileserverTask();
 		}
@@ -84,8 +86,7 @@ namespace PswgLauncher.Model.Tasks
 			//FIXME: consider cancellation
 			
 			if (new ProgramVersion(Controller.GetProgramVersion()).IsNewerThan(new ProgramVersion(version))) {
-				e.Result = "";
-				Controller.AddDebugMessage("Launcher is newer than upstream version.");
+				e.Result = "";				
 				return;
 			}
 			
@@ -94,13 +95,14 @@ namespace PswgLauncher.Model.Tasks
 			String filename = Controller.SwgSavePath + @"\" + ProgramConstants.PatchInstallerFile;
 			
 			//download otherwise
-			String URL3 = "http://"+ UseServer + ProgramConstants.PatchInstallerFile;
+			String URL3 = "http://"+ UseServer + ProgramConstants.PatchInstallerUrl;
+			Controller.AddDebugMessage(URL3);
 			bool resume = false;
 			for (int i = 0; i < 10; i++) {
 				
-				if (SWGFile.MatchChecksum(filename, checksum)) {
+				if (SWGFile.MatchChecksum(filename + ".part", checksum)) {
+					File.Move(filename + ".part", filename);
 					e.Result = "update";
-					Controller.AddDebugMessage("There is a new installer available that matches the checksum.");
 					return;					
 				}
 				Downloader.HTTPDownload(Controller, filename + ".part",URL3, 0, false, worker);
@@ -114,6 +116,43 @@ namespace PswgLauncher.Model.Tasks
 		
 		public override bool Complete(System.ComponentModel.BackgroundWorker worker, GuiController Controller, object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
 		{
+		
+			run = true;
+			busy = false;
+			
+			if (e.Cancelled || e.Error != null) {
+				Controller.AddDebugMessage(TaskName + " Complete(), Task Failed");
+				if (e.Error !=null) { Controller.AddDebugMessage(e.Error.ToString()); }
+				success = false;
+				Controller.RefreshStatus(false);
+				return false;
+			}
+			
+			if (e.Result.Equals("update")) {
+				
+				Controller.AddDebugMessage(TaskName + " Complete(), installer found");
+				success = true;
+				Controller.RefreshStatus(false);
+			    ProcessStartInfo processInfo = new ProcessStartInfo();
+			    processInfo.Verb = "runas";
+			    processInfo.FileName = Controller.SwgSavePath + @"\" + ProgramConstants.PatchInstallerFile;
+			    try
+			    {
+			        Process.Start(processInfo);
+					Application.Exit();
+			        
+			        return false;
+			    }
+			    catch (Win32Exception)
+			    {
+			        //Do nothing. Probably the user canceled the UAC window
+			    }
+				return false;
+			}
+			
+			Controller.AddDebugMessage(TaskName + " Complete(), launcher is uptodate.");
+			success = true;
+			Controller.RefreshStatus(false);
 			return true;
 		}
 		

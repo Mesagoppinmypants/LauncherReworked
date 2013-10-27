@@ -67,7 +67,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <StartAction>Project</StartAction>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <StartArguments>--Workdir d:\pswgtest --runas 0</StartArguments>
+    <StartArguments>--Workdir C:\pswgtest --runas 0</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <RegisterForComInterop>False</RegisterForComInterop>
