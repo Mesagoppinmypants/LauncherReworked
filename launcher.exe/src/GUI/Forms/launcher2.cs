@@ -121,9 +121,8 @@ namespace PswgLauncher
         	this.Controls.Add(launcherProgressBar1);
         	
         	AcctButton = Controller.SpawnStandardButton("My Account", new Point(10, 365	));
-        	OptButton = Controller.SpawnStandardButton("Game options", new Point(126, 365 ));
+        	OptButton = Controller.SpawnStandardButton("Game Options", new Point(126, 365 ));
         	ScanButton = Controller.SpawnStandardButton("Scan", new Point(242, 365 ));
-        	LOptButton = Controller.SpawnStandardButton("Launcher options", new Point(358, 365));
         	DonateButton = Controller.SpawnStandardButton("Donate", new Point(474, 365));
         	
         	PlayButton = Controller.SpawnPlayButton("Play", new Point(484,434));
@@ -940,7 +939,7 @@ namespace PswgLauncher
         	// this is actually "play" here now.
         	Controller.PlaySound("Sound_Play");
 
-        	String address = "login1.projectswg.com";
+        	String address = "s1.swgreborn.com";
         	String port = "44453";
        	
         	if (Controller.LocalhostOption) {

@@ -36,8 +36,8 @@ namespace PswgLauncher
 		
 		
 		public static string PatchServer = "patch1.projectswg.com";
-		public static string LoginServer = "login1.projectswg.com";
-		public static string WebServer = "www.projectswg.com";
+		public static string LoginServer = "s1.swgreborn.com";
+		public static string WebServer = "https://swgreborn.com/forums/index.php";
 		
 		public static string MAINURL = "http://"+PatchServer+"/files/";
 		public static string PATCHURL = "http://"+PatchServer+"/launcher/";

@@ -105,11 +105,15 @@
     <Compile Include="GUI\Forms\AccountWindow.Designer.cs">
       <DependentUpon>AccountWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\AdminSettingsWindow.cs" />
+    <Compile Include="GUI\Forms\AdminSettingsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Forms\AdminSettingsWindow.Designer.cs">
       <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Forms\DebugWindow.cs" />
+    <Compile Include="GUI\Forms\DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="GUI\Forms\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
@@ -154,6 +158,9 @@
     <Compile Include="GuiController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="GUI\Forms\AccountWindow.resx">
+      <DependentUpon>AccountWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\AdminSettingsWindow.resx">
       <DependentUpon>AdminSettingsWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -162,6 +169,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\DirSearch.resx">
       <DependentUpon>DirSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Forms\Donate.resx">
+      <DependentUpon>Donate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Forms\launcher2.resx">
       <DependentUpon>launcher2.cs</DependentUpon>
@@ -201,11 +211,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GUI\" />
-    <Folder Include="GUI\" />
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
